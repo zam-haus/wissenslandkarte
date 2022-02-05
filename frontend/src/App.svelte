@@ -1,14 +1,11 @@
 <script lang="ts">
-	import { getLocaleFromNavigator } from "svelte-i18n";
-	import { isLocaleLoaded, setupI18n, _ } from "./services/i18n";
+	import { isI18nLoading, setupI18n, _ } from "./services/i18n";
 
 	export let name: string;
-	$: if (!$isLocaleLoaded) {
-		setupI18n({ withLocale: getLocaleFromNavigator() });
-	}
+	setupI18n();
 </script>
 
-{#if $isLocaleLoaded}
+{#if !$isI18nLoading}
 	<main>
 		<h1>{$_("app.greeting", { values: { name } })}</h1>
 		<p>

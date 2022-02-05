@@ -1,18 +1,18 @@
-import { dictionary, locale, _ } from 'svelte-i18n';
-import { derived } from 'svelte/store';
+import { getLocaleFromNavigator, init, isLoading, register, _ } from 'svelte-i18n';
 
-const MESSAGES_PATH_TEMPLATE = '/lang/{locale}.json';
+const supportedLocales = ['en', 'en-US', 'de', 'de-DE'];
 
-async function setupI18n({ withLocale: _locale } = { withLocale: 'en' }) {
-  const messagesPath = MESSAGES_PATH_TEMPLATE.replace('{locale}', _locale);
-  const messages = await (await fetch(messagesPath)).json();
+async function setupI18n() {
+  for (const locale of supportedLocales) {
+    register(locale, () => fetch(`/lang/${locale}.json`).then(response => response.json()));
+  }
 
-  dictionary.set({ [_locale]: messages });
-  locale.set(_locale);
+  init({
+    fallbackLocale: 'en',
+    initialLocale: getLocaleFromNavigator(),
+  });
 }
 
-const isLocaleLoaded = derived(locale, $locale => typeof $locale === 'string');
-
-export { _, setupI18n, isLocaleLoaded };
+export { setupI18n, isLoading as isI18nLoading, _ };
 
 
