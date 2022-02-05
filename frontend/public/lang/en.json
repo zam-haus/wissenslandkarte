@@ -1,0 +1,5 @@
+{
+  "app": {
+    "greeting": "Welcome, {name}, to the knowledge map!"
+  }
+}
