@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "start": "mocks-server"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^6.1.2",
+    "@mocks-server/main": "^2.6.3"
+  }
+}
