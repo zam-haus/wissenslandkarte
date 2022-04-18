@@ -1,16 +1,23 @@
 [
   {
     "id": "base",
-    "routesVariants": ["add-headers:enabled", "get-users:success", "get-user:success"]
+    "routesVariants": [
+      "get-logged-in-user:success",
+      "edit-logged-in-user:success",
+      "get-user:real",
+      "get-all-users:success",
+      "admin-update-user:unauthorized",
+      "get-all-projects:success",
+      "get-project:real",
+      "update-project:unauthorized"
+    ]
   },
   {
-    "id": "no-headers",
+    "id": "logged-out",
     "from": "base",
-    "routesVariants": ["add-headers:disabled"]
-  },
-  {
-    "id": "user-real",
-    "from": "no-headers",
-    "routesVariants": ["get-user:real"]
+    "routesVariants": [
+      "get-logged-in-user:not-logged-in",
+      "edit-logged-in-user:not-logged-in"
+    ]
   }
 ]
