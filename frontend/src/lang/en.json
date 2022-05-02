@@ -1,0 +1,16 @@
+{
+    "app": {
+      "greeting": "Welcome, {name}, to the knowledge map!",
+      "change_lang": "Switch language",
+      "last_update": "Last Update",
+      "lang": {
+        "de": "german",
+        "en": "english"
+      },
+      "profile": {
+        "header": "My Profile",
+        "registration": "Member since {date}",
+        "loading": "Loading profile…"
+      }
+    }
+  }

@@ -1,0 +1,50 @@
+@import "./colors.scss";
+@import "./reset.scss";
+
+html {
+    font-size: 18px;
+    font-family: 'Consolas', Calibri, serif;
+    background-color: $bg-color;
+    color: $text-color;
+}
+
+@media (min-width: 500px) {
+    html {
+        font-size: 22px;
+    }
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 992px) {
+    html {
+        font-size: 32px;
+    }
+}
+
+main {
+    padding: 1rem;
+}
+
+h1, h2 {
+    color: $primary-color;
+    text-transform: uppercase;
+    font-weight: 100;
+    outline: none;
+}
+
+h1 {
+    font-size: 1.6rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+a {
+    color: $primary-color;
+}

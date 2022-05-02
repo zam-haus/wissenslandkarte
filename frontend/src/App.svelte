@@ -1,38 +1,49 @@
 <script lang="ts">
-	import { isI18nLoading, setupI18n, _ } from "./services/i18n";
+    import { Router, Route } from "svelte-navigator";
 
-	export let name: string;
+    import Home from "./pages/Home.svelte";
+    import Profile from "./pages/Profile.svelte";
+    import SamplePage from "./pages/SamplePage.svelte";
+    import Projects from "./pages/Projects.svelte";
+    import Resources from "./pages/Resources.svelte";
+    import ViewEditCycle from "./pages/ViewEditCycle.svelte";
+    import NewProject from "./pages/NewProject.svelte";
+
+    import { isI18nLoading, setupI18n } from "./services/i18n";
+
 	setupI18n();
+
+    import "../style/style.scss";
 </script>
 
 {#if !$isI18nLoading}
-	<main>
-		<h1>{$_("app.greeting", { values: { name } })}</h1>
-		<p>
-			Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn
-			how to build Svelte apps.
-		</p>
-	</main>
+    <Router>
+        <Route path="/">
+            <Home />
+        </Route>
 
-	<style>
-		main {
-			text-align: center;
-			padding: 1em;
-			max-width: 240px;
-			margin: 0 auto;
-		}
+        <Route path="/profile">
+            <Profile />
+        </Route>
 
-		h1 {
-			color: #ff3e00;
-			text-transform: uppercase;
-			font-size: 4em;
-			font-weight: 100;
-		}
+        <Route path="/projects">
+            <Projects />
+        </Route>
 
-		@media (min-width: 640px) {
-			main {
-				max-width: none;
-			}
-		}
-	</style>
+        <Route path="/resources">
+            <Resources />
+        </Route>
+
+        <Route path="/sample">
+            <SamplePage />
+        </Route>
+
+        <Route path="/viewedit">
+            <ViewEditCycle />
+        </Route>
+
+        <Route path="/newProject">
+            <NewProject />
+        </Route>
+    </Router>
 {/if}
