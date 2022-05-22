@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { UserDTO } from '../../../mock-backend/mocks/models/user';
+import type { UserDTO } from '../../../mock-backend/mocks/models/user';
 import { loadUsers } from '../services/api';
 
 
