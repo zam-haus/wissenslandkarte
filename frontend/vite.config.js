@@ -14,12 +14,12 @@ export default defineConfig({
     })
   ],
   server: {
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 8080,
     strictPort: true,
     proxy: {
       '^/api/.*': {
-        target: `http://localhost:3100`,
+        target: `http://127.0.0.1:3100`,
         ws: true
       }
     }
