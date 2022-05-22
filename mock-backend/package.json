@@ -3,6 +3,7 @@
     "start": "mocks-server"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
     "@faker-js/faker": "^6.1.2",
