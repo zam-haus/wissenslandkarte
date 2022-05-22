@@ -1,4 +1,5 @@
-import { CurrentUserDTO } from '../../../mock-backend/mocks/models/user';
+import type { CurrentUserDTO } from '../../../mock-backend/mocks/models/user';
+
 
 export async function getCurrentUser(): Promise<CurrentUserDTO> {
     const response = await fetch('/api/users/me');

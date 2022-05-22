@@ -1,5 +1,5 @@
 import type { ProjectDTO } from "../../../mock-backend/mocks/models/project";
-import { UserDTO } from "../../../mock-backend/mocks/models/user";
+import type { UserDTO } from "../../../mock-backend/mocks/models/user";
 
 export async function loadProjects(): Promise<ProjectDTO[]> {
     const abortController = new AbortController();
