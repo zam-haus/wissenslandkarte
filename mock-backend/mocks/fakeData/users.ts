@@ -23,7 +23,7 @@ export function makeRandomFakeCurrentUserDTO(id: number): CurrentUserDTO {
     firstName,
     lastName,
     username: faker.internet.userName(firstName, lastName),
-    description: faker.lorem.text(),
+    description: faker.lorem.paragraphs(2),
     tags: faker.random.words().split(' '),
     image: faker.internet.avatar(),
     registrationDate: faker.date.past(),
