@@ -7,8 +7,8 @@ import { USERS } from './users';
 export const PROJECTS = Array.from(Array(20), (value, key) => makeRandomFakeProjectDto(key, USERS, []));
 
 export function projectToProjectListEntry(project: ProjectDTO): ShortProjectListEntryDTO {
-  const { id, title, mainPhoto, creationDate, latestModificationDate } = project;
-  return { id, title, mainPhoto, creationDate, latestModificationDate };
+  const { id, title, description, mainPhoto, creationDate, latestModificationDate } = project;
+  return { id, title, description, mainPhoto, creationDate, latestModificationDate };
 }
 
 export function makeRandomFakeProjectDto(id: number, users: UserDTO[], tags: string[]): ProjectDTO {
@@ -24,6 +24,7 @@ export function makeRandomFakeProjectDto(id: number, users: UserDTO[], tags: str
   return {
     id,
     title: `${faker.company.bsBuzz()} ${faker.company.bsNoun()}`,
+    description: "",
     owners,
     members,
     tags: faker.random.arrayElements(tags, faker.datatype.number(10)),

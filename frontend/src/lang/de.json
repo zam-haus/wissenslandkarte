@@ -1,0 +1,16 @@
+{
+    "app": {
+      "greeting": "Hallo, {name}, auf der Wissenslandkarte!",
+      "change_lang": "Sprache ändern",
+      "last_update": "Letztes Update",
+      "lang": {
+        "de": "Deutsch",
+        "en": "Englisch"
+      },
+      "profile": {
+        "header": "Mein Profil",
+        "registration": "Mitglied seit {date}",
+        "loading": "Profil wird geladen…"
+      }
+    }
+  }
