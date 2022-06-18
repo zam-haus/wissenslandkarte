@@ -3,7 +3,7 @@ import { UserDTO } from './user';
 export const attachmentTypes = ['image', 'file', 'link'] as const;
 export type AttachmentType = typeof attachmentTypes[number];
 
-export type ShortProjectListEntryDTO = Pick<ProjectDTO, 'id' | 'title' | 'description' | 'mainPhoto' | 'creationDate' | 'latestModificationDate' | 'needsProjectArea'>
+export type ShortProjectListEntryDTO = Pick<ProjectDTO, 'id' | 'title' | 'description' | 'mainPhoto' | 'creationDate' | 'latestModificationDate' >
 
 export interface ProjectDTO {
   id: number;
