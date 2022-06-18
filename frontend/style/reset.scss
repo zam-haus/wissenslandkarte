@@ -31,11 +31,6 @@ dd {
   margin: 0;
 }
 
-/* Set core body defaults */
-body {
-  min-height: 100vh;
-  text-rendering: optimizeSpeed;
-}
 
 /* Remove list styles on ul, ol elements with a class attribute */
 ul,
@@ -62,10 +57,6 @@ select {
   font: inherit;
 }
 
-main {
-  scroll-behavior: smooth;
-  overflow: auto;
-}
 
 /* Remove all animations and transitions for people that prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
