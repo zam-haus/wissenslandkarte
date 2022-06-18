@@ -49,8 +49,20 @@ a {
     color: $primary-color;
 }
 
+button.primary {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+}
+
 .icon {
     width: 1rem;
     margin: 0 0.5rem;
     display: inline-block;
+}
+
+button.primary .icon {
+    position: relative;
+    top: 3px;
 }

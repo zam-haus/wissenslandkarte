@@ -11,7 +11,9 @@
       "header": "Mein Profil",
       "registration": "Mitglied seit {date}",
       "loading": "Profil wird geladen…",
-      "imageAltText": "Das Profilbild dieses Nutzers"
+      "imageAltText": "Das Profilbild dieses Nutzers",
+      "sendMessage": "Nachricht",
+      "title": "Profil"
     }
   }
 }
