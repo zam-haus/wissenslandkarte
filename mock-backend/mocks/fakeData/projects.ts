@@ -24,13 +24,14 @@ export function makeRandomFakeProjectDto(id: number, users: UserDTO[], tags: str
   return {
     id,
     title: `${faker.company.bsBuzz()} ${faker.company.bsNoun()}`,
-    description: "",
+    description: faker.lorem.paragraphs(2),
     owners,
     members,
     tags: faker.random.arrayElements(tags, faker.datatype.number(10)),
     mainPhoto: faker.image.technics(),
     attachments: Array.from(Array((faker.datatype.number({ min: 0, max: 3 }))), () => makeRandomFakeAttachmentDto()),
     creationDate: faker.date.recent(5, latestModificationDate),
+    needsProjectArea: false,
     latestModificationDate,
   };
 }
