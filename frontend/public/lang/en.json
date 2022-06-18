@@ -11,7 +11,10 @@
       "header": "My Profile",
       "registration": "Member since {date}",
       "loading": "Loading profile…",
-      "imageAltText": "This user's profile image"
+      "imageAltText": "This user's profile image",
+      "sendMessage": "Message",
+      "title": "Profile",
+      "projects": "{count} {count, plural, one {#project} other {#projects}"
     }
   }
 }
