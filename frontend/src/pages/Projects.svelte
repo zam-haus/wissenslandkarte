@@ -1,7 +1,7 @@
 <script lang="ts">
     import Page from "../layout/Page.svelte";
     import ProjectListEntry from "./ProjectListEntry.svelte";
-    import { projectsStore } from "../services/projectStore";
+    import { projectsStore } from "../stores/projectStore";
 
     const pageSize = 5;
     let current = 0;

@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 
 import type { ProjectDTO } from "../../../mock-backend/mocks/models/project";
-import { loadProjects } from './api';
+import { loadProjects } from '../services/api';
 
 export const projectsStore = writable<{projects: ProjectDTO[], error: Error | null, loading: boolean}>({projects: [], error: null, loading: true});
 

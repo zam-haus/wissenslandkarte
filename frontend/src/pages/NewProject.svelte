@@ -7,7 +7,7 @@
     import type { ProjectDTO } from "../../mock-backend/mocks/models/project";
     import type { UserDTO } from "./../../mock-backend/mocks/models/user";
 
-    import { projectsStore } from "../services/projectStore";
+    import { projectsStore } from "../stores/projectStore";
     import { userStore } from "../stores/user";
     import { usersStore } from "../stores/usersStore";
 
