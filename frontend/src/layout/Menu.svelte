@@ -98,11 +98,6 @@
                     }
                 }
 
-                .icon {
-                    width: 1rem;
-                    margin: 0 0.5rem;
-                }
-
                 &:last-child {
                     border-bottom: none;
                 }
