@@ -13,7 +13,8 @@
       "loading": "Profil wird geladen…",
       "imageAltText": "Das Profilbild dieses Nutzers",
       "sendMessage": "Nachricht",
-      "title": "Profil"
+      "title": "Profil",
+      "projects": "{count, plural, one {# Projekt } other {# Projekte }}"
     }
   }
 }

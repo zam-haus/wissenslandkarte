@@ -4,8 +4,24 @@
 
     import { _ } from "../services/i18n";
     import { userStore } from "../stores/user";
+    import { projectsStore } from "../stores/projectStore";
 
     import Page from "../layout/Page.svelte";
+
+    import type { ProjectDTO } from "../../../mock-backend/mocks/models/project";
+    import { derived } from "svelte/store";
+
+    $: projectsOfUser = derived([projectsStore, userStore],
+        ([projects, currentUser]) => {
+            if(projects === undefined || currentUser === undefined) {
+                return;
+            }
+            console.log([projects, currentUser])
+            return projects.projects.filter((project) => project.members.some((user) => user.id == currentUser.id)
+              ||  project.members.some((user) => user.id == currentUser.id)
+            )
+        }
+    );
 </script>
 
 <style>
@@ -54,6 +70,14 @@
                 alt="{$_("app.profile.imageAltText")}"
                 class="userImage atRight"/>
             <h3>{$userStore.firstName} {$userStore.lastName}</h3>
+
+            <p>
+                {#if $projectsOfUser}
+                    {$_("app.profile.projects", {
+                        values: {count: $projectsOfUser.length}
+                    })}
+                {/if}
+            </p>
 
             <p>
                 {$_("app.profile.registration", {
