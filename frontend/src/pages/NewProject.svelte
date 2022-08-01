@@ -1,17 +1,11 @@
 <script lang="ts">
-    import { navigate } from "svelte-navigator";
     import MdSearch from "svelte-icons/md/MdSearch.svelte";
-    import MdCheck from "svelte-icons/md/MdCheck.svelte";
-    import MdClose from "svelte-icons/md/MdClose.svelte";
-
-    import type { ProjectDTO } from "../../mock-backend/mocks/models/project";
-    import type { UserDTO } from "./../../mock-backend/mocks/models/user";
-
+    import { navigate } from "svelte-navigator";
+    import type { ProjectDTO } from "../../../mock-backend/mocks/models/project";
+    import Page from "../layout/Page.svelte";
+    import { generalUsersStore } from "../stores/generalUsersStore";
+    import { loggedInUserStore } from "../stores/loggedInUserStore";
     import { projectsStore } from "../stores/projectStore";
-    import { userStore } from "../stores/user";
-    import { usersStore } from "../stores/usersStore";
-
-    import Page from "../layout/Page.svelte";    
 
     let currentProject: ProjectDTO = {
         id: -1,
@@ -19,7 +13,7 @@
         description: "",
         creationDate: undefined,
         latestModificationDate: undefined,
-        owners: [$userStore],
+        owners: [$loggedInUserStore],
         members: [],
         tags: [],
         mainPhoto: "",
@@ -48,7 +42,7 @@
     let selectedMember;
 
     function getUser(userName: String) {
-        return $usersStore.find((user) => user.username == userName);
+        return $generalUsersStore.find((user) => user.username == userName);
     }
 
     function cancel() {
@@ -94,7 +88,7 @@
                     bind:value={selectedMember}
                 />
                 <datalist id="users">
-                    {#each $usersStore as user}
+                    {#each $generalUsersStore as user}
                         <option value={user.username} />{/each}
                 </datalist>
             </div>

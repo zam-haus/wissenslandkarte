@@ -3,15 +3,15 @@ import type { UserDTO } from '../../../mock-backend/mocks/models/user';
 import { loadUsers } from '../services/api';
 
 
-export const usersStore = writable<UserDTO[] | null>();
+export const generalUsersStore = writable<UserDTO[] | null>();
 
 export function setUsers(users: UserDTO[]): void {
-    usersStore.update(() => users);
+    generalUsersStore.update(() => users);
 }
 
 export async function loadAndSetUsers(): Promise<void> {
     let users: UserDTO[];
-        
+
     try {
         users = await loadUsers();
         setUsers(users);

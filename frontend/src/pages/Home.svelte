@@ -1,15 +1,14 @@
 <script>
     import Page from "../layout/Page.svelte";
-
-    import { isI18nLoading, _ } from "../services/i18n";
-    import { userStore } from "../stores/user";
+    import { _ } from "../services/i18n";
+    import { loggedInUserStore } from "../stores/loggedInUserStore";
 </script>
 
 <Page>
-    {#if $userStore}
+    {#if $loggedInUserStore}
         <h1>
             {$_("app.greeting", {
-                values: { name: $userStore.firstName },
+                values: { name: $loggedInUserStore.firstName },
             })}
         </h1>
     {/if}

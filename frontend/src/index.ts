@@ -1,16 +1,16 @@
 import App from './App.svelte';
 import { setupI18n } from './services/i18n';
-import { loadAndSetProjects } from './stores/projectStore';
 import { getCurrentUser } from "./services/user";
-import { userStore } from "./stores/user";
-import { loadAndSetUsers } from './stores/usersStore';
+import { loadAndSetUsers } from './stores/generalUsersStore';
+import { loggedInUserStore } from "./stores/loggedInUserStore";
+import { loadAndSetProjects } from './stores/projectStore';
 
 setupI18n();
 loadAndSetProjects().catch((err) => console.error(err));
 loadAndSetUsers();
 
 getCurrentUser().then((user) => {
-	userStore.set(user);
+	loggedInUserStore.set(user);
 });
 
 const app = new App({
