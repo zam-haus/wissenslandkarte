@@ -1,19 +1,14 @@
 <script lang="ts">
-    import { Router, Route } from "svelte-navigator";
-
+    import { Route, Router } from "svelte-navigator";
+    import "../style/style.scss";
     import Home from "./pages/Home.svelte";
-    import Profile from "./pages/Profile.svelte";
-    import SamplePage from "./pages/SamplePage.svelte";
+    import NewProject from "./pages/NewProject.svelte";
+    import LoggedInUserProfile from "./pages/profile/LoggedInUserProfile.svelte";
     import Projects from "./pages/Projects.svelte";
     import Resources from "./pages/Resources.svelte";
+    import SamplePage from "./pages/SamplePage.svelte";
     import ViewEditCycle from "./pages/ViewEditCycle.svelte";
-    import NewProject from "./pages/NewProject.svelte";
-
-    import { isI18nLoading, setupI18n } from "./services/i18n";
-
-	setupI18n();
-
-    import "../style/style.scss";
+    import { isI18nLoading } from "./services/i18n";
 </script>
 
 {#if !$isI18nLoading}
@@ -23,7 +18,7 @@
         </Route>
 
         <Route path="/profile">
-            <Profile />
+            <LoggedInUserProfile />
         </Route>
 
         <Route path="/projects">
