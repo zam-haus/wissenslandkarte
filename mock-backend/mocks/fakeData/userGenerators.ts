@@ -1,6 +1,16 @@
 import { faker } from '@faker-js/faker';
 
+import { ProjectDTO } from '../models/project';
 import { CurrentUserDTO, UserDTO } from '../models/user';
+
+export function updateUserWithProject(user: UserDTO, project: ProjectDTO) {
+  user.projectsShortInfo.push({
+    id: project.id,
+    title: project.title,
+    mainPhoto: project.mainPhoto,
+    latestModificationDate: project.latestModificationDate
+  });
+}
 
 
 export function makeRandomFakeCurrentUserDTO(id: number): CurrentUserDTO {
@@ -21,7 +31,8 @@ export function makeRandomFakeCurrentUserDTO(id: number): CurrentUserDTO {
     registrationDate: faker.date.past(),
     contactEmailAddress: faker.internet.email(firstName, lastName),
     isContactEmailAddressPublic: faker.datatype.boolean(),
-    phoneNumber: faker.phone.phoneNumber()
+    phoneNumber: faker.phone.phoneNumber(),
+    projectsShortInfo: []
   };
 }
 

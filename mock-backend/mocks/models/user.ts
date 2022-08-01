@@ -1,3 +1,5 @@
+import { ProjectDTO } from "./project";
+
 type URL = string;
 
 export interface UserDTO {
@@ -6,6 +8,7 @@ export interface UserDTO {
   description: string;
   tags: string[];
   image: URL;
+  projectsShortInfo: Pick<ProjectDTO, 'id' | 'latestModificationDate' | 'title' | 'mainPhoto'>[];
 
   registrationDate: Date;
   contactEmailAddress?: string;
