@@ -1,8 +1,7 @@
+import { makeRandomFakeProjectDto, projectToProjectListEntry } from '../fakeData/projectGenerators';
+import { PROJECTS, USERS } from '../fakeData/store';
 import { RouteExport } from '../mocks';
-import { UserDTO, CurrentUserDTO } from '../models/user';
-import { PROJECTS, makeRandomFakeProjectDto, projectToProjectListEntry } from '../fakeData/projects';
-import { USERS } from '../fakeData/users';
-import { TAGS } from '../fakeData/tags';
+import { UserDTO } from '../models/user';
 
 
 module.exports = <RouteExport>[

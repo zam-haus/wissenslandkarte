@@ -1,10 +1,8 @@
 import { faker } from '@faker-js/faker';
 
+import { AttachmentDTO, attachmentTypes, ProjectDTO, ShortProjectListEntryDTO } from '../models/project';
 import { UserDTO } from '../models/user';
-import { attachmentTypes, ProjectDTO, AttachmentDTO, ShortProjectListEntryDTO } from '../models/project';
-import { USERS } from './users';
 
-export const PROJECTS = Array.from(Array(20), (value, key) => makeRandomFakeProjectDto(key, USERS, []));
 
 export function projectToProjectListEntry(project: ProjectDTO): ShortProjectListEntryDTO {
   const { id, title, description, mainPhoto, creationDate, latestModificationDate } = project;

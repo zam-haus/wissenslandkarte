@@ -1,6 +1,7 @@
+import { CURRENT_USER, updateCurrentUser, USERS } from '../fakeData/store';
+import { makeRandomFakeUserDTO } from '../fakeData/userGenerators';
 import { RouteExport } from '../mocks';
-import { UserDTO, CurrentUserDTO } from '../models/user';
-import { USERS, CURRENT, makeRandomFakeUserDTO, makeRandomFakeCurrentUserDTO, updateCurrentUser } from '../fakeData/users';
+import { CurrentUserDTO, UserDTO } from '../models/user';
 
 
 module.exports = <RouteExport>[
@@ -13,7 +14,7 @@ module.exports = <RouteExport>[
         id: 'success',
         response: {
           status: 200,
-          body: CURRENT,
+          body: CURRENT_USER,
         },
       },
       {
@@ -34,7 +35,7 @@ module.exports = <RouteExport>[
         id: 'success',
         response: (req, res) => {
           updateCurrentUser(req.params as unknown as CurrentUserDTO);
-          res.status(200).send(CURRENT);
+          res.status(200).send(CURRENT_USER);
         }
       },
       {
