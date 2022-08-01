@@ -23,7 +23,7 @@ module.exports = <RouteExport>[
         id: 'error',
         response: {
           status: 400,
-          body: { message: 'Unspecified error occured', messageId: 'unspecified-error' },
+          body: { message: 'Unspecified error occurred', messageId: 'unspecified-error' },
         },
       },
     ],
