@@ -1,9 +1,12 @@
 import type { ProjectDTO } from "../../../mock-backend/mocks/models/project";
 import type { UserDTO } from "../../../mock-backend/mocks/models/user";
 
+type UserId = UserDTO['id'];
+
 const endpoints = {
     allProjects: () => `/api/projects`,
-    allUsers: () => `api/users`
+    allUsers: () => `/api/users`,
+    singleUser: (id: UserId) => `/api/users/${id}`,
 }
 
 async function loadFromEndpoint<T>(endpoint: string): Promise<T> {
@@ -38,4 +41,8 @@ export async function loadProjects(): Promise<ProjectDTO[]> {
 
 export async function loadUsers(): Promise<UserDTO[]> {
     return loadFromEndpoint(endpoints.allUsers());
+}
+
+export async function loadUser(id: UserId): Promise<UserDTO> {
+    return loadFromEndpoint(endpoints.singleUser(id));
 }

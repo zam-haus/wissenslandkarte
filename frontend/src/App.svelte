@@ -4,6 +4,7 @@
     import Home from "./pages/Home.svelte";
     import NewProject from "./pages/NewProject.svelte";
     import LoggedInUserProfile from "./pages/profile/LoggedInUserProfile.svelte";
+    import UserProfileById from "./pages/profile/UserProfileById.svelte";
     import Projects from "./pages/Projects.svelte";
     import Resources from "./pages/Resources.svelte";
     import SamplePage from "./pages/SamplePage.svelte";
@@ -17,8 +18,12 @@
             <Home />
         </Route>
 
-        <Route path="/profile">
+        <Route path="/profile/me">
             <LoggedInUserProfile />
+        </Route>
+
+        <Route path="/profile/:userId" let:params>
+            <UserProfileById userId={parseInt(params.userId, 10)} />
         </Route>
 
         <Route path="/projects">
