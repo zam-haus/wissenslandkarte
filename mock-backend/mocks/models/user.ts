@@ -1,6 +1,7 @@
 import { ProjectDTO } from "./project";
 
 type URL = string;
+export type UserId = UserDTO['id'];
 
 export interface UserDTO {
   id: number;

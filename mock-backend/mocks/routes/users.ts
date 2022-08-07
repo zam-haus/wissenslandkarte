@@ -91,6 +91,20 @@ module.exports = <RouteExport>[
       {
         id: 'random',
         response: (req, res) => res.status(200).send(makeRandomFakeUserDTO(Number(req.params.id))),
+      },
+      {
+        id: 'does-not-exist',
+        response: {
+          status: 404,
+          text: 'Does not exist'
+        }
+      },
+      {
+        id: 'server-error',
+        response: {
+          status: 500,
+          text: 'Server error'
+        }
       }
     ],
   },

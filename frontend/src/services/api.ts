@@ -9,6 +9,25 @@ const endpoints = {
     singleUser: (id: UserId) => `/api/users/${id}`,
 }
 
+export class NetworkError extends Error {
+    constructor(
+        message: string,
+        public reason: any,
+    ) {
+        super(message);
+    }
+}
+
+export class HttpError extends Error {
+    constructor(
+        message: string,
+        public errorCode: number,
+        public errorText: string,
+    ) {
+        super(message);
+    }
+}
+
 async function loadFromEndpoint<T>(endpoint: string): Promise<T> {
     const abortController = new AbortController();
     const signal = abortController.signal;
@@ -19,11 +38,11 @@ async function loadFromEndpoint<T>(endpoint: string): Promise<T> {
         response = await fetch(endpoint, { signal });
     } catch (err) {
         console.log(err);
-        throw new Error(`no response loading ${endpoint}`);
+        throw new NetworkError(`no response loading ${endpoint}`, err);
     }
 
     if (!response.ok) {
-        throw new Error(`error loading ${endpoint}: ${response.status} ${response.statusText}`);
+        throw new HttpError(`error loading ${endpoint}: ${response.status} ${response.statusText}`, response.status, response.statusText);
     }
 
     return response.json();

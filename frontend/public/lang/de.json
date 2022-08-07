@@ -14,7 +14,9 @@
       "imageAltText": "Das Profilbild dieses Nutzers",
       "sendMessage": "Nachricht",
       "title": "Profil",
-      "projects": "{count, plural, one {# Projekt } other {# Projekte }}"
+      "projects": "{count, plural, one {# Projekt } other {# Projekte }}",
+      "notFound": "Nutzer nicht gefunden.",
+      "errorWhileLoading": "Es ist ein Fehler aufgetreten: {errorText}"
     }
   }
 }
