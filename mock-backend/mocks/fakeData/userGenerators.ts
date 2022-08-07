@@ -8,17 +8,15 @@ export function updateUserWithProject(user: UserDTO, project: ProjectDTO) {
     id: project.id,
     title: project.title,
     mainPhoto: project.mainPhoto,
-    latestModificationDate: project.latestModificationDate
+    latestModificationDate: project.latestModificationDate,
   });
 }
-
 
 export function makeRandomFakeCurrentUserDTO(id: number): CurrentUserDTO {
   faker.setLocale('de');
 
   const firstName = faker.name.firstName();
   const lastName = faker.name.lastName();
-  const publicMail = faker.datatype.boolean();
 
   return {
     id,
@@ -32,14 +30,8 @@ export function makeRandomFakeCurrentUserDTO(id: number): CurrentUserDTO {
     contactEmailAddress: faker.internet.email(firstName, lastName),
     isContactEmailAddressPublic: faker.datatype.boolean(),
     phoneNumber: faker.phone.phoneNumber(),
-    projectsShortInfo: []
+    projectsShortInfo: [],
   };
-}
-
-export function makeRandomFakeUserDTO(id: number): UserDTO {
-  const currentUser = makeRandomFakeCurrentUserDTO(id);
-
-  return makeUserFromCurrentUser(currentUser);
 }
 
 export function makeUserFromCurrentUser(currentUser: CurrentUserDTO) {
@@ -54,4 +46,10 @@ export function makeUserFromCurrentUser(currentUser: CurrentUserDTO) {
   delete user.isContactEmailAddressPublic;
 
   return user;
+}
+
+export function makeRandomFakeUserDTO(id: number): UserDTO {
+  const currentUser = makeRandomFakeCurrentUserDTO(id);
+
+  return makeUserFromCurrentUser(currentUser);
 }

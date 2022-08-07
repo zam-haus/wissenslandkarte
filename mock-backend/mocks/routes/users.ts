@@ -1,10 +1,9 @@
 import { CURRENT_USER, updateCurrentUser, USERS } from '../fakeData/store';
 import { makeRandomFakeUserDTO } from '../fakeData/userGenerators';
-import { RouteExport } from '../mocks';
+import type { RouteExport } from '../mocks';
 import { CurrentUserDTO, UserDTO } from '../models/user';
 
-
-module.exports = <RouteExport>[
+export default <RouteExport>[
   {
     id: 'get-logged-in-user',
     url: '/api/users/me',
@@ -21,7 +20,7 @@ module.exports = <RouteExport>[
         id: 'not-logged-in',
         response: {
           status: 401,
-          body: { message: 'Not logged in, cannot return current user', messageId: 'not-authorized', }
+          body: { message: 'Not logged in, cannot return current user', messageId: 'not-authorized' },
         },
       },
     ],
@@ -36,13 +35,13 @@ module.exports = <RouteExport>[
         response: (req, res) => {
           updateCurrentUser(req.params as unknown as CurrentUserDTO);
           res.status(200).send(CURRENT_USER);
-        }
+        },
       },
       {
         id: 'not-logged-in',
         response: {
           status: 401,
-          body: { message: 'Not authorized to edit this user', messageId: 'not-authorized', }
+          body: { message: 'Not authorized to edit this user', messageId: 'not-authorized' },
         },
       },
     ],
@@ -83,7 +82,7 @@ module.exports = <RouteExport>[
           } else {
             res.status(404);
             res.send({
-              message: 'User not found', messageId: 'not-found'
+              message: 'User not found', messageId: 'not-found',
             });
           }
         },
@@ -96,16 +95,16 @@ module.exports = <RouteExport>[
         id: 'does-not-exist',
         response: {
           status: 404,
-          text: 'Does not exist'
-        }
+          text: 'Does not exist',
+        },
       },
       {
         id: 'server-error',
         response: {
           status: 500,
-          text: 'Server error'
-        }
-      }
+          text: 'Server error',
+        },
+      },
     ],
   },
   {
@@ -117,15 +116,15 @@ module.exports = <RouteExport>[
         id: 'unauthorized',
         response: {
           status: 401,
-          body: { message: 'Not authorized to edit this user', messageId: 'not-authorized', }
-        }
+          body: { message: 'Not authorized to edit this user', messageId: 'not-authorized' },
+        },
       },
       {
         id: 'bad request',
         response: {
           status: 400,
-          body: { message: 'Bad request: Missing something', messageId: 'bad-request', }
-        }
+          body: { message: 'Bad request: Missing something', messageId: 'bad-request' },
+        },
       },
       {
         id: 'real',

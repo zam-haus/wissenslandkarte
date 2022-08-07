@@ -1,9 +1,13 @@
-import { UserDTO } from './user';
+import type { UserDTO } from './user';
 
 export const attachmentTypes = ['image', 'file', 'link'] as const;
 export type AttachmentType = typeof attachmentTypes[number];
 
-export type ShortProjectListEntryDTO = Pick<ProjectDTO, 'id' | 'title' | 'description' | 'mainPhoto' | 'creationDate' | 'latestModificationDate' >
+export interface AttachmentDTO {
+  type: AttachmentType;
+  url: string;
+  creationDate: Date;
+}
 
 export interface ProjectDTO {
   id: number;
@@ -19,8 +23,4 @@ export interface ProjectDTO {
   needsProjectArea: boolean;
 }
 
-export interface AttachmentDTO {
-  type: AttachmentType;
-  url: string;
-  creationDate: Date;
-}
+export type ShortProjectListEntryDTO = Pick<ProjectDTO, 'id' | 'title' | 'description' | 'mainPhoto' | 'creationDate' | 'latestModificationDate'>;

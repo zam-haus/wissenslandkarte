@@ -1,7 +1,6 @@
-import { ProjectDTO } from "./project";
+import type { ProjectDTO } from './project';
 
 type URL = string;
-export type UserId = UserDTO['id'];
 
 export interface UserDTO {
   id: number;
@@ -15,8 +14,10 @@ export interface UserDTO {
   contactEmailAddress?: string;
 }
 
+export type UserId = UserDTO['id'];
+
 export interface CurrentUserDTO extends UserDTO {
-  id: number;
+  id: UserId;
   firstName: string;
   lastName: string;
   phoneNumber: string;

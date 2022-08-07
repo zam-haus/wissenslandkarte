@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
 
 export function makeRandomTags() {
-    return Array.from(Array(20), (value, key) => faker.company.bsNoun());
-};
+  return Array.from(Array(20), () => faker.company.bsNoun());
+}

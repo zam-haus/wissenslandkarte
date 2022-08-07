@@ -6,7 +6,7 @@ module.exports = {
   // options
   options: {
     // mock to use on start
-    mock: "base",
+    mock: 'base',
 
     // mocks and routes path
     // path: "mocks",
@@ -51,8 +51,8 @@ module.exports = {
   // low level config
   babelRegister: true,
   babelRegisterOptions: { // For a detailed explanation regarding each Babel register option, visit: https://babeljs.io/docs/en/babel-register
-    extensions: [".ts"]
-  }
+    extensions: ['.ts'],
+  },
   // addPlugins: [],
   // addRoutesHandlers: [],
 };

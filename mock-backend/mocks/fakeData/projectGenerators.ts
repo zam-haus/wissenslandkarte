@@ -1,12 +1,17 @@
 import { faker } from '@faker-js/faker';
 
-import { AttachmentDTO, attachmentTypes, ProjectDTO, ShortProjectListEntryDTO } from '../models/project';
+import {
+  AttachmentDTO, attachmentTypes, ProjectDTO, ShortProjectListEntryDTO,
+} from '../models/project';
 import { UserDTO } from '../models/user';
 
-
 export function projectToProjectListEntry(project: ProjectDTO): ShortProjectListEntryDTO {
-  const { id, title, description, mainPhoto, creationDate, latestModificationDate } = project;
-  return { id, title, description, mainPhoto, creationDate, latestModificationDate };
+  const {
+    id, title, description, mainPhoto, creationDate, latestModificationDate,
+  } = project;
+  return {
+    id, title, description, mainPhoto, creationDate, latestModificationDate,
+  };
 }
 
 export function makeRandomFakeProjectDto(id: number, users: UserDTO[], tags: string[]): ProjectDTO {
@@ -27,7 +32,10 @@ export function makeRandomFakeProjectDto(id: number, users: UserDTO[], tags: str
     members,
     tags: faker.random.arrayElements(tags, faker.datatype.number(10)),
     mainPhoto: faker.image.technics(),
-    attachments: Array.from(Array((faker.datatype.number({ min: 0, max: 3 }))), () => makeRandomFakeAttachmentDto()),
+    attachments: Array.from(
+      Array((faker.datatype.number({ min: 0, max: 3 }))),
+      () => makeRandomFakeAttachmentDto(),
+    ),
     creationDate: faker.date.recent(5, latestModificationDate),
     needsProjectArea: false,
     latestModificationDate,
@@ -40,7 +48,6 @@ function makeRandomFakeAttachmentDto(): AttachmentDTO {
 
   if (type === 'image') {
     return { type, creationDate, url: faker.image.technics() };
-  } else {
-    return { type, creationDate, url: faker.internet.url() };
   }
+  return { type, creationDate, url: faker.internet.url() };
 }
