@@ -14,13 +14,20 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.41",
     "@tsconfig/svelte": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
+    "eslint": "^8.21.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-svelte3": "^4.0.0",
     "sass": "^1.51.0",
-    "svelte": "^3.47.0",
     "svelte-preprocess": "^4.10.6",
     "typescript": "^4.6.3",
     "vite": "^2.9.5"
   },
   "dependencies": {
+    "svelte": "^3.47.0",
     "svelte-i18n": "^3.4.0",
     "svelte-icons": "^2.1.0",
     "svelte-navigator": "^3.1.5"

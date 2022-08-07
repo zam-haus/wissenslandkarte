@@ -5,5 +5,7 @@
   "cSpell.words": [
     "Wissenslandkarte"
   ],
-  "i18n-ally.keystyle": "nested"
+  "i18n-ally.keystyle": "nested",
+  "editor.tabSize": 2,
+  "editor.useTabStops": true
 }

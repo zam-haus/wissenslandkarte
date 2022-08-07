@@ -1,41 +1,41 @@
 <script lang="ts">
-    import Page from "./Page.svelte";
+  import Page from './Page.svelte';
 
-    export let title: string = ''
-    export let onSubmit: () => Promise<void>
+  export let title = '';
+  export let onSubmit: () => Promise<void>;
 
-    let cancelHandler = null
-    let editHandler = enterEditMode
-    let submitHandler = null
+  let cancelHandler = null;
+  let editHandler = enterEditMode;
+  let submitHandler = null;
 
-    type mode = 'view' | 'edit'
-    let mode: mode = 'view'
+  type Mode = 'view' | 'edit';
+  let mode: Mode = 'view';
 
-    function enterEditMode() {
-        mode = 'edit'
-        cancelHandler = enterViewMode
-        editHandler = null
-        submitHandler = execute
-    }
+  function enterEditMode() {
+    mode = 'edit';
+    cancelHandler = enterViewMode;
+    editHandler = null;
+    submitHandler = execute;
+  }
 
-    function enterViewMode() {
-        mode = 'view'
-        editHandler = enterEditMode
-        cancelHandler = null
-        submitHandler = null
-    }
+  function enterViewMode() {
+    mode = 'view';
+    editHandler = enterEditMode;
+    cancelHandler = null;
+    submitHandler = null;
+  }
 
-    async function execute() {
-        await onSubmit()
-        
-        enterViewMode()
-    }
+  async function execute() {
+    await onSubmit();
+
+    enterViewMode();
+  }
 </script>
 
 <Page {title} {cancelHandler} {editHandler} {submitHandler}>
-    {#if mode === 'view'}
-        <slot name="view"></slot>
-    {:else}
-        <slot name="edit"></slot>
-    {/if}
+  {#if mode === 'view'}
+    <slot name="view" />
+  {:else}
+    <slot name="edit" />
+  {/if}
 </Page>
