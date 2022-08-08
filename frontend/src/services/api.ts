@@ -1,7 +1,5 @@
-import type { ProjectDTO } from '../../../mock-backend/mocks/models/project';
-import type { UserDTO } from '../../../mock-backend/mocks/models/user';
-
-type UserId = UserDTO['id'];
+import type { ProjectDTO } from '@wlk-models/project';
+import type { UserDTO, UserId } from '@wlk-models/user';
 
 const endpoints = {
   allProjects: () => '/api/projects',
