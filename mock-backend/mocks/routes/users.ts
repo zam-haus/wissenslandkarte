@@ -5,7 +5,7 @@ import { CurrentUserDTO, UserDTO } from '../models/user';
 
 export default <RouteExport>[
   {
-    id: 'get-logged-in-user',
+      id: 'get-logged-in-user',
     url: '/api/users/me',
     method: 'GET',
     variants: [
