@@ -8,12 +8,12 @@ module.exports = {
     'airbnb-typescript',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking'
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
-    project: ['./tsconfig.json'],
+    project: ['./tsconfig.eslint.json'],
     extraFileExtensions: ['.svelte'],
   },
   overrides: [
@@ -28,10 +28,10 @@ module.exports = {
         'import/no-mutable-exports': 'off',
         'import/no-unresolved': 'off',
         'import/prefer-default-export': 'off',
-        "svelte/indent": ["error", { "indent": 2, }],
-        "indent": "off",
-        'no-multiple-empty-lines': ['error', { max: 2, maxBOF: 2, maxEOF: 0 }]
-      }
+        'svelte/indent': ['error', { indent: 2 }],
+        indent: 'off',
+        'no-multiple-empty-lines': ['error', { max: 2, maxBOF: 2, maxEOF: 0 }],
+      },
     },
   ],
   plugins: [
