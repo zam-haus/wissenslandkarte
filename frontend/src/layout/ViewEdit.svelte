@@ -13,7 +13,7 @@
 
   function enterEditMode() {
     mode = 'edit';
-    cancelHandler = enterViewMode;
+    cancelHandler = enterViewMode
     editHandler = null;
     submitHandler = execute;
   }
