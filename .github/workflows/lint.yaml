@@ -36,6 +36,7 @@ jobs:
         with:
           eslint: true
           eslint_dir: frontend/
+          eslint_extensions: ts,js,svelte
 
   lint-mock-backend:
     name: Run linters on mock-backend subfolder
