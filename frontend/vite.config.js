@@ -1,17 +1,17 @@
-import { resolve } from 'path'
+import { resolve } from 'path';
 
-import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import sveltePreprocess from 'svelte-preprocess'
+import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import sveltePreprocess from 'svelte-preprocess';
 
 export default defineConfig({
   root: './',
   plugins: [
     svelte({
       preprocess: sveltePreprocess({
-        sourceMap: true
-      })
-    })
+        sourceMap: true,
+      }),
+    }),
   ],
   server: {
     // host: 'localhost',
@@ -19,10 +19,10 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       '^/api/.*': {
-        target: `http://127.0.0.1:3100`,
-        ws: true
-      }
-    }
+        target: 'http://127.0.0.1:3100',
+        ws: true,
+      },
+    },
   },
   build: {
     minify: true,
@@ -30,5 +30,5 @@ export default defineConfig({
     outDir: resolve(__dirname, './build'),
     emptyOutDir: true,
   },
-  clearScreen: false
-})
+  clearScreen: false,
+});

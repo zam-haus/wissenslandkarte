@@ -33,6 +33,16 @@ module.exports = {
         'no-multiple-empty-lines': ['error', { max: 2, maxBOF: 2, maxEOF: 0 }],
       },
     },
+    {
+      files: ['rollup.config.js', 'vite.config.js'],
+      rules: {
+        'import/no-unresolved': 'off',
+        'import/no-extraneous-dependencies': 'off',
+        'global-require': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-var-requires': 'off',
+      },
+    },
   ],
   plugins: [
     'svelte3',
