@@ -11,14 +11,16 @@ module.exports = <RouteExport>[
     variants: [
       {
         id: 'success',
-        response: {
+        type: 'json',
+        options: {
           status: 200,
           body: CURRENT,
         },
       },
       {
         id: 'not-logged-in',
-        response: {
+        type: 'json',
+        options: {
           status: 401,
           body: { message: 'Not logged in, cannot return current user', messageId: 'not-authorized', }
         },
@@ -32,14 +34,18 @@ module.exports = <RouteExport>[
     variants: [
       {
         id: 'success',
-        response: (req, res) => {
-          updateCurrentUser(req.params as unknown as CurrentUserDTO);
-          res.status(200).send(CURRENT);
+        type: 'middleware',
+        options: {
+          middleware: (req, res) => {
+            updateCurrentUser(req.params as unknown as CurrentUserDTO);
+            res.status(200).send(CURRENT);
+          }
         }
       },
       {
         id: 'not-logged-in',
-        response: {
+        type: 'json',
+        options: {
           status: 401,
           body: { message: 'Not authorized to edit this user', messageId: 'not-authorized', }
         },
@@ -53,15 +59,17 @@ module.exports = <RouteExport>[
     variants: [
       {
         id: 'success',
-        response: {
+        type: 'json',
+        options: {
           status: 200,
           body: USERS,
         },
       }, {
         id: 'error',
-        response: {
+        type: 'json',
+        options: {
           status: 400,
-          body: { message: 'Unspecified error occured', messageId: 'unspecified-error' },
+          body: { message: 'Unspecified error occurred', messageId: 'unspecified-error' },
         },
       },
     ],
@@ -73,23 +81,27 @@ module.exports = <RouteExport>[
     variants: [
       {
         id: 'real',
-        response: (req, res) => {
-          const userId = req.params.id;
-          const user = USERS.find((userData) => userData.id === Number(userId));
-          if (user) {
-            res.status(200);
-            res.send(user);
-          } else {
-            res.status(404);
-            res.send({
-              message: 'User not found', messageId: 'not-found'
-            });
-          }
-        },
+        type: 'middleware',
+        options: {
+          middleware: (req, res) => {
+            const userId = req.params.id;
+            const user = USERS.find((userData) => userData.id === Number(userId));
+            if (user) {
+              res.status(200);
+              res.send(user);
+            } else {
+              res.status(404);
+              res.send({
+                message: 'User not found', messageId: 'not-found'
+              });
+            }
+          },
+        }
       },
       {
         id: 'random',
-        response: (req, res) => res.status(200).send(makeRandomFakeUserDTO(Number(req.params.id))),
+        type: 'middleware',
+        options: { middleware: (req, res) => res.status(200).send(makeRandomFakeUserDTO(Number(req.params.id))), }
       }
     ],
   },
@@ -100,34 +112,39 @@ module.exports = <RouteExport>[
     variants: [
       {
         id: 'unauthorized',
-        response: {
+        type: 'json',
+        options: {
           status: 401,
           body: { message: 'Not authorized to edit this user', messageId: 'not-authorized', }
         }
       },
       {
         id: 'bad request',
-        response: {
+        type: 'json',
+        options: {
           status: 400,
           body: { message: 'Bad request: Missing something', messageId: 'bad-request', }
         }
       },
       {
         id: 'real',
-        response: (req, res) => {
-          const userId = Number(req.params.id);
-          const user = USERS.findIndex((userData) => userData.id === userId);
-          if (user) {
-            USERS[userId] = req.params as unknown as UserDTO;
-            res.status(200);
-            res.send(user);
-          } else {
-            res.status(404);
-            res.send({
-              message: 'User not found',
-            });
-          }
-        },
+        type: 'middleware',
+        options: {
+          middleware: (req, res) => {
+            const userId = Number(req.params.id);
+            const user = USERS.findIndex((userData) => userData.id === userId);
+            if (user) {
+              USERS[userId] = req.params as unknown as UserDTO;
+              res.status(200);
+              res.send(user);
+            } else {
+              res.status(404);
+              res.send({
+                message: 'User not found',
+              });
+            }
+          },
+        }
       },
     ],
   },

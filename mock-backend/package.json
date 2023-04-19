@@ -7,7 +7,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
     "@faker-js/faker": "^6.1.2",
-    "@mocks-server/main": "^2.6.3",
+    "@mocks-server/main": "^4.0.1",
     "@types/express": "^4.17.13"
   }
 }

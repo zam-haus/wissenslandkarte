@@ -12,17 +12,56 @@ type Mock = {
   variants: Variant[]
 }
 
-type Variant = {
+type Variant = JsonVariant | TextVariant | StatusVariant | MiddlewareVariant | StaticVariant | FileVariant | ProxyVariant
+
+interface VariantBase {
   id: string,
-  handler?: 'default', // TODO: proxy
   delay?: number,
-  response: Response | ResponseGenerator
+  type: string;
+  options: unknown;
+  disabled?: boolean,
 }
 
-type ResponseGenerator = (req: express.Request, res: express.Response, next: express.NextFunction) => void;
+interface JsonVariant extends VariantBase {
+  type: 'json',
+  options: Response<any>
+}
 
-type Response = {
+interface TextVariant extends VariantBase {
+  type: 'text',
+  options: Response<string>
+}
+
+interface StatusVariant extends VariantBase {
+  type: 'status',
+  options: Response<never>
+}
+
+interface MiddlewareVariant extends VariantBase {
+  type: 'middleware',
+  options: {
+    middleware: (req: express.Request, res: express.Response, next: express.NextFunction, core: unknown) => void;
+  }
+}
+
+interface StaticVariant extends VariantBase {
+  type: 'static',
+  options: unknown,
+}
+
+interface FileVariant extends VariantBase {
+  type: 'file',
+  options: unknown,
+}
+
+interface ProxyVariant extends VariantBase {
+  type: 'proxy',
+  options: unknown,
+}
+
+
+type Response<T> = {
   status: number,
-  headers?: {[name: string]: any},
-  body: any,
+  headers?: { [name: string]: any },
+  body: T,
 };
