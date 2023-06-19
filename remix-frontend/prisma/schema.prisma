@@ -7,32 +7,36 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Post {
+  slug     String @id
+  title    String
+  markdown String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  id    String @id @default(nanoid())
+  name  String
+  users User[]
+}
+
 model User {
-  id    String @id @default(cuid())
-  email String @unique
+  id        String @id @default(nanoid())
+  username  String @unique
+  firstName String
+  lastName  String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  image       String
+  description String
 
-  password Password?
-  notes    Note[]
-}
+  registrationDate DateTime
+  tags             Tag[]
 
-model Password {
-  hash String
+  phoneNumber                 String
+  contactEmailAddress         String?
+  isContactEmailAddressPublic Boolean
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
-}
-
-model Note {
-  id    String @id @default(cuid())
-  title String
-  body  String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
+  @@index(fields: [username])
 }

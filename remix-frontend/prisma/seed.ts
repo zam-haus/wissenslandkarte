@@ -1,44 +1,20 @@
+import type { User } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import { faker } from '@faker-js/faker/locale/de';
+import type { Faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
 
 async function seed() {
-  const email = "rachel@remix.run";
+  await prisma.user.deleteMany().catch(() => { })
 
-  // cleanup the existing database
-  await prisma.user.delete({ where: { email } }).catch(() => {
-    // no worries if it doesn't exist yet
-  });
+  faker.seed(42)
 
-  const hashedPassword = await bcrypt.hash("racheliscool", 10);
-
-  const user = await prisma.user.create({
-    data: {
-      email,
-      password: {
-        create: {
-          hash: hashedPassword,
-        },
-      },
-    },
-  });
-
-  await prisma.note.create({
-    data: {
-      title: "My first note",
-      body: "Hello, world!",
-      userId: user.id,
-    },
-  });
-
-  await prisma.note.create({
-    data: {
-      title: "My second note",
-      body: "Hello, world!",
-      userId: user.id,
-    },
-  });
+  let userCount = 50;
+  while (userCount-- > 0) {
+    const data = makeRandomUser(faker)
+    await prisma.user.create({ data })
+  }
 
   console.log(`Database has been seeded. 🌱`);
 }
@@ -51,3 +27,24 @@ seed()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+
+
+export function makeRandomUser(faker: Faker): Omit<User, 'id'> {
+  faker.setLocale('de');
+
+  const firstName = faker.name.firstName();
+  const lastName = faker.name.lastName();
+
+  return {
+    firstName,
+    lastName,
+    username: faker.internet.userName(firstName, lastName),
+    description: faker.lorem.paragraphs(2),
+    image: faker.internet.avatar(),
+    registrationDate: faker.date.past(),
+    contactEmailAddress: faker.internet.email(firstName, lastName),
+    isContactEmailAddressPublic: faker.datatype.boolean(),
+    phoneNumber: faker.phone.number(),
+  }
+}

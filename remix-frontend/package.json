@@ -31,6 +31,7 @@
   "dependencies": {
     "@js-temporal/polyfill": "^0.4.3",
     "@prisma/client": "^4.12.0",
+    "@remix-run/css-bundle": "^1.16.0",
     "@remix-run/node": "^1.15.0",
     "@remix-run/react": "^1.15.0",
     "@remix-run/serve": "^1.15.0",

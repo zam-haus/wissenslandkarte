@@ -1,1 +1,8 @@
-{}
+{
+  "my-profile": "Mein Profil",
+  "registered-since": "Registriert seit {{date}}",
+  "profile-picture-alt-text": "Das Profilbild des/der Nutzer:in",
+  "send-message": "Eine Nachricht senden",
+  "projects-counter_one": "{{count}} Projekt",
+  "projects-counter_other": "{{count}} Projekte"
+}
