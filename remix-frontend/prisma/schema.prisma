@@ -7,19 +7,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Post {
-  slug     String @id
-  title    String
-  markdown String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Tag {
-  id    String @id @default(nanoid())
-  name  String
-  users User[]
+  id       String    @id @default(nanoid())
+  name     String
+  users    User[]
+  projects Project[]
+
+  @@index(fields: [name])
 }
 
 model User {
@@ -32,11 +26,46 @@ model User {
   description String
 
   registrationDate DateTime
-  tags             Tag[]
 
   phoneNumber                 String
   contactEmailAddress         String?
   isContactEmailAddressPublic Boolean
 
+  tags           Tag[]
+  ownedProjects  Project[] @relation("projectOwners")
+  memberProjects Project[] @relation("projectMembers")
+
   @@index(fields: [username])
+}
+
+model Attachment {
+  id           String   @id @default(nanoid())
+  type         String // enums not supported with sqlite
+  url          String
+  creationDate DateTime
+
+  Project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?
+
+  @@index(fields: [projectId])
+}
+
+model Project {
+  id String @id @default(nanoid())
+
+  title       String
+  description String
+  mainPhoto   String
+
+  owners      User[]       @relation("projectOwners")
+  members     User[]       @relation("projectMembers")
+  tags        Tag[]
+  attachments Attachment[]
+
+  creationDate           DateTime
+  latestModificationDate DateTime
+
+  needsProjectArea Boolean
+
+  @@index(fields: [title, description])
 }
