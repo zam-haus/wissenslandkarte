@@ -4,5 +4,7 @@
   "profile-picture-alt-text": "Das Profilbild des/der Nutzer:in",
   "send-message": "Eine Nachricht senden",
   "projects-counter_one": "{{count}} Projekt",
-  "projects-counter_other": "{{count}} Projekte"
+  "projects-counter_other": "{{count}} Projekte",
+  "projects-headline": "Projekte",
+  "project-photo-alt-text": "Hauptfoto von Projekt mit Titel '{{title}}'"
 }

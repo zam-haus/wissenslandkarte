@@ -9,7 +9,7 @@ export async function getUsers() {
   });
 };
 
-export async function getUser(username: string) {
+export async function getUserOverview(username: string) {
   return prisma.user.findUnique({
     where: { username },
     select: {
@@ -20,6 +20,9 @@ export async function getUser(username: string) {
       description: true,
       image: true,
       registrationDate: true,
+      tags: true,
+      ownedProjects: { select: { id: true, title: true, latestModificationDate: true, mainPhoto: true } },
+      memberProjects: { select: { id: true, title: true, latestModificationDate: true, mainPhoto: true } }
     }
   })
 }

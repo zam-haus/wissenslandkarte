@@ -4,5 +4,7 @@
   "profile-picture-alt-text": "This user's profile picture",
   "send-message": "Send a message",
   "projects-counter_one": "{{count}} project",
-  "projects-counter_other": "{{count}} projects"
+  "projects-counter_other": "{{count}} projects",
+  "projects-headline": "Projects",
+  "project-photo-alt-text": "Main photo of project with title '{{title}}'"
 }

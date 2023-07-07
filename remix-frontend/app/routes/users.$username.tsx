@@ -4,15 +4,15 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
-import { getUser } from "~/models/user.server";
-import { Temporal } from "@js-temporal/polyfill"
+import { getUserOverview } from "~/models/user.server";
+import { LocalDate, renderDate } from "~/shared/date-rendering"
 
 import styles from "./users.$username.module.css"
 
 export const loader = async ({ params }: LoaderArgs) => {
   invariant(params.username, `params.slug is required`);
 
-  const user = await getUser(params.username)
+  const user = await getUserOverview(params.username)
   invariant(user, `User not found: ${params.username}`);
 
   return json({ user });
@@ -26,46 +26,63 @@ export default function User() {
   const { t, i18n } = useTranslation("users")
   const { user } = useLoaderData<typeof loader>();
 
-  return (<main>
+  const allProjects = [...user.memberProjects, ...user.ownedProjects]
+  allProjects.sort((a, b) => (a.latestModificationDate < b.latestModificationDate ? 1 : (a.latestModificationDate == b.latestModificationDate ? 0 : -1)))
+
+  return (<>
     <header>
-      <img
-        src={user.image}
-        alt={t("profile-picture-alt-text")}
-        className={`${styles.userImage} ${styles.atRight}`}
-      />
-      <h3>
-        {user.username}
-      </h3>
-
-      <p>
-        {t("projects-counter", { count: 0 /*user.projectsShortInfo.length*/ })}
-      </p>
-
-      <p>
-        {t("registered-since", {
-          date: Temporal.Instant.from(user.registrationDate).toLocaleString(i18n.language),
-        })}
-      </p>
+      <h1>{t("my-profile")}</h1>
     </header>
 
-    <p className={styles.fullWidth}>
-      {user.description}
-    </p>
+    <main>
+      <header>
+        <img
+          src={user.image}
+          alt={t("profile-picture-alt-text")}
+          className={`${styles.userImage} ${styles.atRight}`}
+        />
+        <h2>
+          {user.username}
+        </h2>
 
-    <button className="primary send-message" onClick={() => console.log("message")}>
-      <div className="icon"><EnvelopeIcon /></div>
-      {t("send-message")}
-    </button>
+        <p>
+          {t("projects-counter", { count: user.memberProjects.length + user.ownedProjects.length })}
+        </p>
 
-    <ul className={styles.tagList}>
-      {/* {user.tags.map((tag) => <li key={tag}>{tag}</li>)} */}
-    </ul>
+        <p>
+          {t("registered-since", {
+            date: renderDate(user.registrationDate, i18n.language),
+          })}
+        </p>
+      </header>
 
-    <div>TODO: Projekte kommen hier...</div>
-  </main >
-  );
-}
+      <section>
+        <p className={styles.fullWidth}>
+          {user.description}
+        </p>
 
-function EnvelopeIcon() {
-  return <>TODO: Icons</>
+        <button className="primary send-message" onClick={() => console.log("message")}>
+          {t("send-message")}
+        </button>
+
+        <ul className={styles.tagList}>
+          {user.tags.map((tag) => <li key={tag.id}>{tag.name}</li>)}
+        </ul>
+      </section>
+
+      <section>
+        <h3>{t("projects-headline")}</h3>
+        <ul>
+          {allProjects.map((project) =>
+            <li key={project.id} className={styles.projectEntry}>
+              <span className={styles.projectTitle}>{project.title}</span>
+              <span className={styles.projectModificationDate}><LocalDate date={project.latestModificationDate}></LocalDate></span>
+              <img className={styles.projectMainPhoto} alt={t("project-photo-alt-text", { title: project.title })} src={project.mainPhoto} />
+            </li>
+          )}
+        </ul>
+      </section>
+
+    </main >
+  </>);
 }
