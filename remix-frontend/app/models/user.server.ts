@@ -1,8 +1,8 @@
-import { Project, Tag, User } from "@prisma/client";
+import { Tag, User } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { ProjectList } from "./projects.server";
 
-export async function getUsers() {
+export async function getUserList() {
   return prisma.user.findMany({
     select: {
       id: true,

@@ -1,10 +1,10 @@
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { getUsers } from "~/models/user.server";
+import { getUserList } from "~/models/user.server";
 
 export const loader = async () => {
   return json({
-    users: await getUsers()
+    users: await getUserList()
   });
 };
 
