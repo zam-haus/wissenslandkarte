@@ -9,8 +9,9 @@ const prisma = new PrismaClient();
 const onlyIdsFromModels = ({ id }: { id: string }) => ({ id })
 
 async function seed() {
-  await prisma.user.deleteMany().catch(() => { })
-  await prisma.tag.deleteMany().catch(() => { })
+  await prisma.user.deleteMany().catch(() => { console.error("Could not remove pre-existing users!") })
+  await prisma.tag.deleteMany().catch(() => { console.error("Could not remove pre-existing tags!") })
+  await prisma.project.deleteMany().catch(() => { console.error("Could not remove pre-existing projects!") })
 
   faker.seed(42)
 

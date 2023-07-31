@@ -1,0 +1,12 @@
+.projectEntry {
+  display: grid;
+  grid-template-columns: auto auto;
+  margin-bottom: 1em;
+}
+
+.projectMainPhoto {
+  grid-row: 1/3;
+  grid-column: 2;
+
+  width: 110px;
+}

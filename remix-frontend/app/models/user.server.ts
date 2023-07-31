@@ -1,5 +1,6 @@
 import { Project, Tag, User } from "@prisma/client";
 import { prisma } from "~/db.server";
+import { ProjectList } from "./projects.server";
 
 export async function getUsers() {
   return prisma.user.findMany({
@@ -10,13 +11,12 @@ export async function getUsers() {
   });
 };
 
-type UserOverviewProject = Pick<Project, "id" | "title" | "latestModificationDate" | "mainPhoto">
 type UserOverview =
   Pick<User, "firstName" | "lastName" | "username" | "description" | "image" | "registrationDate"> &
   {
     tags: Tag[],
-    ownedProjects: UserOverviewProject[]
-    memberProjects: UserOverviewProject[]
+    ownedProjects: ProjectList[]
+    memberProjects: ProjectList[]
 
   }
 export async function getUserOverview(username: string): Promise<UserOverview | null> {
