@@ -5,9 +5,10 @@ import { useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { getUserOverview } from "~/models/user.server";
-import { LocalDate, renderDate } from "~/shared/date-rendering"
 
 import styles from "./users.$username.module.css"
+import { ProjectsList } from "~/components/projects/projects-list";
+import { renderDate, withDeserializedDates } from "~/components/date-rendering";
 
 export const loader = async ({ params }: LoaderArgs) => {
   invariant(params.username, `params.slug is required`);
@@ -26,7 +27,7 @@ export default function User() {
   const { t, i18n } = useTranslation("users")
   const { user } = useLoaderData<typeof loader>();
 
-  const allProjects = [...user.memberProjects, ...user.ownedProjects]
+  const allProjects = [...user.memberProjects, ...user.ownedProjects].map((p) => withDeserializedDates(p, "latestModificationDate"))
   allProjects.sort((a, b) => (a.latestModificationDate < b.latestModificationDate ? 1 : (a.latestModificationDate == b.latestModificationDate ? 0 : -1)))
 
   return (<>
@@ -72,15 +73,7 @@ export default function User() {
 
       <section>
         <h3>{t("projects-headline")}</h3>
-        <ul>
-          {allProjects.map((project) =>
-            <li key={project.id} className={styles.projectEntry}>
-              <span className={styles.projectTitle}>{project.title}</span>
-              <span className={styles.projectModificationDate}><LocalDate date={project.latestModificationDate}></LocalDate></span>
-              <img className={styles.projectMainPhoto} alt={t("project-photo-alt-text", { title: project.title })} src={project.mainPhoto} />
-            </li>
-          )}
-        </ul>
+        <ProjectsList projects={allProjects} styles={styles}></ProjectsList>
       </section>
 
     </main >
