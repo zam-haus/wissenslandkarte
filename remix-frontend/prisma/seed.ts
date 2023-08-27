@@ -1,8 +1,8 @@
-import type { Tag, User, Project, Attachment } from "@prisma/client";
+import type { Tag, User } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 import { faker } from '@faker-js/faker/locale/de';
 import type { Faker } from "@faker-js/faker";
-import { makeRandomFakeAttachmentDto, makeRandomFakeProject, makeRandomTag, makeRandomUser } from "./fake-data-generators";
+import { makeRandomFakeAttachmentDto, makeRandomFakeProject, makeRandomFakeProjectUpdate, makeRandomTag, makeRandomUser } from "./fake-data-generators";
 
 const prisma = new PrismaClient();
 
@@ -12,6 +12,8 @@ async function seed() {
   await prisma.user.deleteMany().catch(() => { console.error("Could not remove pre-existing users!") })
   await prisma.tag.deleteMany().catch(() => { console.error("Could not remove pre-existing tags!") })
   await prisma.project.deleteMany().catch(() => { console.error("Could not remove pre-existing projects!") })
+  await prisma.projectUpdate.deleteMany().catch(() => { console.error("Could not remove pre-existing project updates!") })
+  await prisma.attachment.deleteMany().catch(() => { console.error("Could not remove pre-existing attachments!") })
 
   faker.seed(42)
 
@@ -54,6 +56,7 @@ async function seedProjects(count: number, faker: Faker, allTags: Tag[], allUser
   while (count-- > 0) {
     const data = makeRandomFakeProject(faker)
 
+    const updates = Array(faker.datatype.number({ min: 0, max: 12 })).fill('').map(() => makeRandomFakeProjectUpdate(faker, data))
 
     const tags = faker.helpers.arrayElements(allTags, faker.datatype.number(10));
     const owners = faker.helpers.arrayElements(allUsers, faker.datatype.number({ min: 1, max: 2 }));
@@ -78,9 +81,20 @@ async function seedProjects(count: number, faker: Faker, allTags: Tag[], allUser
         attachments: {
           create:
             Array.from(Array((faker.datatype.number({ min: 0, max: 3 }))), () => makeRandomFakeAttachmentDto(faker))
+        },
+        updates: {
+          create: [
+            ...updates.map((update) => ({
+              ...update, attachments: {
+                create:
+                  Array.from(Array((faker.datatype.number({ min: 0, max: 3 }))), () => makeRandomFakeAttachmentDto(faker))
+              }
+            })),
+          ]
         }
       }
-    })
+    }
+    )
   }
 }
 

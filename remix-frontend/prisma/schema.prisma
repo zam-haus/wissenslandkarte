@@ -40,14 +40,16 @@ model User {
 
 model Attachment {
   id           String   @id @default(nanoid())
-  type         String // enums not supported with sqlite
+  type         String // enums not supported with sqlite. see AttachmentType in fake-data-generators.ts
   url          String
   creationDate DateTime
 
-  Project   Project? @relation(fields: [projectId], references: [id])
-  projectId String?
+  Project         Project?       @relation(fields: [projectId], references: [id])
+  projectId       String?
+  ProjectUpdate   ProjectUpdate? @relation(fields: [projectUpdateId], references: [id])
+  projectUpdateId String?
 
-  @@index(fields: [projectId])
+  @@index(fields: [projectId, projectUpdateId])
 }
 
 model Project {
@@ -57,10 +59,11 @@ model Project {
   description String
   mainPhoto   String
 
-  owners      User[]       @relation("projectOwners")
-  members     User[]       @relation("projectMembers")
+  owners      User[]          @relation("projectOwners")
+  members     User[]          @relation("projectMembers")
   tags        Tag[]
   attachments Attachment[]
+  updates     ProjectUpdate[]
 
   creationDate           DateTime
   latestModificationDate DateTime
@@ -68,4 +71,18 @@ model Project {
   needsProjectArea Boolean
 
   @@index(fields: [title, description])
+}
+
+model ProjectUpdate {
+  id String @id @default(nanoid())
+
+  creationDate DateTime
+
+  attachments Attachment[]
+  description String
+
+  Project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?
+
+  @@index(fields: [projectId])
 }

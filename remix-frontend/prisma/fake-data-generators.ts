@@ -1,5 +1,5 @@
-import { Faker } from "@faker-js/faker";
-import { Attachment, Project, Tag, User } from "@prisma/client";
+import type { Faker } from "@faker-js/faker";
+import type { Attachment, Project, Tag, User, ProjectUpdate } from "@prisma/client";
 
 export function makeRandomTag(faker: Faker): Omit<Tag, 'id'> {
   return {
@@ -39,10 +39,17 @@ export function makeRandomFakeProject(faker: Faker): Omit<Project, 'id'> {
   };
 }
 
+export function makeRandomFakeProjectUpdate(faker: Faker, project: Pick<Project, 'creationDate' | 'latestModificationDate'>): Omit<ProjectUpdate, 'id' | 'projectId'> {
+  return {
+    creationDate: faker.date.between(project.creationDate, project.latestModificationDate),
+    description: faker.lorem.paragraph()
+  }
+}
+
 export const attachmentTypes = ['image', 'file', 'link'] as const;
 export type AttachmentType = typeof attachmentTypes[number];
 
-export function makeRandomFakeAttachmentDto(faker: Faker): Omit<Attachment, 'id' | 'projectId'> {
+export function makeRandomFakeAttachmentDto(faker: Faker): Omit<Attachment, 'id' | 'projectId' | 'projectUpdateId'> {
   const type = faker.helpers.arrayElement(attachmentTypes);
   const creationDate = faker.date.recent();
 
