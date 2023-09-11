@@ -48,14 +48,18 @@ export function makeRandomFakeProjectUpdate(faker: Faker, project: Pick<Project,
 
 export const attachmentTypes = ['image', 'file', 'link'] as const;
 export type AttachmentType = typeof attachmentTypes[number];
+export function isAttachmentType(s: string): s is AttachmentType {
+  return attachmentTypes.includes(s as any)
+}
 
 export function makeRandomFakeAttachmentDto(faker: Faker): Omit<Attachment, 'id' | 'projectId' | 'projectUpdateId'> {
   const type = faker.helpers.arrayElement(attachmentTypes);
   const creationDate = faker.date.recent();
+  const text = faker.company.bs()
 
   if (type === 'image') {
-    return { type, creationDate, url: faker.image.technics(640, 480, true), };
+    return { type, creationDate, text, url: faker.image.technics(640, 480, true), };
   } else {
-    return { type, creationDate, url: faker.internet.url() };
+    return { type, creationDate, text, url: faker.internet.url() };
   }
 }

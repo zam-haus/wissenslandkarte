@@ -42,6 +42,7 @@ model Attachment {
   id           String   @id @default(nanoid())
   type         String // enums not supported with sqlite. see AttachmentType in fake-data-generators.ts
   url          String
+  text         String
   creationDate DateTime
 
   Project         Project?       @relation(fields: [projectId], references: [id])
