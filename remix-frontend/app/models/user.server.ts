@@ -19,7 +19,7 @@ type UserOverview =
     memberProjects: ProjectList[]
 
   }
-export async function getUserOverview(username: string): Promise<UserOverview | null> {
+export async function getUserOverview(username: User['id']): Promise<UserOverview | null> {
   return prisma.user.findUnique({
     where: { username },
     select: {

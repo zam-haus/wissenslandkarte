@@ -14,6 +14,12 @@ export default function Index() {
           className="text-xl text-blue-600 underline"
         >
           Users
+        </Link><br />
+        <Link
+          to="/projects"
+          className="text-xl text-blue-600 underline"
+        >
+          Projects
         </Link>
       </div>
     </main>

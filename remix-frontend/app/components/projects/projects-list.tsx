@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ProjectList } from "~/models/projects.server";
 
 import localStyle from "./project-list.module.css"
+import { Link } from "@remix-run/react";
 
 type StyleableParts = "projectEntry" | "projectTitle" | "projectModificationDate" | "projectMainPhoto"
 
@@ -12,7 +13,7 @@ export function ProjectsList({ projects, styles }: { projects: ProjectList[], st
   return <ul>
     {projects.map((project) =>
       <li key={project.id} className={localStyle.projectEntry + " " + styles?.projectEntry}>
-        <span className={styles?.projectTitle}>{project.title}</span>
+        <Link to={`/projects/${encodeURIComponent(project.id)}`} className={styles?.projectTitle}>{project.title}</Link>
         <span className={styles?.projectModificationDate}>
           <LocalDate date={project.latestModificationDate}></LocalDate>
         </span>
