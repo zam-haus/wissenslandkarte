@@ -1,5 +1,6 @@
-import { Temporal } from "@js-temporal/polyfill"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from 'react-i18next';
+
+import { Temporal } from '@js-temporal/polyfill';
 
 export const mapDeserializedDates = <T, P extends keyof T>(properties: P | P[]) => (object: T) => withDeserializedDates(object, properties)
 

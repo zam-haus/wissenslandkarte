@@ -1,14 +1,15 @@
 
 import type { LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
-import { getUserOverview } from "~/models/user.server";
+import { useTranslation } from 'react-i18next';
+import invariant from 'tiny-invariant';
+import { renderDate, withDeserializedDates } from '~/components/date-rendering';
+import { ProjectsList } from '~/components/projects/projects-list';
+import { getUserOverview } from '~/models/user.server';
 
-import styles from "./users.$username.module.css"
-import { ProjectsList } from "~/components/projects/projects-list";
-import { renderDate, withDeserializedDates } from "~/components/date-rendering";
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
+
+import styles from './users.$username.module.css';
 
 export const loader = async ({ params }: LoaderArgs) => {
   invariant(params.username, `params.slug is required`);

@@ -1,16 +1,18 @@
-import { PassThrough } from "stream";
-import type { EntryContext } from "@remix-run/node";
-import { Response } from "@remix-run/node";
-import { RemixServer } from "@remix-run/react";
-import isbot from "isbot";
-import { renderToPipeableStream } from "react-dom/server";
-import { createInstance } from "i18next";
-import i18next from "./i18next.server";
-import { I18nextProvider, initReactI18next } from "react-i18next";
-import Backend from "i18next-fs-backend";
-import i18nConfig from "./i18n";
-import { resolve } from "node:path";
+import { createInstance } from 'i18next';
+import Backend from 'i18next-fs-backend';
+import isbot from 'isbot';
+import { resolve } from 'node:path';
+import { renderToPipeableStream } from 'react-dom/server';
+import { I18nextProvider, initReactI18next } from 'react-i18next';
+import { PassThrough } from 'stream';
 
+import { Response } from '@remix-run/node';
+import { RemixServer } from '@remix-run/react';
+
+import i18nConfig from './i18n';
+import i18next from './i18next.server';
+
+import type { EntryContext } from "@remix-run/node";
 const ABORT_DELAY = 5000;
 
 export default async function handleRequest(

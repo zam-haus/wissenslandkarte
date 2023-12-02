@@ -1,10 +1,11 @@
-import { LoaderArgs, json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { mapDeserializedDates } from "~/components/date-rendering";
-import { ProjectsList } from "~/components/projects/projects-list";
-import { getProjectList } from "~/models/projects.server";
+import { mapDeserializedDates } from '~/components/date-rendering';
+import { ProjectsList } from '~/components/projects/projects-list';
+import { getProjectList } from '~/models/projects.server';
 
-export const loader = async ({ params }: LoaderArgs) => {
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
+
+export const loader = async () => {
   const projects = await getProjectList()
 
   return json({ projects });

@@ -1,9 +1,10 @@
-import { LocalDate } from "../date-rendering";
-import { useTranslation } from "react-i18next";
-import { ProjectList } from "~/models/projects.server";
+import { useTranslation } from 'react-i18next';
+import { ProjectList } from '~/models/projects.server';
 
-import localStyle from "./project-list.module.css"
-import { Link } from "@remix-run/react";
+import { Link } from '@remix-run/react';
+
+import { LocalDate } from '../date-rendering';
+import localStyle from './project-list.module.css';
 
 type StyleableParts = "projectEntry" | "projectTitle" | "projectModificationDate" | "projectMainPhoto"
 

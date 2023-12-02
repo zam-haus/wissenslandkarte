@@ -6,10 +6,10 @@ import invariant from 'tiny-invariant';
 import { renderDate, withDeserializedDates } from '~/components/date-rendering';
 import { getProjectDetails } from '~/models/projects.server';
 
-import { Attachment } from '@prisma/client';
 import { json } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 
+import type { Attachment } from '@prisma/client';
 export const loader = async ({ params }: LoaderArgs) => {
   invariant(params.projectId, `params.slug is required`);
 
