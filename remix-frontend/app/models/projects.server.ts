@@ -17,6 +17,20 @@ export async function getProjectList(options?: { limit?: number, byNewestModific
   })
 }
 
+export async function searchProjects(tags: string[]): Promise<ProjectList[]> {
+  return prisma.project.findMany({
+    select: {
+      id: true,
+      title: true,
+      latestModificationDate: true,
+      mainPhoto: true
+    },
+    where: {
+      tags: { some: { OR: tags.map((tag) => ({ name: tag })) } }
+    }
+  })
+}
+
 type UsernameList = Pick<User, 'username'>[]
 type ProjectDetails = Omit<Project, 'needsProjectArea'> & // TODO: Could this be inferred from a built-in prisma type?
 {
