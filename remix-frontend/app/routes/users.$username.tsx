@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { renderDate, withDeserializedDates } from '~/components/date-rendering';
 import { ProjectsList } from '~/components/projects/projects-list';
+import { PeopleTagList } from '~/components/tags';
 import { getUserOverview } from '~/models/user.server';
 
 import { json } from '@remix-run/node';
@@ -67,9 +68,8 @@ export default function User() {
           {t("send-message")}
         </button>
 
-        <ul className={styles.tagList}>
-          {user.tags.map((tag) => <li key={tag.id}>{tag.name}</li>)}
-        </ul>
+        <PeopleTagList className={styles.tagList} tags={user.tags} />
+
       </section>
 
       <section>

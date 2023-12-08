@@ -4,6 +4,7 @@ import { isAttachmentType } from 'prisma/fake-data-generators';
 import { useTranslation } from 'react-i18next';
 import invariant from 'tiny-invariant';
 import { renderDate, withDeserializedDates } from '~/components/date-rendering';
+import { ProjectTagList } from '~/components/tags';
 import { getProjectDetails } from '~/models/projects.server';
 
 import { json } from '@remix-run/node';
@@ -46,7 +47,7 @@ export default function Project() {
 
     <p>{project.description}</p>
 
-    <ul className="tags">{project.tags.map(({ id, name }) => <li key={id}>{name}</li>)}</ul>
+    <ProjectTagList className="tags" tags={project.tags} />
 
     <ul className="attachments">{attachments.map((attachment) => <li key={attachment.id}><AttachmentEntry {...attachment} /></li>)}</ul>
 
