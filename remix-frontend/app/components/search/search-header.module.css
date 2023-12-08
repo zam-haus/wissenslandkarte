@@ -1,0 +1,13 @@
+.switch {
+  display: flex;
+  border-bottom: 1px solid black;
+}
+
+.switch div {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.switch div [class=active] { /*attr selector prevents mangling*/
+  border-bottom: 1px solid black;
+}

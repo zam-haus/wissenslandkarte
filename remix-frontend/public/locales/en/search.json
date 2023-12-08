@@ -1,3 +1,6 @@
 {
-  "search": "search"
+  "search": "search",
+  "projects": "Projects",
+  "people": "People",
+  "user-image-alt-text": "User image of user '{{username}}'"
 }

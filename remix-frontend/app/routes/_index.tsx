@@ -28,7 +28,7 @@ export default function Index() {
 
       <p>{t("browse-prompt")}</p>
 
-      <Link to="search">{t("search-button")}</Link>
+      <Link to="search/projects">{t("search-button")}</Link>
 
       <h2>{t("newest-updates-headline")}</h2>
       <ProjectsList projects={projects.map(mapDeserializedDates("latestModificationDate"))}></ProjectsList>
