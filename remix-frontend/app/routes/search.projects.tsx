@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { mapDeserializedDates } from '~/components/date-rendering';
 import { ProjectsList } from '~/components/projects/projects-list';
 import { getSearchQuery, SearchForm } from '~/components/search/search-form';
@@ -29,7 +28,6 @@ export const handle = {
 
 export default function Search() {
   const { projects } = useLoaderData<typeof loader>();
-  const { t } = useTranslation("search")
 
   return <main>
     <SearchForm />

@@ -1,1 +1,12 @@
-{}
+{
+  "error-header": "Oh no",
+  "exception-header": "Unser Fehler",
+  "exception-explanation": "Wir haben da einen Bug in diesem Programm. Bitte gib uns Bescheid und schick uns folgenden Text:",
+  "unknown-error-header": "Fehler",
+  "unknown-error-explanation": "Wir wissen jetzt auch nicht weiter. Wenn du diese Nachricht häufiger siehst, gib uns bitte Bescheid.",
+  "nav-landing-page": "Startseite",
+  "nav-search": "Suche",
+  "nav-projects": "Projekte",
+  "nav-people": "Personen",
+  "nav-faq": "FAQ"
+}
