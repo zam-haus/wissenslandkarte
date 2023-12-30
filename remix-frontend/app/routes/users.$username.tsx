@@ -11,6 +11,7 @@ import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import styles from './users.$username.module.css';
+import { UserImage } from "~/components/users/user-image";
 
 export const loader = async ({ params }: LoaderArgs) => {
   invariant(params.username, `params.slug is required`);
@@ -39,11 +40,7 @@ export default function User() {
 
     <main>
       <header>
-        <img
-          src={user.image}
-          alt={t("profile-picture-alt-text")}
-          className={`${styles.userImage} ${styles.atRight}`}
-        />
+        <UserImage {...user} t={t} className={styles.atRight}/>
         <h2>
           {user.username}
         </h2>

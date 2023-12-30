@@ -8,6 +8,7 @@ import { json } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 
 import type { LoaderArgs } from '@remix-run/node';
+import { UserImage } from '~/components/users/user-image';
 export const loader = async ({
   request,
 }: LoaderArgs) => {
@@ -28,7 +29,7 @@ export const handle = {
 
 export default function Search() {
   const { users } = useLoaderData<typeof loader>();
-  const { t } = useTranslation("search")
+  const {t} = useTranslation("users")
 
   return <main>
     <SearchForm />
@@ -39,7 +40,7 @@ export default function Search() {
         <span >
           <LocalDate date={user.registrationDate}></LocalDate>
         </span>
-        <img alt={t("user-image-alt-text", { username: user.username })} src={user.image} />
+        <UserImage {...user} t={t} />
       </li>
     )}
     </ul>

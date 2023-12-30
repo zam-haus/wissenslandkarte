@@ -19,17 +19,17 @@ model Tag {
 model User {
   id        String @id @default(nanoid())
   username  String @unique
-  firstName String
-  lastName  String
+  firstName String?
+  lastName  String?
 
-  image       String
-  description String
+  image       String?
+  description String?
 
   registrationDate DateTime
 
-  phoneNumber                 String
+  phoneNumber                 String?
   contactEmailAddress         String?
-  isContactEmailAddressPublic Boolean
+  isContactEmailAddressPublic Boolean @default(false)
 
   tags           Tag[]
   ownedProjects  Project[] @relation("projectOwners")

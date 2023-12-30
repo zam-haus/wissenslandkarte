@@ -2,6 +2,5 @@
   "main-headline": "Suche",
   "search": "suchen",
   "projects": "Projekte",
-  "people": "Personen",
-  "user-image-alt-text": "Nutzerbild von Nutzer '{{username}}'"
+  "people": "Personen"
 }

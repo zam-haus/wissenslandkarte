@@ -10,19 +10,21 @@ export function makeRandomTag(faker: Faker): Omit<Tag, 'id'> {
 export function makeRandomUser(faker: Faker): Omit<User, 'id'> {
   faker.setLocale('de');
 
-  const firstName = faker.name.firstName();
-  const lastName = faker.name.lastName();
+  const completeProfile =  faker.datatype.number({min: 0, max: 100}) > 20
+
+  const firstName = completeProfile ? faker.name.firstName() : undefined
+  const lastName = completeProfile ? faker.name.lastName() : undefined
 
   return {
-    firstName,
-    lastName,
+    firstName: firstName ?? null,
+    lastName: lastName ?? null,
     username: faker.internet.userName(firstName, lastName),
-    description: faker.lorem.paragraphs(2),
-    image: faker.internet.avatar(),
+    description: completeProfile ? faker.lorem.paragraphs(2) : null,
+    image: completeProfile ? faker.internet.avatar() : null,
     registrationDate: faker.date.past(),
-    contactEmailAddress: faker.internet.email(firstName, lastName),
+    contactEmailAddress: completeProfile ? faker.internet.email(firstName, lastName) : null,
     isContactEmailAddressPublic: faker.datatype.boolean(),
-    phoneNumber: faker.phone.number()
+    phoneNumber: completeProfile ? faker.phone.number() : null
   }
 }
 

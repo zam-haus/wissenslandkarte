@@ -2,7 +2,7 @@
   "main-headline": "People",
   "my-profile": "My Profile",
   "registered-since": "Registered since {{date}}",
-  "profile-picture-alt-text": "This user's profile picture",
+  "profile-picture-alt-text": "Profile picture of user '{{username}}'",
   "send-message": "Send a message",
   "projects-counter_one": "{{count}} project",
   "projects-counter_other": "{{count}} projects",

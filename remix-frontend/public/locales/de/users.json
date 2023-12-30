@@ -2,7 +2,7 @@
   "main-headline": "Personen",
   "my-profile": "Mein Profil",
   "registered-since": "Registriert seit {{date}}",
-  "profile-picture-alt-text": "Das Profilbild des/der Nutzer:in",
+  "profile-picture-alt-text": "Das Profilbild von Nutzer:in '{{username}}'",
   "send-message": "Eine Nachricht senden",
   "projects-counter_one": "{{count}} Projekt",
   "projects-counter_other": "{{count}} Projekte",
