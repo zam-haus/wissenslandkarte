@@ -1,26 +1,26 @@
 .atRight {
-    float: right;
+  float: right;
 }
 
 .fullWidth {
-    clear: both;
+  clear: both;
 }
 
 .tagList {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-top: 15px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 15px;
 }
 
 .tagList li {
-    border-radius: 10px;
-    background: white;
-    margin: 5px 10px;
-    padding: 2px 10px;
+  border-radius: 10px;
+  background: white;
+  margin: 5px 10px;
+  padding: 2px 10px;
 }
 
 .sendMessage {
-    margin: 30px;
-    align-self: center;
+  margin: 30px;
+  align-self: center;
 }

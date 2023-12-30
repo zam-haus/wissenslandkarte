@@ -8,6 +8,7 @@
   text-align: center;
 }
 
-.switch div [class=active] { /*attr selector prevents mangling*/
+.switch div [class="active"] {
+  /*attr selector prevents mangling*/
   border-bottom: 1px solid black;
 }

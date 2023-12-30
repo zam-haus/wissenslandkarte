@@ -33,18 +33,18 @@ const zamKeycloak = new KeycloakStrategy(
     });
 
     if (user !== null) {
-        if (
-          user.firstName !== profile.name.givenName ||
-          user.lastName !== profile.name.familyName
-        ) {
-          await prisma.user.update({
-            data: {
-              firstName: profile.name.givenName,
-              lastName: profile.name.familyName,
-            },
-            where: { id: user.id },
-          });
-        }
+      if (
+        user.firstName !== profile.name.givenName ||
+        user.lastName !== profile.name.familyName
+      ) {
+        await prisma.user.update({
+          data: {
+            firstName: profile.name.givenName,
+            lastName: profile.name.familyName,
+          },
+          where: { id: user.id },
+        });
+      }
       return user;
     }
 

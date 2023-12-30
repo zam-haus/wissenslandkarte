@@ -14,11 +14,11 @@
   border-bottom: 1px solid black;
 
   text-align: center;
-  padding: 0.5rem 0
+  padding: 0.5rem 0;
 }
 
 .pageContainer > header h1 {
-  font-size: 2rem
+  font-size: 2rem;
 }
 
 .pageContainer > nav {
@@ -29,5 +29,5 @@
 }
 
 .pageContainer h2 {
-  font-size: 1.5rem
+  font-size: 1.5rem;
 }

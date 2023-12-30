@@ -1,17 +1,19 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import { isRouteErrorResponse, useRouteError } from '@remix-run/react';
+import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
 
-import { Page } from './page/page';
+import { Page } from "./page/page";
 
 export function DefaultErrorBoundary() {
-  const { t } = useTranslation("common")
+  const { t } = useTranslation("common");
   const error = useRouteError();
 
   if (isRouteErrorResponse(error)) {
     return (
       <Page title={t("error-header")}>
-        <h2>`${error.status} ${error.statusText}`</h2>
+        <h2>
+          `${error.status} ${error.statusText}`
+        </h2>
         <p>{error.data}</p>
       </Page>
     );
@@ -24,8 +26,10 @@ export function DefaultErrorBoundary() {
       </Page>
     );
   } else {
-    return <Page title={t("unknown-error-header")}>
-      <p>{t("unknown-error-explanation")}</p>
-    </Page>
+    return (
+      <Page title={t("unknown-error-header")}>
+        <p>{t("unknown-error-explanation")}</p>
+      </Page>
+    );
   }
 }

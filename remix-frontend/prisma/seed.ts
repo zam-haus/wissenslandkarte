@@ -1,65 +1,96 @@
 import type { Tag, User } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
-import { faker } from '@faker-js/faker/locale/de';
+import { faker } from "@faker-js/faker/locale/de";
 import type { Faker } from "@faker-js/faker";
-import { makeRandomFakeAttachmentDto, makeRandomFakeProject, makeRandomFakeProjectUpdate, makeRandomTag, makeRandomUser } from "./fake-data-generators";
+import {
+  makeRandomFakeAttachmentDto,
+  makeRandomFakeProject,
+  makeRandomFakeProjectUpdate,
+  makeRandomTag,
+  makeRandomUser,
+} from "./fake-data-generators";
 
 const prisma = new PrismaClient();
 
-const onlyIdsFromModels = ({ id }: { id: string }) => ({ id })
+const onlyIdsFromModels = ({ id }: { id: string }) => ({ id });
 
 async function seed() {
-  await prisma.user.deleteMany().catch(() => { console.error("Could not remove pre-existing users!") })
-  await prisma.tag.deleteMany().catch(() => { console.error("Could not remove pre-existing tags!") })
-  await prisma.project.deleteMany().catch(() => { console.error("Could not remove pre-existing projects!") })
-  await prisma.projectUpdate.deleteMany().catch(() => { console.error("Could not remove pre-existing project updates!") })
-  await prisma.attachment.deleteMany().catch(() => { console.error("Could not remove pre-existing attachments!") })
+  await prisma.user.deleteMany().catch(() => {
+    console.error("Could not remove pre-existing users!");
+  });
+  await prisma.tag.deleteMany().catch(() => {
+    console.error("Could not remove pre-existing tags!");
+  });
+  await prisma.project.deleteMany().catch(() => {
+    console.error("Could not remove pre-existing projects!");
+  });
+  await prisma.projectUpdate.deleteMany().catch(() => {
+    console.error("Could not remove pre-existing project updates!");
+  });
+  await prisma.attachment.deleteMany().catch(() => {
+    console.error("Could not remove pre-existing attachments!");
+  });
 
-  faker.seed(42)
+  faker.seed(42);
 
-  await seedTags(40)
-  const allTags = await prisma.tag.findMany()
+  await seedTags(40);
+  const allTags = await prisma.tag.findMany();
 
-  await seedUsers(50, faker, allTags)
-  const allUsers = await prisma.user.findMany()
+  await seedUsers(50, faker, allTags);
+  const allUsers = await prisma.user.findMany();
 
   await seedProjects(120, faker, allTags, allUsers);
-
 
   console.log(`Database has been seeded. 🌱`);
 }
 
 async function seedTags(count: number) {
   while (count-- > 0) {
-    const data = makeRandomTag(faker)
-    await prisma.tag.create({ data })
+    const data = makeRandomTag(faker);
+    await prisma.tag.create({ data });
   }
 }
 
 async function seedUsers(count: number, faker: Faker, allTags: Tag[]) {
   while (count-- > 0) {
-    const data = makeRandomUser(faker)
-    const tags = faker.helpers.arrayElements(allTags, faker.datatype.number({ min: 0, max: 8 }))
+    const data = makeRandomUser(faker);
+    const tags = faker.helpers.arrayElements(
+      allTags,
+      faker.datatype.number({ min: 0, max: 8 })
+    );
 
     await prisma.user.create({
       data: {
         ...data,
         tags: {
-          connect: tags.map(onlyIdsFromModels)
-        }
-      }
-    })
+          connect: tags.map(onlyIdsFromModels),
+        },
+      },
+    });
   }
 }
 
-async function seedProjects(count: number, faker: Faker, allTags: Tag[], allUsers: User[]) {
+async function seedProjects(
+  count: number,
+  faker: Faker,
+  allTags: Tag[],
+  allUsers: User[]
+) {
   while (count-- > 0) {
-    const data = makeRandomFakeProject(faker)
+    const data = makeRandomFakeProject(faker);
 
-    const updates = Array(faker.datatype.number({ min: 0, max: 12 })).fill('').map(() => makeRandomFakeProjectUpdate(faker, data))
+    const updates = Array(faker.datatype.number({ min: 0, max: 12 }))
+      .fill("")
+      .map(() => makeRandomFakeProjectUpdate(faker, data));
 
-    const tags = faker.helpers.arrayElements(allTags, faker.datatype.number(10));
-    const owners = faker.helpers.arrayElements(allUsers, faker.datatype.number({ min: 1, max: 2 }));
+    const tags = faker.helpers.arrayElements(
+      allTags,
+      faker.datatype.number(10)
+    );
+    const owners = faker.helpers.arrayElements(
+      allUsers,
+      faker.datatype.number({ min: 1, max: 2 })
+    );
     let members: User[] = [];
     while (members.length === 0) {
       members = faker.helpers.arrayElements(allUsers, faker.datatype.number(4));
@@ -70,31 +101,35 @@ async function seedProjects(count: number, faker: Faker, allTags: Tag[], allUser
       data: {
         ...data,
         tags: {
-          connect: tags.map(onlyIdsFromModels)
+          connect: tags.map(onlyIdsFromModels),
         },
         owners: {
-          connect: owners.map(onlyIdsFromModels)
+          connect: owners.map(onlyIdsFromModels),
         },
         members: {
-          connect: members.map(onlyIdsFromModels)
+          connect: members.map(onlyIdsFromModels),
         },
         attachments: {
-          create:
-            Array.from(Array((faker.datatype.number({ min: 0, max: 3 }))), () => makeRandomFakeAttachmentDto(faker))
+          create: Array.from(
+            Array(faker.datatype.number({ min: 0, max: 3 })),
+            () => makeRandomFakeAttachmentDto(faker)
+          ),
         },
         updates: {
           create: [
             ...updates.map((update) => ({
-              ...update, attachments: {
-                create:
-                  Array.from(Array((faker.datatype.number({ min: 0, max: 3 }))), () => makeRandomFakeAttachmentDto(faker))
-              }
+              ...update,
+              attachments: {
+                create: Array.from(
+                  Array(faker.datatype.number({ min: 0, max: 3 })),
+                  () => makeRandomFakeAttachmentDto(faker)
+                ),
+              },
             })),
-          ]
-        }
-      }
-    }
-    )
+          ],
+        },
+      },
+    });
   }
 }
 
@@ -106,5 +141,3 @@ seed()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
-

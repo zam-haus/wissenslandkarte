@@ -1,7 +1,10 @@
-import type { ActionArgs} from "@remix-run/node";
+import type { ActionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
-import { authenticator, zamKeycloakStrategyName } from "~/lib/authentication.server";
+import {
+  authenticator,
+  zamKeycloakStrategyName,
+} from "~/lib/authentication.server";
 
 export const loader = () => redirect("/login");
 
