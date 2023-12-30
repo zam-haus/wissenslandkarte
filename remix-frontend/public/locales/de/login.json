@@ -1,0 +1,7 @@
+{
+  "main-headline": "Login",
+  "use-zam-sso": "Mit ZAM Single-Sign-On einloggen",
+  "verify-first": "Bitte verifiziere zunächst deine SSO-Mailadresse",
+  "login-failed": "Log in fehlgeschlagen",
+  "unexpected-error": "Beim Einloggen ist ein unerwarteter Fehler aufgetreten. Hier ist alles was wir wissen: "
+}

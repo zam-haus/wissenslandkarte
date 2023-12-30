@@ -18,6 +18,7 @@ model Tag {
 
 model User {
   id        String @id @default(nanoid())
+  keycloakId String @unique
   username  String @unique
   firstName String?
   lastName  String?
@@ -35,7 +36,9 @@ model User {
   ownedProjects  Project[] @relation("projectOwners")
   memberProjects Project[] @relation("projectMembers")
 
-  @@index(fields: [username])
+  setupCompleted Boolean @default(false)
+
+  @@index(fields: [username, keycloakId])
 }
 
 model Attachment {

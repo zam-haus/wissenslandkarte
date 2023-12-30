@@ -1,0 +1,6 @@
+{
+  "main-headline": "Login",
+  "use-zam-sso": "Log in using ZAM single sign on",
+  "login-failed": "Log in failed", 
+  "unexpected-error": "An unexpected error occurred during login. Here's all we know: "
+}
