@@ -1,6 +1,5 @@
-import { useTranslation } from "react-i18next";
-
 import { Form, useSearchParams } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 
 import styles from "./search-form.module.css";
 

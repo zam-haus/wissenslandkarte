@@ -1,10 +1,8 @@
+import { Link } from "@remix-run/react";
+import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Link } from "@remix-run/react";
-
 import style from "./page.module.css";
-
-import type { PropsWithChildren } from "react";
 
 export function Page({
   title,

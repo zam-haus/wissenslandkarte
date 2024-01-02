@@ -1,14 +1,14 @@
+import type { LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+
 import { LocalDate } from "~/components/date-rendering";
 import { getSearchQuery, SearchForm } from "~/components/search/search-form";
 import { SearchProjectPeopleSwitch } from "~/components/search/search-header";
+import { UserImage } from "~/components/users/user-image";
 import { searchUsers } from "~/models/user.server";
 
-import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
-
-import type { LoaderArgs } from "@remix-run/node";
-import { UserImage } from "~/components/users/user-image";
 export const loader = async ({ request }: LoaderArgs) => {
   const query = getSearchQuery(request);
 

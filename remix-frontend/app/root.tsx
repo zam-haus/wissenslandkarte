@@ -1,10 +1,5 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
-import { useTranslation } from "react-i18next";
-import { useChangeLanguage } from "remix-i18next";
-import i18next from "~/i18next.server";
-import tailwindStylesheetUrl from "~/styles/tailwind.css";
-
 import { cssBundleHref } from "@remix-run/css-bundle";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Links,
@@ -15,6 +10,11 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
+import { useChangeLanguage } from "remix-i18next";
+
+import i18next from "~/i18next.server";
+import tailwindStylesheetUrl from "~/styles/tailwind.css";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),

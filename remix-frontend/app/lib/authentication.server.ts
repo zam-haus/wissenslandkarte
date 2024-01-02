@@ -1,9 +1,11 @@
-import { Authenticator, AuthorizationError } from "remix-auth";
-import { sessionStorage } from "./session";
+import type { User } from "@prisma/client";
+import { Authenticator } from "remix-auth";
 import { KeycloakStrategy } from "remix-keycloak";
 import invariant from "tiny-invariant";
-import type { User } from "@prisma/client";
+
 import { prisma } from "~/db.server";
+
+import { sessionStorage } from "./session";
 
 export const zamKeycloakStrategyName = "zam-keycloak";
 

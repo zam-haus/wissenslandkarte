@@ -1,13 +1,13 @@
+import type { LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
 import { mapDeserializedDates } from "~/components/date-rendering";
 import { ProjectsList } from "~/components/projects/projects-list";
 import { getSearchQuery, SearchForm } from "~/components/search/search-form";
 import { SearchProjectPeopleSwitch } from "~/components/search/search-header";
 import { getProjectList, searchProjects } from "~/models/projects.server";
 
-import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-
-import type { LoaderArgs } from "@remix-run/node";
 export const loader = async ({ request }: LoaderArgs) => {
   const query = getSearchQuery(request);
 

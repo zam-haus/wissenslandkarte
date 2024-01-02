@@ -2,9 +2,9 @@ import type { Faker } from "@faker-js/faker";
 import type {
   Attachment,
   Project,
+  ProjectUpdate,
   Tag,
   User,
-  ProjectUpdate,
 } from "@prisma/client";
 
 export function makeRandomTag(faker: Faker): Omit<Tag, "id"> {

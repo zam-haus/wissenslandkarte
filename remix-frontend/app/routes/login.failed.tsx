@@ -2,6 +2,7 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+
 import { authenticator } from "~/lib/authentication.server";
 import { getSession } from "~/lib/session";
 

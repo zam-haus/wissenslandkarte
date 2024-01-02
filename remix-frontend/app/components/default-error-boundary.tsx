@@ -1,6 +1,5 @@
-import { useTranslation } from "react-i18next";
-
 import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 
 import { Page } from "./page/page";
 

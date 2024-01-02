@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next";
-import { ProjectList } from "~/models/projects.server";
-
 import { Link } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
+
+import type { ProjectList } from "~/models/projects.server";
 
 import { LocalDate } from "../date-rendering";
 import localStyle from "./project-list.module.css";

@@ -1,16 +1,16 @@
+import type { V2_MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+
 import { mapDeserializedDates } from "~/components/date-rendering";
 import { Page } from "~/components/page/page";
 import { ProjectsList } from "~/components/projects/projects-list";
 import { getProjectList } from "~/models/projects.server";
 
-import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
-
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 export const meta: V2_MetaFunction = () => [{ title: "Remix Notes" }];
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async () => {
   const projects = await getProjectList({
     byNewestModification: true,
     limit: 5,

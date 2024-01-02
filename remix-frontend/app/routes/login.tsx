@@ -1,5 +1,6 @@
 import { Form, Outlet } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+
 import { Page } from "~/components/page/page";
 
 export const handles = {

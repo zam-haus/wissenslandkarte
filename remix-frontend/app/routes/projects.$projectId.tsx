@@ -1,15 +1,15 @@
+import type { Attachment } from "@prisma/client";
 import type { LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 import { isAttachmentType } from "prisma/fake-data-generators";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
+
 import { renderDate, withDeserializedDates } from "~/components/date-rendering";
 import { ProjectTagList } from "~/components/tags";
 import { getProjectDetails } from "~/models/projects.server";
 
-import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
-
-import type { Attachment } from "@prisma/client";
 export const loader = async ({ params }: LoaderArgs) => {
   invariant(params.projectId, `params.slug is required`);
 

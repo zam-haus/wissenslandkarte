@@ -9,7 +9,7 @@ module.exports = {
   env: {
     "cypress/globals": true,
   },
-  plugins: ["cypress"],
+  plugins: ["cypress", "simple-import-sort", "unused-imports"],
   // we're using vitest which has a very similar API to jest
   // (so the linting plugins work nicely), but it means we have to explicitly
   // set the jest version.
@@ -17,5 +17,20 @@ module.exports = {
     jest: {
       version: 28,
     },
+  },
+  rules: {
+    "simple-import-sort/imports": "error",
+    "@typescript-eslint/no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "error",
+      {
+        vars: "all",
+        varsIgnorePattern: "^_",
+        args: "after-used",
+        argsIgnorePattern: "^_",
+      },
+    ],
+    "import/newline-after-import": ["error", { count: 1 }],
   },
 };
