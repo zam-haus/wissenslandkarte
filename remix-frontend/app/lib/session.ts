@@ -2,10 +2,14 @@ import type { Session, SessionData } from "@remix-run/node";
 import { createCookieSessionStorage } from "@remix-run/node";
 
 type WrappedType = Session<SessionData, SessionData>;
-type ArgOf<P extends keyof WrappedType> = WrappedType[P] extends (...args: any) => any
+type ArgOf<P extends keyof WrappedType> = WrappedType[P] extends (
+  ...args: any
+) => any
   ? Parameters<WrappedType[P]>
   : never;
-type ReturnOf<P extends keyof WrappedType> = WrappedType[P] extends (...args: any) => any
+type ReturnOf<P extends keyof WrappedType> = WrappedType[P] extends (
+  ...args: any
+) => any
   ? ReturnType<WrappedType[P]>
   : never;
 
@@ -21,14 +25,18 @@ export async function getSession(
     data: wrappedSession.data,
     has: (name: string) => wrappedSession.has(name),
     /** If you get something that may have been `flash`ed, use `getAndCommit`! */
-    get: (...args: ArgOf<"get">): ReturnOf<"get"> => wrappedSession.get(...args),
+    get: (...args: ArgOf<"get">): ReturnOf<"get"> =>
+      wrappedSession.get(...args),
     getAndCommit: (...args: ArgOf<"get">): ReturnOf<"get"> => {
       const got = wrappedSession.get(...args);
       sessionStorage.commitSession(wrappedSession);
       return got;
     },
-    set: (...args: ArgOf<"set">): ReturnOf<"set"> => wrappedSession.set(...args),
-    flash: (...args: ArgOf<"flash">): ReturnOf<"flash"> => wrappedSession.flash(...args),
-    unset: (...args: ArgOf<"unset">): ReturnOf<"unset"> => wrappedSession.unset(...args),
+    set: (...args: ArgOf<"set">): ReturnOf<"set"> =>
+      wrappedSession.set(...args),
+    flash: (...args: ArgOf<"flash">): ReturnOf<"flash"> =>
+      wrappedSession.flash(...args),
+    unset: (...args: ArgOf<"unset">): ReturnOf<"unset"> =>
+      wrappedSession.unset(...args),
   };
 }
