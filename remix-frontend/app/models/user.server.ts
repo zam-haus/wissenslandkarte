@@ -17,7 +17,7 @@ export async function getUserList(
   });
 }
 
-type UserOverview = Pick<
+export type UserOverview = Pick<
   User,
   "firstName" | "lastName" | "username" | "description" | "image" | "registrationDate"
 > & {

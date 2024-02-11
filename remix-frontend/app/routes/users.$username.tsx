@@ -4,10 +4,15 @@ import { useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
-import { renderDate, withDeserializedDates } from "~/components/date-rendering";
+import {
+  mapDeserializedDates,
+  renderDate,
+  withDeserializedDates,
+} from "~/components/date-rendering";
 import { ProjectsList } from "~/components/projects/projects-list";
 import { PeopleTagList } from "~/components/tags";
 import { UserImage } from "~/components/users/user-image";
+import type { UserOverview } from "~/models/user.server";
 import { getUserOverview } from "~/models/user.server";
 
 import styles from "./users.$username.module.css";
@@ -26,12 +31,30 @@ export const handle = {
 };
 
 export default function User() {
-  const { t, i18n } = useTranslation("users");
+  const { t } = useTranslation("users");
   const { user } = useLoaderData<typeof loader>();
 
-  const allProjects = [...user.memberProjects, ...user.ownedProjects].map((p) =>
-    withDeserializedDates(p, "latestModificationDate")
+  const deserializedUser = {
+    ...withDeserializedDates(user, "registrationDate"),
+    memberProjects: user.memberProjects.map(mapDeserializedDates("latestModificationDate")),
+    ownedProjects: user.ownedProjects.map(mapDeserializedDates("latestModificationDate")),
+  };
+
+  return (
+    <>
+      <header>
+        <h1>{t("my-profile")}</h1>
+      </header>
+
+      <UserMain user={deserializedUser} />
+    </>
   );
+}
+
+export function UserMain({ user }: { user: UserOverview }) {
+  const { t, i18n } = useTranslation("users");
+
+  const allProjects = [...user.memberProjects, ...user.ownedProjects];
   allProjects.sort((a, b) =>
     a.latestModificationDate < b.latestModificationDate
       ? 1
@@ -41,44 +64,38 @@ export default function User() {
   );
 
   return (
-    <>
+    <main>
       <header>
-        <h1>{t("my-profile")}</h1>
+        <UserImage {...user} t={t} className={styles.atRight} />
+        <h2>{user.username}</h2>
+
+        <p>
+          {t("projects-counter", {
+            count: user.memberProjects.length + user.ownedProjects.length,
+          })}
+        </p>
+
+        <p>
+          {t("registered-since", {
+            date: renderDate(user.registrationDate, i18n.language),
+          })}
+        </p>
       </header>
 
-      <main>
-        <header>
-          <UserImage {...user} t={t} className={styles.atRight} />
-          <h2>{user.username}</h2>
+      <section>
+        <p className={styles.fullWidth}>{user.description}</p>
 
-          <p>
-            {t("projects-counter", {
-              count: user.memberProjects.length + user.ownedProjects.length,
-            })}
-          </p>
+        <button className="primary send-message" onClick={() => console.log("message")}>
+          {t("send-message")}
+        </button>
 
-          <p>
-            {t("registered-since", {
-              date: renderDate(user.registrationDate, i18n.language),
-            })}
-          </p>
-        </header>
+        <PeopleTagList className={styles.tagList} tags={user.tags} />
+      </section>
 
-        <section>
-          <p className={styles.fullWidth}>{user.description}</p>
-
-          <button className="primary send-message" onClick={() => console.log("message")}>
-            {t("send-message")}
-          </button>
-
-          <PeopleTagList className={styles.tagList} tags={user.tags} />
-        </section>
-
-        <section>
-          <h3>{t("projects-headline")}</h3>
-          <ProjectsList projects={allProjects} styles={styles}></ProjectsList>
-        </section>
-      </main>
-    </>
+      <section>
+        <h3>{t("projects-headline")}</h3>
+        <ProjectsList projects={allProjects} styles={styles}></ProjectsList>
+      </section>
+    </main>
   );
 }
