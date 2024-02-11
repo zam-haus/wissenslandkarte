@@ -27,9 +27,9 @@ export async function getSession(
     /** If you get something that may have been `flash`ed, use `getAndCommit`! */
     get: (...args: ArgOf<"get">): ReturnOf<"get"> =>
       wrappedSession.get(...args),
-    getAndCommit: (...args: ArgOf<"get">): ReturnOf<"get"> => {
+    getAndCommit: async (...args: ArgOf<"get">): Promise<ReturnOf<"get">> => {
       const got = wrappedSession.get(...args);
-      sessionStorage.commitSession(wrappedSession);
+      await sessionStorage.commitSession(wrappedSession);
       return got;
     },
     set: (...args: ArgOf<"set">): ReturnOf<"set"> =>

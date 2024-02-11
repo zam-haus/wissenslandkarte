@@ -134,11 +134,11 @@ async function seedProjects(
   }
 }
 
-seed()
+void seed()
   .catch((e) => {
     console.error(e);
     process.exit(1);
   })
-  .finally(async () => {
+  .then(async () => {
     await prisma.$disconnect();
   });

@@ -42,9 +42,20 @@ async function hydrate() {
 }
 
 if (window.requestIdleCallback) {
-  window.requestIdleCallback(hydrate);
+  window.requestIdleCallback(
+    () =>
+      void hydrate()
+        .then(() => {})
+        .catch((e) => console.error("hydration failed", e))
+  );
 } else {
   // Safari doesn't support requestIdleCallback
   // https://caniuse.com/requestidlecallback
-  window.setTimeout(hydrate, 1);
+  window.setTimeout(
+    () =>
+      void hydrate()
+        .then(() => {})
+        .catch((e) => console.error("hydration failed", e)),
+    1
+  );
 }

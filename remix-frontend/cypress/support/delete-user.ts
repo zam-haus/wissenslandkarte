@@ -34,4 +34,4 @@ async function deleteUser(email: string) {
   }
 }
 
-deleteUser(process.argv[2]);
+void deleteUser(process.argv[2]);

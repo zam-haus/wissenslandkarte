@@ -21,6 +21,13 @@ module.exports = {
   overrides: [
     {
       files: ["**/*.ts", "**/*.tsx"],
+      rules: {
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-misused-promises": "error",
+      },
+    },
+    {
+      files: ["**/*.ts", "**/*.tsx"],
       excludedFiles: ["./cypress", "./cypress.config.ts"],
       parserOptions: {
         project: "./tsconfig.json",
