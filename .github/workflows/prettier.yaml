@@ -1,0 +1,30 @@
+name: Prettier
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "main" ]
+  schedule:
+    - cron: '22 5 * * 3'
+
+jobs:
+  eslint:
+    name: Run Prettier formatting
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./remix-frontend
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Prettier
+        run: |
+          npm ci
+
+      - name: Run Prettier
+        run: npx prettier --config .prettierrc --check .
