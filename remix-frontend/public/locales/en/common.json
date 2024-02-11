@@ -8,5 +8,8 @@
   "nav-search": "Search",
   "nav-projects": "Projects",
   "nav-people": "People",
-  "nav-faq": "FAQ"
+  "nav-faq": "FAQ",
+  "nav-login": "Log in",
+  "nav-logout": "Log out",
+  "nav-profile": "Profile"
 }

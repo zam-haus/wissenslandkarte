@@ -22,7 +22,7 @@ export default function Login() {
 
   if (fakeLoginEnabled) {
     return (
-      <Page title={t("main-headline")}>
+      <Page isLoggedIn={false} title={t("main-headline")}>
         <Form action="/auth/fake-dev-login" method="post">
           <input type="password" name="password" />
           <button type="submit">Do the fake login</button>
@@ -33,7 +33,7 @@ export default function Login() {
   }
 
   return (
-    <Page title={t("main-headline")}>
+    <Page isLoggedIn={false} title={t("main-headline")}>
       <Form action="/auth/zam-keycloak" method="post">
         <button>{t("use-zam-sso")}</button>
         <Outlet></Outlet>
