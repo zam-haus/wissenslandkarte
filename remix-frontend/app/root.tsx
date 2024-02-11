@@ -35,8 +35,6 @@ export default function App() {
 
   let { i18n } = useTranslation();
 
-    const meh = 5;
-
   useChangeLanguage(locale);
 
   return (
