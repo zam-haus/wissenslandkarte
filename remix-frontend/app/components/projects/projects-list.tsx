@@ -24,23 +24,15 @@ export function ProjectsList({
   return (
     <ul>
       {projects.map((project) => (
-        <li
-          key={project.id}
-          className={localStyle.projectEntry + " " + styles?.projectEntry}
-        >
-          <Link
-            to={`/projects/${encodeURIComponent(project.id)}`}
-            className={styles?.projectTitle}
-          >
+        <li key={project.id} className={localStyle.projectEntry + " " + styles?.projectEntry}>
+          <Link to={`/projects/${encodeURIComponent(project.id)}`} className={styles?.projectTitle}>
             {project.title}
           </Link>
           <span className={styles?.projectModificationDate}>
             <LocalDate date={project.latestModificationDate}></LocalDate>
           </span>
           <img
-            className={
-              localStyle.projectMainPhoto + " " + styles?.projectMainPhoto
-            }
+            className={localStyle.projectMainPhoto + " " + styles?.projectMainPhoto}
             alt={t("project-photo-alt-text", { title: project.title })}
             src={project.mainPhoto}
           />

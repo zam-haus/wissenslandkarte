@@ -67,10 +67,7 @@ export default function User() {
         <section>
           <p className={styles.fullWidth}>{user.description}</p>
 
-          <button
-            className="primary send-message"
-            onClick={() => console.log("message")}
-          >
+          <button className="primary send-message" onClick={() => console.log("message")}>
             {t("send-message")}
           </button>
 

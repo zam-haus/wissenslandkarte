@@ -55,10 +55,7 @@ async function seedTags(count: number) {
 async function seedUsers(count: number, faker: Faker, allTags: Tag[]) {
   while (count-- > 0) {
     const data = makeRandomUser(faker);
-    const tags = faker.helpers.arrayElements(
-      allTags,
-      faker.datatype.number({ min: 0, max: 8 })
-    );
+    const tags = faker.helpers.arrayElements(allTags, faker.datatype.number({ min: 0, max: 8 }));
 
     await prisma.user.create({
       data: {
@@ -71,12 +68,7 @@ async function seedUsers(count: number, faker: Faker, allTags: Tag[]) {
   }
 }
 
-async function seedProjects(
-  count: number,
-  faker: Faker,
-  allTags: Tag[],
-  allUsers: User[]
-) {
+async function seedProjects(count: number, faker: Faker, allTags: Tag[], allUsers: User[]) {
   while (count-- > 0) {
     const data = makeRandomFakeProject(faker);
 
@@ -84,14 +76,8 @@ async function seedProjects(
       .fill("")
       .map(() => makeRandomFakeProjectUpdate(faker, data));
 
-    const tags = faker.helpers.arrayElements(
-      allTags,
-      faker.datatype.number(10)
-    );
-    const owners = faker.helpers.arrayElements(
-      allUsers,
-      faker.datatype.number({ min: 1, max: 2 })
-    );
+    const tags = faker.helpers.arrayElements(allTags, faker.datatype.number(10));
+    const owners = faker.helpers.arrayElements(allUsers, faker.datatype.number({ min: 1, max: 2 }));
     let members: User[] = [];
     while (members.length === 0) {
       members = faker.helpers.arrayElements(allUsers, faker.datatype.number(4));
@@ -111,9 +97,8 @@ async function seedProjects(
           connect: members.map(onlyIdsFromModels),
         },
         attachments: {
-          create: Array.from(
-            Array(faker.datatype.number({ min: 0, max: 3 })),
-            () => makeRandomFakeAttachmentDto(faker)
+          create: Array.from(Array(faker.datatype.number({ min: 0, max: 3 })), () =>
+            makeRandomFakeAttachmentDto(faker)
           ),
         },
         updates: {
@@ -121,9 +106,8 @@ async function seedProjects(
             ...updates.map((update) => ({
               ...update,
               attachments: {
-                create: Array.from(
-                  Array(faker.datatype.number({ min: 0, max: 3 })),
-                  () => makeRandomFakeAttachmentDto(faker)
+                create: Array.from(Array(faker.datatype.number({ min: 0, max: 3 })), () =>
+                  makeRandomFakeAttachmentDto(faker)
                 ),
               },
             })),

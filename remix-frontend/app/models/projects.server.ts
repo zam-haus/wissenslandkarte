@@ -1,17 +1,8 @@
-import type {
-  Attachment,
-  Project,
-  ProjectUpdate,
-  Tag,
-  User,
-} from "@prisma/client";
+import type { Attachment, Project, ProjectUpdate, Tag, User } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
-export type ProjectList = Pick<
-  Project,
-  "id" | "title" | "latestModificationDate" | "mainPhoto"
->;
+export type ProjectList = Pick<Project, "id" | "title" | "latestModificationDate" | "mainPhoto">;
 
 export async function getProjectList(options?: {
   limit?: number;
@@ -24,9 +15,7 @@ export async function getProjectList(options?: {
       latestModificationDate: true,
       mainPhoto: true,
     },
-    orderBy: options?.byNewestModification
-      ? { latestModificationDate: "desc" }
-      : undefined,
+    orderBy: options?.byNewestModification ? { latestModificationDate: "desc" } : undefined,
     take: options?.limit,
   });
 }
@@ -54,9 +43,7 @@ type ProjectDetails = Omit<Project, "needsProjectArea"> & {
   tags: Tag[];
   attachments: Attachment[];
 };
-export async function getProjectDetails(
-  projectId: Project["id"]
-): Promise<ProjectDetails | null> {
+export async function getProjectDetails(projectId: Project["id"]): Promise<ProjectDetails | null> {
   return prisma.project.findUnique({
     where: { id: projectId },
     select: {

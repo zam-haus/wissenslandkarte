@@ -36,9 +36,7 @@ export default function Search() {
       <ul>
         {users.map((user) => (
           <li key={user.id}>
-            <Link to={`/users/${encodeURIComponent(user.username)}`}>
-              {user.username}
-            </Link>
+            <Link to={`/users/${encodeURIComponent(user.username)}`}>{user.username}</Link>
             <span>
               <LocalDate date={user.registrationDate}></LocalDate>
             </span>

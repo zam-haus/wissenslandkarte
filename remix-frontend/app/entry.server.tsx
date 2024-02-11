@@ -21,9 +21,7 @@ export default async function handleRequest(
   responseHeaders: Headers,
   remixContext: EntryContext
 ) {
-  let callbackName = isbot(request.headers.get("user-agent"))
-    ? "onAllReady"
-    : "onShellReady";
+  let callbackName = isbot(request.headers.get("user-agent")) ? "onAllReady" : "onShellReady";
 
   let i18nInstance = createInstance();
   const lng = await i18next.getLocale(request);

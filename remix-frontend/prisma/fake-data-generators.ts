@@ -1,11 +1,5 @@
 import type { Faker } from "@faker-js/faker";
-import type {
-  Attachment,
-  Project,
-  ProjectUpdate,
-  Tag,
-  User,
-} from "@prisma/client";
+import type { Attachment, Project, ProjectUpdate, Tag, User } from "@prisma/client";
 
 export function makeRandomTag(faker: Faker): Omit<Tag, "id"> {
   return {
@@ -29,9 +23,7 @@ export function makeRandomUser(faker: Faker): Omit<User, "id"> {
     description: completeProfile ? faker.lorem.paragraphs(2) : null,
     image: completeProfile ? faker.internet.avatar() : null,
     registrationDate: faker.date.past(),
-    contactEmailAddress: completeProfile
-      ? faker.internet.email(firstName, lastName)
-      : null,
+    contactEmailAddress: completeProfile ? faker.internet.email(firstName, lastName) : null,
     isContactEmailAddressPublic: faker.datatype.boolean(),
     phoneNumber: completeProfile ? faker.phone.number() : null,
   };
@@ -55,10 +47,7 @@ export function makeRandomFakeProjectUpdate(
   project: Pick<Project, "creationDate" | "latestModificationDate">
 ): Omit<ProjectUpdate, "id" | "projectId"> {
   return {
-    creationDate: faker.date.between(
-      project.creationDate,
-      project.latestModificationDate
-    ),
+    creationDate: faker.date.between(project.creationDate, project.latestModificationDate),
     description: faker.lorem.paragraph(),
   };
 }

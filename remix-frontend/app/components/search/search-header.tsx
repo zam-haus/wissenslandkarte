@@ -11,14 +11,10 @@ export function SearchProjectPeopleSwitch() {
   return (
     <nav className={styles.switch}>
       <div>
-        <NavLink to={`/search/projects?${searchParams.toString()}`}>
-          {t("projects")}
-        </NavLink>
+        <NavLink to={`/search/projects?${searchParams.toString()}`}>{t("projects")}</NavLink>
       </div>
       <div>
-        <Link to={`/search/people?${searchParams.toString()}`}>
-          {t("people")}
-        </Link>
+        <Link to={`/search/people?${searchParams.toString()}`}>{t("people")}</Link>
       </div>
     </nav>
   );

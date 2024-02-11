@@ -1,13 +1,7 @@
 import type { Tag } from "@prisma/client";
 import { Link } from "@remix-run/react";
 
-export function ProjectTagList({
-  tags,
-  className,
-}: {
-  tags: Tag[];
-  className: string;
-}) {
+export function ProjectTagList({ tags, className }: { tags: Tag[]; className: string }) {
   return (
     <ul className={className}>
       {tags.map((tag) => (
@@ -21,13 +15,7 @@ export function ProjectTagList({
   );
 }
 
-export function PeopleTagList({
-  tags,
-  className,
-}: {
-  tags: Tag[];
-  className?: string;
-}) {
+export function PeopleTagList({ tags, className }: { tags: Tag[]; className?: string }) {
   return (
     <ul className={className}>
       {tags.map((tag) => (

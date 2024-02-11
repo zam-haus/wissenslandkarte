@@ -19,20 +19,13 @@ export async function getUserList(
 
 type UserOverview = Pick<
   User,
-  | "firstName"
-  | "lastName"
-  | "username"
-  | "description"
-  | "image"
-  | "registrationDate"
+  "firstName" | "lastName" | "username" | "description" | "image" | "registrationDate"
 > & {
   tags: Tag[];
   ownedProjects: ProjectList[];
   memberProjects: ProjectList[];
 };
-export async function getUserOverview(
-  username: User["id"]
-): Promise<UserOverview | null> {
+export async function getUserOverview(username: User["id"]): Promise<UserOverview | null> {
   return prisma.user.findUnique({
     where: { username },
     select: {
@@ -64,13 +57,8 @@ export async function getUserOverview(
   });
 }
 
-type UserSearchResult = Pick<
-  User,
-  "id" | "username" | "image" | "registrationDate"
->;
-export async function searchUsers(
-  tags?: string[]
-): Promise<UserSearchResult[]> {
+type UserSearchResult = Pick<User, "id" | "username" | "image" | "registrationDate">;
+export async function searchUsers(tags?: string[]): Promise<UserSearchResult[]> {
   const select = {
     id: true,
     username: true,

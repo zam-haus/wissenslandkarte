@@ -21,10 +21,7 @@ async function deleteUser(email: string) {
   try {
     await prisma.user.delete({ where: { email } });
   } catch (error) {
-    if (
-      error instanceof PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
+    if (error instanceof PrismaClientKnownRequestError && error.code === "P2025") {
       console.log("User not found, so no need to delete");
     } else {
       throw error;

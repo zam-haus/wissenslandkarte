@@ -32,9 +32,7 @@ export default function Project() {
   const attachments = project.attachments.map((project) =>
     withDeserializedDates(project, "creationDate")
   );
-  const updates = project.updates.map((project) =>
-    withDeserializedDates(project, "creationDate")
-  );
+  const updates = project.updates.map((project) => withDeserializedDates(project, "creationDate"));
 
   return (
     <main>
