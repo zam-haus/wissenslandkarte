@@ -1,20 +1,23 @@
+import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Outlet, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Page } from "~/components/page/page";
+import { authenticator } from "~/lib/authentication.server";
 
 export const handles = {
   i18n: ["login"],
 };
 
-export async function loader() {
+export const loader: LoaderFunction = async ({ request }) => {
+  await authenticator.isAuthenticated(request, { successRedirect: "/" });
   const fakeLoginEnabled =
     process.env["DANGER_ENABLE_FAKE_LOGIN_ON_DEV"] === "true" &&
     process.env.NODE_ENV === "development";
 
   return json({ fakeLoginEnabled });
-}
+};
 
 export default function Login() {
   const { t } = useTranslation("login");
