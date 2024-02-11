@@ -1,8 +1,10 @@
-import { Link } from "@remix-run/react";
+import { Link, useMatches } from "@remix-run/react";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 
 import style from "./page.module.css";
+
+export const INCLUDE_EDIT_BUTTON = { showEditButtonInPageComponent: true };
 
 export function Page({
   title,
@@ -10,6 +12,9 @@ export function Page({
   children,
 }: PropsWithChildren<{ title: string; isLoggedIn: boolean }>) {
   const { t } = useTranslation("common");
+
+  const matches = useMatches();
+  const editButtonRequest = matches.find((route) => route.data["showEditButtonInPageComponent"]);
 
   const loginSection = isLoggedIn ? (
     <>
@@ -32,6 +37,11 @@ export function Page({
     <div className={style.pageContainer}>
       <header>
         <h1>{title}</h1>
+        {editButtonRequest !== undefined ? (
+          <Link to={editButtonRequest.pathname + "/edit"}>{t("toplevel-edit")}</Link>
+        ) : (
+          <></>
+        )}
       </header>
       <nav>
         <ul>

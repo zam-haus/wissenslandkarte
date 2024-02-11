@@ -11,5 +11,6 @@
   "nav-faq": "FAQ",
   "nav-login": "Einloggen",
   "nav-logout": "Ausloggen",
-  "nav-profile": "Profil"
+  "nav-profile": "Profil",
+  "toplevel-edit": "Bearbeiten"
 }
