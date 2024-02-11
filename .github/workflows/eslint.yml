@@ -50,3 +50,6 @@ jobs:
         with:
           sarif_file: ./remix-frontend/eslint-results.sarif
           wait-for-processing: true
+
+      - name: Exit with eslint exit code
+        run: exit  ${{ steps.color-selector.outputs.exit_code }}
