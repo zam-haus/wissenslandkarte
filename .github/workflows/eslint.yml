@@ -39,7 +39,7 @@ jobs:
       - name: Run ESLint
         run: |
           set +e
-          npm run lint --output-file eslint-results.sarif
+          npm run lint -- --output-file eslint-results.sarif
           echo "exit_code=$?" >> $GITHUB_OUTPUT
         continue-on-error: true
 
