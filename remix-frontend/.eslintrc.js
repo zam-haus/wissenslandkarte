@@ -18,6 +18,23 @@ module.exports = {
       version: 28,
     },
   },
+  overrides: [
+    {
+      files: ["**/*.ts", "**/*.tsx"],
+      excludedFiles: ["./cypress", "./cypress.config.ts"],
+      parserOptions: {
+        project: "./tsconfig.json",
+        tsconfigRootDir: __dirname,
+      },
+    },
+    {
+      files: ["./cypress", "./cypress.config.ts", "vitest.config.ts"],
+      parserOptions: {
+        project: "./tsconfig.spec.json",
+        tsconfigRootDir: __dirname,
+      },
+    },
+  ],
   rules: {
     "simple-import-sort/imports": "error",
     "@typescript-eslint/no-unused-vars": "off",
