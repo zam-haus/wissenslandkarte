@@ -22,6 +22,9 @@ jobs:
   eslint:
     name: Run eslint scanning
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./remix-frontend
     permissions:
       contents: read
       security-events: write
@@ -34,8 +37,10 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npm run lint
-          --output-file eslint-results.sarif
+        run: |
+          set +e
+          npm run lint --output-file eslint-results.sarif
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - name: Upload analysis results to GitHub
