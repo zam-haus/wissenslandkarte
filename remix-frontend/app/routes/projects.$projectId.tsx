@@ -7,16 +7,26 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
 import { renderDate, withDeserializedDates } from "~/components/date-rendering";
+import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectTagList } from "~/components/tags";
+import { isThisUserLoggedIn } from "~/lib/authentication";
 import { getProjectDetails } from "~/models/projects.server";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
   invariant(params.projectId, `params.slug is required`);
 
   const project = await getProjectDetails(params.projectId);
   invariant(project, `Project not found: ${params.projectId}`);
 
-  return json({ project });
+  const isTrue = (b: boolean) => b;
+  const ownerLoggedIn = (
+    await Promise.all(project.owners.map((user) => isThisUserLoggedIn(request, user)))
+  ).some(isTrue);
+  const memberLoggedIn = (
+    await Promise.all(project.members.map((user) => isThisUserLoggedIn(request, user)))
+  ).some(isTrue);
+
+  return json({ project, ...conditionalShowEditButton(ownerLoggedIn || memberLoggedIn) });
 };
 
 export const handle = {

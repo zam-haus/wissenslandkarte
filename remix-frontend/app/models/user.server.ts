@@ -19,7 +19,7 @@ export async function getUserList(
 
 export type UserOverview = Pick<
   User,
-  "firstName" | "lastName" | "username" | "description" | "image" | "registrationDate"
+  "id" | "firstName" | "lastName" | "username" | "description" | "image" | "registrationDate"
 > & {
   tags: Tag[];
   ownedProjects: ProjectList[];

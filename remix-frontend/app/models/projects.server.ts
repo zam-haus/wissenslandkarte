@@ -34,7 +34,7 @@ export async function searchProjects(tags: string[]): Promise<ProjectList[]> {
   });
 }
 
-type UsernameList = Pick<User, "username">[];
+type UsernameList = Pick<User, "id" | "username">[];
 type ProjectDetails = Omit<Project, "needsProjectArea"> & {
   // TODO: Could this be inferred from a built-in prisma type?
   owners: UsernameList;
@@ -52,8 +52,8 @@ export async function getProjectDetails(projectId: Project["id"]): Promise<Proje
       creationDate: true,
       latestModificationDate: true,
       mainPhoto: true,
-      owners: { select: { username: true } },
-      members: { select: { username: true } },
+      owners: { select: { id: true, username: true } },
+      members: { select: { id: true, username: true } },
       tags: true,
       attachments: true,
       updates: {

@@ -9,21 +9,23 @@ import {
   renderDate,
   withDeserializedDates,
 } from "~/components/date-rendering";
+import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectsList } from "~/components/projects/projects-list";
 import { PeopleTagList } from "~/components/tags";
 import { UserImage } from "~/components/users/user-image";
+import { isThisUserLoggedIn } from "~/lib/authentication";
 import type { UserOverview } from "~/models/user.server";
 import { getUserOverview } from "~/models/user.server";
 
 import styles from "./users.$username.module.css";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
   invariant(params.username, `params.slug is required`);
 
   const user = await getUserOverview(params.username);
   invariant(user, `User not found: ${params.username}`);
 
-  return json({ user });
+  return json({ user, ...conditionalShowEditButton(await isThisUserLoggedIn(request, user)) });
 };
 
 export const handle = {

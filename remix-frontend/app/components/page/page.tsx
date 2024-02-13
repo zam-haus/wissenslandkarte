@@ -6,6 +6,10 @@ import style from "./page.module.css";
 
 export const INCLUDE_EDIT_BUTTON = { showEditButtonInPageComponent: true };
 
+export function conditionalShowEditButton(showButton: boolean) {
+  return showButton ? INCLUDE_EDIT_BUTTON : {};
+}
+
 export function Page({
   title,
   isLoggedIn,
