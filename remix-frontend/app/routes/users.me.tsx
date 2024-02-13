@@ -21,7 +21,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const handle = {
-  i18n: ["common", "users"],
+  i18n: ["users"],
 };
 
 export default function Me() {

@@ -21,7 +21,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const handle = {
-  i18n: ["common", "search"],
+  i18n: ["search"],
 };
 
 export default function Search() {

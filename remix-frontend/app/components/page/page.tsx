@@ -16,6 +16,10 @@ export function Page({
   const matches = useMatches();
   const editButtonRequest = matches.find((route) => route.data["showEditButtonInPageComponent"]);
 
+  if (!matches.some((route) => route.handle?.i18n.includes("common"))) {
+    throw Error("Route does not include 'common' i18n resources in its handle export.");
+  }
+
   const loginSection = isLoggedIn ? (
     <>
       <li>

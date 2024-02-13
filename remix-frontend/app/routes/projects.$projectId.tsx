@@ -20,7 +20,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export const handle = {
-  i18n: ["common", "projects"],
+  i18n: ["projects"],
 };
 
 export default function Project() {

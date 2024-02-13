@@ -21,7 +21,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const handle = {
-  i18n: ["common", "landing-page"],
+  i18n: ["landing-page"],
 };
 
 export default function Index() {

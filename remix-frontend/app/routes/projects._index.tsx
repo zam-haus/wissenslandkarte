@@ -12,7 +12,7 @@ export const loader = async () => {
 };
 
 export const handle = {
-  i18n: ["common", "projects"],
+  i18n: ["projects"],
 };
 
 export default function Projects() {
