@@ -1,8 +1,8 @@
 .pageContainer {
-  min-height: 100%;
+  height: 100vh;
 
   display: grid;
-  grid-template-rows: max-content auto;
+  grid-template-rows: min-content 1fr min-content;
   grid-template-columns: min(30ex, 80vw) auto;
 }
 
@@ -30,4 +30,8 @@
 
 .pageContainer h2 {
   font-size: 1.5rem;
+}
+
+.innerContainer {
+  overflow-y: auto;
 }

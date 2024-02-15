@@ -2,6 +2,7 @@ import { Link, useMatches } from "@remix-run/react";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 
+import { ActionBar } from "./action-bar";
 import style from "./page.module.css";
 
 export const INCLUDE_EDIT_BUTTON = { showEditButtonInPageComponent: true };
@@ -72,6 +73,7 @@ export function Page({
         </ul>
       </nav>
       <div className={style.innerContainer}>{children}</div>
+      <footer>{isLoggedIn ? <ActionBar /> : <></>}</footer>
     </div>
   );
 }
