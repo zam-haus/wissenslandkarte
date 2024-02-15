@@ -14,11 +14,11 @@ import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next";
 
 import i18next from "~/i18next.server";
-import tailwindStylesheetUrl from "~/styles/tailwind.css";
+import mainStylesheetUrl from "~/styles/main.css";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-  { rel: "stylesheet", href: tailwindStylesheetUrl },
+  { rel: "stylesheet", href: mainStylesheetUrl },
 ];
 
 export async function loader({ request }: LoaderArgs) {
