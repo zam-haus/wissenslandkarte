@@ -20,6 +20,31 @@ export async function getProjectList(options?: {
   });
 }
 
+export async function getProjectsByUser(username: string): Promise<ProjectList[]> {
+  const result = await prisma.user.findUnique({
+    where: { username },
+    select: {
+      ownedProjects: {
+        select: {
+          id: true,
+          title: true,
+          latestModificationDate: true,
+          mainPhoto: true,
+        },
+      },
+      memberProjects: {
+        select: {
+          id: true,
+          title: true,
+          latestModificationDate: true,
+          mainPhoto: true,
+        },
+      },
+    },
+  });
+  return [...(result?.ownedProjects ?? []), ...(result?.memberProjects ?? [])];
+}
+
 export async function searchProjects(tags: string[]): Promise<ProjectList[]> {
   return prisma.project.findMany({
     select: {
