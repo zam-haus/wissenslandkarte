@@ -1,22 +1,22 @@
 .actionBarNav {
-    height: 50px;
-    width: 100vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+  height: 50px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .actionBarNav a {
-    height: 80%;
-    aspect-ratio: 1;
-    border: 1px solid black;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 80%;
+  aspect-ratio: 1;
+  border: 1px solid black;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .actionBarNav a.mainItem {
-    height: 100%;
+  height: 100%;
 }
