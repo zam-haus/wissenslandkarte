@@ -14,7 +14,7 @@ fi
 
 branch=$(git rev-parse --abbrev-ref HEAD)
 echo "Running linter and formatter before pushing..." 
-if [[ $branch == 'test-hook' ]]; then
+if [[ $branch == 'main' ]]; then
   cd remix-frontend || (echo "Couldn't change to remix-frontend folder" && exit 1)
 
   
