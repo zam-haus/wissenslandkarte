@@ -2,5 +2,11 @@
   "main-headline": "Projekte",
   "by": "Von",
   "main-photo": "Das Hauptfoto dieses Projekts wie von dem oder der Nutzer:in hochgeladen.",
-  "project-update-headline": "Update vom {{date}}"
+  "project-update-headline": "Update vom {{date}}",
+  "project-name": "Projektname",
+  "project-description": "Beschreibung",
+  "select-tags": "Tags",
+  "select-other-users": "Mitbearbeiter",
+  "select-need-space": "Ich brauche Projektfläche",
+  "save": "Speichern"
 }

@@ -1,0 +1,4 @@
+.verticalForm {
+  display: flex;
+  flex-direction: column;
+}
