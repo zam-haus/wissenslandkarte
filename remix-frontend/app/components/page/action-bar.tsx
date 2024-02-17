@@ -5,7 +5,7 @@ import style from "./action-bar.module.css";
 export function ActionBar() {
   return (
     <nav className={style.actionBarNav}>
-      <Link to="/">New</Link>
+      <Link to="/projects/new">New</Link>
       <Link to="/projects/mine">Projects</Link>
       <Link to="/" className={style.mainItem}>
         Add
