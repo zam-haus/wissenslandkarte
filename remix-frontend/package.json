@@ -8,6 +8,7 @@
     "dev": "run-p \"dev:*\"",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --config .prettierrc --write .",
+    "format-check": "prettier --config .prettierrc --check .",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint --max-warnings 0 .",
     "lint-fix": "eslint --cache --cache-location ./node_modules/.cache/eslint --max-warnings 0 --fix .",
     "setup": "prisma generate && prisma migrate deploy && prisma db push && prisma db seed",

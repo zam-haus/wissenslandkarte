@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set +e
+
+if [[ "$1" == "--install" ]]; then 
+  folder=$(dirname "$0")
+  if [ ! -e "$folder/.git/hooks/pre-push" ]; then
+   echo "Installing myself as pre-push hook. To uninstall do 'rm .git/hooks/pre-push' in the git root directory ($folder)"
+   cd "$folder" || exit 1
+   ln -sr ./pre-push.hook .git/hooks/pre-push
+   exit 0
+  fi
+fi
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+echo "Running linter and formatter before pushing..." 
+if [[ $branch == 'test-hook' ]]; then
+  cd remix-frontend || (echo "Couldn't change to remix-frontend folder" && exit 1)
+
+  
+  if ! npm run format-check; then
+    echo "Did not push because of failing formatter"
+    exit 1
+  fi
+  echo "Formatting is ok..."
+
+  
+  if ! npm run lint; then
+    echo "Did not push because of failing linter"
+    exit 1
+  fi
+
+  echo "Linter didn't complain. Lets'a go!"
+fi
+
+exit 0
