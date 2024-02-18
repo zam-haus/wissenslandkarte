@@ -26,6 +26,7 @@ export function makeRandomUser(faker: Faker): Omit<User, "id"> {
     contactEmailAddress: completeProfile ? faker.internet.email(firstName, lastName) : null,
     isContactEmailAddressPublic: faker.datatype.boolean(),
     phoneNumber: completeProfile ? faker.phone.number() : null,
+    setupCompleted: true,
   };
 }
 

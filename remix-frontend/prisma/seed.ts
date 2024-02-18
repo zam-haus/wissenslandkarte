@@ -34,13 +34,13 @@ async function seed() {
 
   faker.seed(42);
 
-  await seedTags(40);
+  await seedTags(400);
   const allTags = await prisma.tag.findMany();
 
-  await seedUsers(50, faker, allTags);
+  await seedUsers(500, faker, allTags);
   const allUsers = await prisma.user.findMany();
 
-  await seedProjects(120, faker, allTags, allUsers);
+  await seedProjects(800, faker, allTags, allUsers);
 
   console.log(`Database has been seeded. 🌱`);
 }
