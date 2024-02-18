@@ -6,6 +6,7 @@ import type {
 import { useCombobox } from "downshift";
 import type { KeyboardEvent } from "react";
 import { Fragment, useRef, useState } from "react";
+import { useDebounceCallback } from "usehooks-ts";
 
 import style from "./multi-select.module.css";
 import { RemovableItem } from "./removable-item";
@@ -18,6 +19,7 @@ type MultiSelectProps = {
   inputName: string;
   onValueChosen: (value: string) => void;
   onValueRemoved: (value: string) => void;
+  onFilterInput?: (filterInput: string) => void;
   allowAddingNew?: boolean;
 };
 export function MultiSelect(props: MultiSelectProps) {
@@ -73,16 +75,24 @@ export function MultiSelect(props: MultiSelectProps) {
   const [itemFilter, setItemFilter] = useState<StringFilter>(() => () => true);
 
   function createFilterFromUserInput(change: UseComboboxStateChange<string>) {
-    setItemFilter(() => (item: string) => item.toLowerCase().includes(change.inputValue ?? ""));
+    setItemFilter(
+      () => (item: string) => item.toLowerCase().includes(change.inputValue?.toLowerCase() ?? "")
+    );
   }
 
   const filteredInput = [...new Set(props.valuesToSuggest)].filter(itemFilter);
 
+  const debouncedOnFilterInput = useDebounceCallback(props.onFilterInput ?? (() => {}), 200);
   const { getLabelProps, getInputProps, getItemProps, getMenuProps, isOpen } = useCombobox({
     items: filteredInput,
     stateReducer: downshiftStateReducer,
     onSelectedItemChange: selectItemViaDropdown,
-    onInputValueChange: createFilterFromUserInput,
+    onInputValueChange: (change) => {
+      createFilterFromUserInput(change);
+      if (props.onFilterInput) {
+        debouncedOnFilterInput(change.inputValue ?? "");
+      }
+    },
   });
 
   return (

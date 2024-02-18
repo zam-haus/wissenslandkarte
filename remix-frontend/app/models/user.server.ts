@@ -17,6 +17,17 @@ export async function getUserList(
   });
 }
 
+export async function getUserListFiltered(filter: string) {
+  return prisma.user.findMany({
+    select: {
+      id: true,
+      username: true,
+    },
+    where: { username: { contains: filter } },
+    take: 50,
+  });
+}
+
 export type UserOverview = Pick<
   User,
   "id" | "firstName" | "lastName" | "username" | "description" | "image" | "registrationDate"
