@@ -9,7 +9,7 @@ generator client {
 
 model Tag {
   id       String    @id @default(nanoid())
-  name     String
+  name     String    @unique
   users    User[]
   projects Project[]
 
@@ -17,11 +17,11 @@ model Tag {
 }
 
 model User {
-  id        String @id @default(nanoid())
-  keycloakId String @unique
-  username  String @unique
-  firstName String?
-  lastName  String?
+  id         String  @id @default(nanoid())
+  keycloakId String  @unique
+  username   String  @unique
+  firstName  String?
+  lastName   String?
 
   image       String?
   description String?
@@ -61,7 +61,7 @@ model Project {
 
   title       String
   description String
-  mainPhoto   String
+  mainPhoto   String?
 
   owners      User[]          @relation("projectOwners")
   members     User[]          @relation("projectMembers")

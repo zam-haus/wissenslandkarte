@@ -47,7 +47,11 @@ async function seed() {
 
 async function seedTags(count: number) {
   while (count-- > 0) {
-    const data = makeRandomTag(faker);
+    let data = makeRandomTag(faker);
+    if ((await prisma.tag.findFirst({ where: data })) !== null) {
+      continue;
+    }
+
     await prisma.tag.create({ data });
   }
 }
