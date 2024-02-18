@@ -45,11 +45,9 @@ export default function NewProject() {
           inputLabel={t("select-other-users")}
           inputName="coworkers"
           chosenValues={chosenUsers}
-          valuesToSuggest={Array.from(new Set(users.map(({ username }) => username)))}
+          valuesToSuggest={users.map(({ username }) => username)}
           onValueChosen={(newUser) => {
-            if (!chosenUsers.includes(newUser)) {
-              setChosenUsers([...chosenUsers, newUser]);
-            }
+            setChosenUsers([...chosenUsers, newUser]);
           }}
           onValueRemoved={(removedUser) =>
             setChosenUsers(chosenUsers.filter((user) => user != removedUser))
@@ -65,9 +63,7 @@ export default function NewProject() {
           )} /*TODO: Move deduplication to component, load suggestions dynamically w/ paging*/
           allowAddingNew={true}
           onValueChosen={(newValue) => {
-            if (!chosenValues.includes(newValue)) {
-              setChosenValues([...chosenValues, newValue]);
-            }
+            setChosenValues([...chosenValues, newValue]);
           }}
           onValueRemoved={(removedValue) =>
             setChosenValues(chosenValues.filter((value) => value != removedValue))

@@ -49,7 +49,7 @@ export function MultiSelect(props: MultiSelectProps) {
       case "Enter":
       case "Tab":
         if (inputElementRef.current !== null && props.allowAddingNew) {
-          props.onValueChosen(inputElementRef.current.value);
+          chosenCallbackIfItemIsNew(inputElementRef.current.value);
         }
         event.stopPropagation();
         event.preventDefault();
@@ -59,7 +59,13 @@ export function MultiSelect(props: MultiSelectProps) {
 
   function selectItemViaDropdown(change: UseComboboxStateChange<string>) {
     if (change.selectedItem) {
-      props.onValueChosen(change.selectedItem);
+      chosenCallbackIfItemIsNew(change.selectedItem);
+    }
+  }
+
+  function chosenCallbackIfItemIsNew(item: string) {
+    if (!props.chosenValues.includes(item)) {
+      props.onValueChosen(item);
     }
   }
 
@@ -70,7 +76,7 @@ export function MultiSelect(props: MultiSelectProps) {
     setItemFilter(() => (item: string) => item.toLowerCase().includes(change.inputValue ?? ""));
   }
 
-  const filteredInput = props.valuesToSuggest.filter(itemFilter);
+  const filteredInput = [...new Set(props.valuesToSuggest)].filter(itemFilter);
 
   const { getLabelProps, getInputProps, getItemProps, getMenuProps, isOpen } = useCombobox({
     items: filteredInput,
