@@ -31,11 +31,17 @@ export function ProjectsList({
           <span className={styles?.projectModificationDate}>
             <LocalDate date={project.latestModificationDate}></LocalDate>
           </span>
-          <img
-            className={localStyle.projectMainPhoto + " " + styles?.projectMainPhoto}
-            alt={t("project-photo-alt-text", { title: project.title })}
-            src={project.mainPhoto}
-          />
+          {project.mainPhoto === null ? (
+            <div
+              className={localStyle.projectMainPhoto + " " + (styles?.projectMainPhoto ?? "")}
+            ></div>
+          ) : (
+            <img
+              className={localStyle.projectMainPhoto + " " + (styles?.projectMainPhoto ?? "")}
+              alt={t("project-photo-alt-text", { title: project.title })}
+              src={project.mainPhoto}
+            />
+          )}
         </li>
       ))}
     </ul>

@@ -97,3 +97,29 @@ export async function getProjectDetails(projectId: Project["id"]): Promise<Proje
     },
   });
 }
+
+type ProjectCreateRequest = {
+  title: string;
+  description: string;
+  owners: string[];
+  coworkers: string[];
+  tags: string[];
+  needProjectSpace: boolean;
+};
+export async function createProject(request: ProjectCreateRequest) {
+  return prisma.project.create({
+    data: {
+      title: request.title,
+      description: request.description,
+      owners: { connect: request.owners.map((username) => ({ username })) },
+      members: { connect: request.coworkers.map((username) => ({ username })) },
+      tags: {
+        connectOrCreate: request.tags.map((name) => ({ create: { name }, where: { name } })),
+      },
+      needsProjectArea: request.needProjectSpace,
+      mainPhoto: null,
+      creationDate: new Date(),
+      latestModificationDate: new Date(),
+    },
+  });
+}

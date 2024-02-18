@@ -56,7 +56,7 @@ export default function Project() {
             </li>
           ))}
         </ul>
-        <img src={project.mainPhoto} alt={t("main-photo")} />
+        {project.mainPhoto ? <img src={project.mainPhoto} alt={t("main-photo")} /> : null}
       </header>
 
       <p>{project.description}</p>

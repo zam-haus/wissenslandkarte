@@ -10,5 +10,7 @@
   "select-need-space": "Ich brauche Projektfläche",
   "save": "Speichern",
   "typeahead-tags": "Tippen zum Tag hinzufügen...",
-  "typeahead-users": "Tippen zum Nutzer hinzufügen..."
+  "typeahead-users": "Tippen zum Nutzer hinzufügen...",
+  "missing-name-or-description": "Name und Beschreibung müssen ausgefüllt werden!",
+  "creation-failed": "Erstellung fehlgeschlagen: "
 }

@@ -10,5 +10,7 @@
   "select-need-space": "I need project space",
   "save": "Save",
   "typeahead-tags": "Type to add tag...",
-  "typeahead-users": "Type to add co-worker..."
+  "typeahead-users": "Type to add co-worker...",
+  "missing-name-or-description": "Name and description must be provided!",
+  "creation-failed": "Creation failed: "
 }

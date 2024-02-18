@@ -1,14 +1,55 @@
-import { json, type LoaderArgs } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import type { ActionArgs, TypedResponse } from "@remix-run/node";
+import { json, type LoaderArgs, redirect } from "@remix-run/node";
+import { Form, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { MultiSelect } from "~/components/multi-select/multi-select";
 import { authenticator } from "~/lib/authentication.server";
+import { createProject } from "~/models/projects.server";
 import { getTagList } from "~/models/tags.server";
 import { getUserListFiltered } from "~/models/user.server";
 
 import style from "./projects.new.module.css";
+
+const FIELD_EMPTY = "FIELD_EMPTY";
+const CREATE_FAILED = "CREATE_FAILED";
+
+export const action = async ({
+  request,
+}: ActionArgs): Promise<TypedResponse<{ error: string; exception?: string }>> => {
+  const user = await authenticator.isAuthenticated(request, { failureRedirect: "/" });
+
+  const formData = await request.formData();
+  const title = (formData.get("title") ?? "").toString().trim();
+  const description = (formData.get("description") ?? "").toString().trim();
+  const coworkers = formData.getAll("coworkers").map((value) => value.toString());
+  const tags = formData.getAll("tags").map((value) => value.toString());
+  const needProjectSpace = Boolean(formData.get("needProjectSpace") ?? false);
+
+  if (title.length === 0 || description.length === 0) {
+    return json({
+      error: FIELD_EMPTY,
+    });
+  }
+
+  try {
+    const result = await createProject({
+      title,
+      description,
+      owners: [user.username],
+      coworkers,
+      tags,
+      needProjectSpace,
+    });
+    return redirect(`/projects/${result.id}`);
+  } catch (e: any) {
+    return json({
+      error: CREATE_FAILED,
+      exception: e.message,
+    });
+  }
+};
 
 export const loader = async ({ request }: LoaderArgs) => {
   await authenticator.isAuthenticated(request, { failureRedirect: "/" });
@@ -33,6 +74,7 @@ export const handle = {
 };
 
 export default function NewProject() {
+  const currentPath = "/projects/new";
   const { tags, users } = useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
@@ -45,9 +87,9 @@ export default function NewProject() {
   const tagFetcher = useFetcher<typeof loader>();
   const userFetcher = useFetcher<typeof loader>();
   const loadMoreTags = (filter: string) =>
-    tagFetcher.load(`/projects/new?tagsFilter=${filter}&ignoreUsers=true`);
+    tagFetcher.load(`${currentPath}?tagsFilter=${filter}&ignoreUsers=true`);
   const loadMoreUsers = (filter: string) =>
-    userFetcher.load(`/projects/new?usersFilter=${filter}&ignoreTags=true`);
+    userFetcher.load(`${currentPath}?usersFilter=${filter}&ignoreTags=true`);
 
   useEffect(() => {
     setAvailableTags(
@@ -66,17 +108,28 @@ export default function NewProject() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- including availableUsers would lead to loop
   }, [userFetcher.data]);
 
+  const actionData = useActionData<typeof action>();
+
   return (
     <main>
-      <form method="/projects/new" className={style.verticalForm}>
+      {actionData?.error === FIELD_EMPTY ? <div>{t("missing-name-or-description")}</div> : null}
+      {actionData?.error === CREATE_FAILED ? (
+        <div>
+          {t("creation-failed")} {actionData?.exception}
+        </div>
+      ) : null}
+
+      <Form method="post" action={currentPath} className={style.verticalForm}>
         <label>
           {t("project-name")}
-          <input name="projectName" type="text" />
+          <input name="title" type="text" required />
         </label>
+
         <label>
           {t("project-description")}
-          <textarea name="projectDescription"></textarea>
+          <textarea name="description" required></textarea>
         </label>
+
         {userFetcher.state == "loading" ? "Loading..." : ""}
         <MultiSelect
           inputPlaceholder={t("typeahead-users")}
@@ -92,6 +145,7 @@ export default function NewProject() {
             setChosenUsers(chosenUsers.filter((user) => user != removedUser))
           }
         ></MultiSelect>
+
         {tagFetcher.state == "loading" ? "Loading..." : ""}
         <MultiSelect
           inputPlaceholder={t("typeahead-tags")}
@@ -108,11 +162,13 @@ export default function NewProject() {
             setChosenTags(chosenTags.filter((value) => value != removedValue))
           }
         ></MultiSelect>
+
         <label>
           {t("select-need-space")} <input type="checkbox" name="needProjectSpace" />
         </label>
+
         <button type="submit">{t("save")}</button>
-      </form>
+      </Form>
     </main>
   );
 }
