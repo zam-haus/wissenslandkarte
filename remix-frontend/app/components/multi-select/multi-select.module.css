@@ -6,7 +6,7 @@
   font-size: 14px;
 }
 
-.inputItemsWrapper {
+.chosenItemsWrapper {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -34,18 +34,28 @@
 
 .menu {
   max-height: 20rem;
+  width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  list-style: none;
+  padding: 0;
   border-top-width: 0;
   outline: 0;
   border-radius: 0 0 0.28571429rem 0.28571429rem;
   transition: opacity 0.1s ease;
   box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-  border-color: #96c8da;
-  border-right-width: 1;
-  border-bottom-width: 1;
-  border-left-width: 1;
   border-style: solid;
+  background-color: white;
+}
+
+.openMenu {
+  z-index: 500;
+  position: absolute;
+  top: 0;
+}
+
+.closedMenu {
+  border: none;
 }
 
 .item {
@@ -66,6 +76,7 @@
   white-space: normal;
   word-wrap: normal;
 }
+
 .item[aria-selected="true"] {
   color: rgba(0, 0, 0, 0.95);
   font-weight: 700;

@@ -82,36 +82,43 @@ export function MultiSelect(props: MultiSelectProps) {
   return (
     <div>
       <label {...getLabelProps()}>{props.inputLabel}</label>
-      <div style={{ position: "relative" }}>
-        <div className={style.inputItemsWrapper} onClick={focusInputElement}>
+      <div>
+        <div className={style.chosenItemsWrapper} onClick={focusInputElement}>
           {props.chosenValues.map((item) => (
             <Fragment key={item}>
               <RemovableItem value={item} onRemove={() => props.onValueRemoved(item)} />
               <input type="hidden" name={props.inputName} value={item} />
             </Fragment>
           ))}
-          <input
-            placeholder={props.inputPlaceholder}
-            {...getInputProps({ ref: inputElementRef, onKeyDown: onInputKeyDown })}
-          />
+
+          <div>
+            <input
+              placeholder={props.inputPlaceholder}
+              {...getInputProps({ ref: inputElementRef, onKeyDown: onInputKeyDown })}
+            />
+            <div style={{ position: "relative" }}>
+              <ul
+                className={`${style.menu} ${isOpen ? style.openMenu : style.closedMenu}`}
+                {...getMenuProps()}
+              >
+                {!isOpen
+                  ? null
+                  : filteredInput.map((item) => (
+                      <li
+                        className={style.item}
+                        key={item}
+                        {...getItemProps({
+                          item,
+                        })}
+                      >
+                        {item}
+                      </li>
+                    ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
-
-      <ul className={style.menu} {...getMenuProps()}>
-        {!isOpen
-          ? null
-          : filteredInput.map((item) => (
-              <li
-                className={style.item}
-                key={item}
-                {...getItemProps({
-                  item,
-                })}
-              >
-                {item}
-              </li>
-            ))}
-      </ul>
     </div>
   );
 }
