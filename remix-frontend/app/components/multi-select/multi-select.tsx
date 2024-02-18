@@ -1,0 +1,117 @@
+import type {
+  UseComboboxState,
+  UseComboboxStateChange,
+  UseComboboxStateChangeOptions,
+} from "downshift";
+import { useCombobox } from "downshift";
+import type { KeyboardEvent } from "react";
+import { Fragment, useRef, useState } from "react";
+
+import style from "./multi-select.module.css";
+import { RemovableItem } from "./removable-item";
+
+type MultiSelectProps = {
+  valuesToSuggest: string[];
+  chosenValues: string[];
+  inputPlaceholder: string;
+  inputLabel: string;
+  inputName: string;
+  onValueChosen: (value: string) => void;
+  onValueRemoved: (value: string) => void;
+  allowAddingNew?: boolean;
+};
+export function MultiSelect(props: MultiSelectProps) {
+  function downshiftStateReducer(
+    state: UseComboboxState<string>,
+    actionAndChanges: UseComboboxStateChangeOptions<string>
+  ) {
+    const { type, changes } = actionAndChanges;
+    // this prevents the menu from being closed when the user selects an item with 'Enter' or mouse
+    switch (type) {
+      case useCombobox.stateChangeTypes.InputKeyDownEnter:
+      case useCombobox.stateChangeTypes.ItemClick:
+        return {
+          ...changes,
+          isOpen: true,
+          highlightedIndex: state.highlightedIndex,
+          inputValue: state.inputValue,
+        };
+      default:
+        return changes;
+    }
+  }
+
+  const inputElementRef = useRef<HTMLInputElement | null>(null);
+  const focusInputElement = () => inputElementRef.current?.focus();
+
+  function onInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    switch (event.key) {
+      case "Enter":
+      case "Tab":
+        if (inputElementRef.current !== null && props.allowAddingNew) {
+          props.onValueChosen(inputElementRef.current.value);
+        }
+        event.stopPropagation();
+        event.preventDefault();
+        return;
+    }
+  }
+
+  function selectItemViaDropdown(change: UseComboboxStateChange<string>) {
+    if (change.selectedItem) {
+      props.onValueChosen(change.selectedItem);
+    }
+  }
+
+  type StringFilter = (s: string) => boolean;
+  const [itemFilter, setItemFilter] = useState<StringFilter>(() => () => true);
+
+  function createFilterFromUserInput(change: UseComboboxStateChange<string>) {
+    setItemFilter(() => (item: string) => item.toLowerCase().includes(change.inputValue ?? ""));
+  }
+
+  const filteredInput = props.valuesToSuggest.filter(itemFilter);
+
+  const { getLabelProps, getInputProps, getItemProps, getMenuProps, isOpen } = useCombobox({
+    items: filteredInput,
+    stateReducer: downshiftStateReducer,
+    onSelectedItemChange: selectItemViaDropdown,
+    onInputValueChange: createFilterFromUserInput,
+  });
+
+  return (
+    <div>
+      <label {...getLabelProps()}>{props.inputLabel}</label>
+      <div style={{ position: "relative" }}>
+        <div className={style.inputItemsWrapper} onClick={focusInputElement}>
+          {props.chosenValues.map((item) => (
+            <Fragment key={item}>
+              <RemovableItem value={item} onRemove={() => props.onValueRemoved(item)} />
+              <input type="hidden" name={props.inputName} value={item} />
+            </Fragment>
+          ))}
+          <input
+            placeholder={props.inputPlaceholder}
+            {...getInputProps({ ref: inputElementRef, onKeyDown: onInputKeyDown })}
+          />
+        </div>
+      </div>
+
+      <ul className={style.menu} {...getMenuProps()}>
+        {!isOpen
+          ? null
+          : filteredInput.map((item) => (
+              <li
+                className={style.item}
+                key={item}
+                {...getItemProps({
+                  item,
+                })}
+              >
+                {item}
+              </li>
+            ))}
+      </ul>
+    </div>
+  );
+}

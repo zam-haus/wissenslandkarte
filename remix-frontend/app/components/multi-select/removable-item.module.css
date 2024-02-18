@@ -1,0 +1,16 @@
+.xButton {
+  cursor: "pointer";
+}
+
+.inputBox {
+  border: "none";
+  outline: "none";
+  cursor: "inherit";
+  background-color: "transparent";
+  font-size: "14px";
+}
+
+.selectedItem {
+  margin-right: 4px;
+  background-color: #ccc;
+}

@@ -8,5 +8,7 @@
   "select-tags": "Tags",
   "select-other-users": "Co-Workers",
   "select-need-space": "I need project space",
-  "save": "Save"
+  "save": "Save",
+  "typeahead-tags": "Type to add tag...",
+  "typeahead-users": "Type to add co-worker..."
 }

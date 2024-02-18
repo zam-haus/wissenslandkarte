@@ -1,0 +1,72 @@
+.inputBox {
+  border: none;
+  outline: none;
+  cursor: inherit;
+  background-color: transparent;
+  font-size: 14px;
+}
+
+.inputItemsWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  flex: 1 1 auto;
+  padding: 4px;
+  border: 1px #c5c4c4 solid;
+  border-radius: 4px;
+}
+
+.openCloseButton {
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+  width: 47;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu {
+  max-height: 20rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-top-width: 0;
+  outline: 0;
+  border-radius: 0 0 0.28571429rem 0.28571429rem;
+  transition: opacity 0.1s ease;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+  border-color: #96c8da;
+  border-right-width: 1;
+  border-bottom-width: 1;
+  border-left-width: 1;
+  border-style: solid;
+}
+
+.item {
+  position: relative;
+  cursor: pointer;
+  display: block;
+  border: none;
+  height: auto;
+  text-align: left;
+  border-top: none;
+  line-height: 1em;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 1rem;
+  text-transform: none;
+  font-weight: 400;
+  box-shadow: none;
+  padding: 0.8rem 1.1rem;
+  white-space: normal;
+  word-wrap: normal;
+}
+.item[aria-selected="true"] {
+  color: rgba(0, 0, 0, 0.95);
+  font-weight: 700;
+}
