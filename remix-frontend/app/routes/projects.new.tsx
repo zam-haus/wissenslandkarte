@@ -1,5 +1,5 @@
-import type { ActionArgs, TypedResponse } from "@remix-run/node";
-import { json, type LoaderArgs, redirect } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, TypedResponse } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -92,20 +92,18 @@ export default function NewProject() {
     userFetcher.load(`${currentPath}?usersFilter=${filter}&ignoreTags=true`);
 
   useEffect(() => {
-    setAvailableTags(
+    setAvailableTags((availableTags) =>
       [...availableTags, ...(tagFetcher.data?.tags ?? [])].sort(
         (a, b) => (b._count.projects ?? 0) - (a._count.projects ?? 0)
       )
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- including availableTags would lead to loop
   }, [tagFetcher.data]);
   useEffect(() => {
-    setAvailableUsers(
+    setAvailableUsers((availableUsers) =>
       [...availableUsers, ...(userFetcher.data?.users ?? [])].sort((a, b) =>
         a.username.localeCompare(b.username)
       )
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- including availableUsers would lead to loop
   }, [userFetcher.data]);
 
   const actionData = useActionData<typeof action>();
