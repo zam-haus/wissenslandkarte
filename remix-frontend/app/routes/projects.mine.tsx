@@ -1,13 +1,14 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
 import { mapDeserializedDates } from "~/components/date-rendering";
 import { ProjectsList } from "~/components/projects/projects-list";
 import { authenticator } from "~/lib/authentication.server";
+import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { getProjectsByUser } from "~/models/projects.server";
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/" });
   const projects = await getProjectsByUser(user.username);
 
@@ -21,9 +22,8 @@ export const handle = {
 export default function Projects() {
   const { projects } = useLoaderData<typeof loader>();
 
-  return (
-    <ProjectsList
-      projects={projects.map(mapDeserializedDates("latestModificationDate"))}
-    ></ProjectsList>
-  );
+  const projectsWithDates = projects.map(mapDeserializedDates("latestModificationDate"));
+  projectsWithDates.sort(descendingByDatePropertyComparator("latestModificationDate"));
+
+  return <ProjectsList projects={projectsWithDates}></ProjectsList>;
 }
