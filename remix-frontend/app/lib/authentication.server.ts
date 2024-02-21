@@ -38,9 +38,12 @@ if (process.env["DANGER_ENABLE_FAKE_LOGIN_ON_DEV"] === "true") {
         throw Error("Could not login and/or register");
       }
       const user = await prisma.user.findFirst();
+      console.log(user);
       if (user === null) {
+        console.error("No user found in database. Fake login failed");
         throw Error("No user found.");
       }
+      console.log("what");
       return user;
     });
     authenticator.use(fakeLoginStrategy, fakeLoginOnDevStrategyName);
