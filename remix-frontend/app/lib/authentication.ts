@@ -14,3 +14,8 @@ export async function isThisUserLoggedIn(request: Request, user: { id: string })
   const userFromSession = await authenticator.isAuthenticated(request);
   return user.id === userFromSession?.id;
 }
+
+export async function isAnyUserFromListLoggedIn(request: Request, users: { id: string }[]) {
+  const userFromSession = await authenticator.isAuthenticated(request);
+  return users.some(({ id }) => id === userFromSession?.id);
+}

@@ -8,9 +8,12 @@
   "select-tags": "Tags",
   "select-other-users": "Co-Workers",
   "select-need-space": "I need project space",
+  "update-text": "Description",
+  "no-projects": "You don't have any projects yet. Create a project before creating a project update.",
   "save": "Save",
   "typeahead-tags": "Type to add tag...",
   "typeahead-users": "Type to add co-worker...",
   "missing-name-or-description": "Name and description must be provided!",
+  "missing-description": "Description must be provided!",
   "creation-failed": "Creation failed: "
 }

@@ -9,7 +9,7 @@ import invariant from "tiny-invariant";
 import { renderDate, withDeserializedDates } from "~/components/date-rendering";
 import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectTagList } from "~/components/tags";
-import { isThisUserLoggedIn } from "~/lib/authentication";
+import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { getProjectDetails } from "~/models/projects.server";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -18,13 +18,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const project = await getProjectDetails(params.projectId);
   invariant(project, `Project not found: ${params.projectId}`);
 
-  const isTrue = (b: boolean) => b;
-  const ownerLoggedIn = (
-    await Promise.all(project.owners.map((user) => isThisUserLoggedIn(request, user)))
-  ).some(isTrue);
-  const memberLoggedIn = (
-    await Promise.all(project.members.map((user) => isThisUserLoggedIn(request, user)))
-  ).some(isTrue);
+  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners);
+  const memberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
 
   return json({ project, ...conditionalShowEditButton(ownerLoggedIn || memberLoggedIn) });
 };

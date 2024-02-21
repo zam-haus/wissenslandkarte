@@ -123,3 +123,21 @@ export async function createProject(request: ProjectCreateRequest) {
     },
   });
 }
+
+type ProjectUpdateCreateRequest = {
+  projectId: string;
+  description: string;
+};
+export async function createProjectUpdate(request: ProjectUpdateCreateRequest) {
+  return prisma.project.update({
+    where: { id: request.projectId },
+    data: {
+      updates: {
+        create: {
+          creationDate: new Date(),
+          description: request.description,
+        },
+      },
+    },
+  });
+}
