@@ -35,3 +35,64 @@
 .innerContainer {
   overflow-y: auto;
 }
+
+.menuButton {
+  display: none;
+}
+
+@media only screen and (max-device-width: 768px) {
+  .menuButton {
+    display: inline;
+    position: relative;
+    z-index: 200;
+    max-height: 2rem;
+    margin: 10px;
+  }
+
+  .pageContainer {
+    height: 100vh;
+
+    display: grid;
+    grid-template-rows: min-content 1fr min-content;
+    grid-template-columns: auto;
+  }
+
+  .pageContainer > nav {
+    background-color: gray;
+
+    margin-right: 0px;
+    padding: 0.5rem;
+    padding-top: calc(3rem + 20px);
+
+    position: absolute;
+    top: 0;
+    left: -50vw;
+    transition: left 200ms;
+
+    width: 50vw;
+    height: 100vh;
+
+    z-index: 100;
+  }
+
+  .pageContainer > header {
+    grid-column: 1 / 2;
+
+    height: fit-content;
+
+    border-bottom: 1px solid black;
+
+    text-align: center;
+    padding: 0.5rem 0;
+
+    display: flex;
+  }
+
+  .pageContainer > header h1 {
+    flex-grow: 1;
+  }
+
+  .open {
+    left: 0px !important;
+  }
+}

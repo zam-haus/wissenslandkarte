@@ -1,5 +1,5 @@
 import { Link, useMatches } from "@remix-run/react";
-import type { PropsWithChildren } from "react";
+import { type PropsWithChildren, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ActionBar } from "./action-bar";
@@ -17,6 +17,8 @@ export function Page({
   children,
 }: PropsWithChildren<{ title: string; isLoggedIn: boolean }>) {
   const { t } = useTranslation("common");
+
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const matches = useMatches();
   const editButtonRequest = matches.find((route) => route.data?.showEditButtonInPageComponent);
@@ -45,6 +47,9 @@ export function Page({
   return (
     <div className={style.pageContainer}>
       <header>
+        <button className={style.menuButton} onClick={() => setMenuOpen(!menuOpen)}>
+          ☰
+        </button>
         <h1>{title}</h1>
         {editButtonRequest !== undefined ? (
           <Link to={editButtonRequest.pathname + "/edit"}>{t("toplevel-edit")}</Link>
@@ -52,7 +57,7 @@ export function Page({
           <></>
         )}
       </header>
-      <nav>
+      <nav className={menuOpen ? style.open : style.closed}>
         <ul>
           <li>
             <Link to="/">{t("nav-landing-page")}</Link>
