@@ -101,6 +101,7 @@ export async function getProjectDetails(projectId: Project["id"]): Promise<Proje
 type ProjectCreateRequest = {
   title: string;
   description: string;
+  mainPhoto?: string;
   owners: string[];
   coworkers: string[];
   tags: string[];
@@ -117,7 +118,7 @@ export async function createProject(request: ProjectCreateRequest) {
         connectOrCreate: request.tags.map((name) => ({ create: { name }, where: { name } })),
       },
       needsProjectArea: request.needProjectSpace,
-      mainPhoto: null,
+      mainPhoto: request.mainPhoto ?? null,
       creationDate: new Date(),
       latestModificationDate: new Date(),
     },

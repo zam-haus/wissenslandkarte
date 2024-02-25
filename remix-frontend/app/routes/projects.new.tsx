@@ -1,11 +1,19 @@
 import type { ActionArgs, LoaderArgs, TypedResponse } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import {
+  json,
+  redirect,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+} from "@remix-run/node";
 import { Form, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
+import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { MultiSelect } from "~/components/multi-select/multi-select";
 import { authenticator } from "~/lib/authentication.server";
+import { createS3UploadHandler, MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
 import { createProject } from "~/models/projects.server";
 import { getTagList } from "~/models/tags.server";
 import { getUserListFiltered } from "~/models/user.server";
@@ -20,11 +28,15 @@ export const action = async ({
 }: ActionArgs): Promise<TypedResponse<{ error: string; exception?: string }>> => {
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/" });
 
-  const formData = await request.formData();
+  const formData = await parseMultipartFormData(
+    request,
+    composeUploadHandlers(createS3UploadHandler(["main-photo"]), createMemoryUploadHandler())
+  );
   const title = (formData.get("title") ?? "").toString().trim();
   const description = (formData.get("description") ?? "").toString().trim();
   const coworkers = formData.getAll("coworkers").map((value) => value.toString());
   const tags = formData.getAll("tags").map((value) => value.toString());
+  const mainPhotoUrl = formData.get("main-photo");
   const needProjectSpace = Boolean(formData.get("needProjectSpace") ?? false);
 
   if (title.length === 0 || description.length === 0) {
@@ -33,10 +45,16 @@ export const action = async ({
     });
   }
 
+  const mainPhoto =
+    mainPhotoUrl === null || typeof mainPhotoUrl !== "string" || mainPhotoUrl?.length === 0
+      ? undefined
+      : mainPhotoUrl.toString();
+
   try {
     const result = await createProject({
       title,
       description,
+      mainPhoto,
       owners: [user.username],
       coworkers,
       tags,
@@ -66,7 +84,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     ignoreUsers ? Promise.resolve([]) : getUserListFiltered(usersFilter),
   ]);
 
-  return json({ tags, users });
+  return json({ tags, users, maxPhotoSize: MAX_UPLOAD_SIZE_IN_BYTE });
 };
 
 export const handle = {
@@ -75,7 +93,7 @@ export const handle = {
 
 export default function NewProject() {
   const currentPath = "/projects/new";
-  const { tags, users } = useLoaderData<typeof loader>();
+  const { tags, users, maxPhotoSize } = useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
   const [availableTags, setAvailableTags] = useState(tags);
@@ -90,6 +108,16 @@ export default function NewProject() {
     tagFetcher.load(`${currentPath}?tagsFilter=${filter}&ignoreUsers=true`);
   const loadMoreUsers = (filter: string) =>
     userFetcher.load(`${currentPath}?usersFilter=${filter}&ignoreTags=true`);
+
+  const [mainPhotoTooLarge, setMainPhotoTooLarge] = useState(false);
+  const resetSizeCheckWarning = () => setMainPhotoTooLarge(false);
+  const sizeCheck = (event: ChangeEvent<HTMLInputElement>) => {
+    const input = event.target;
+    if (input.files !== null && [...input.files].some((file) => file.size > maxPhotoSize)) {
+      setMainPhotoTooLarge(true);
+      input.value = "";
+    }
+  };
 
   useEffect(() => {
     setAvailableTags((availableTags) =>
@@ -117,21 +145,38 @@ export default function NewProject() {
         </div>
       ) : null}
 
-      <Form method="post" action={currentPath} className={style.verticalForm}>
+      <Form
+        method="post"
+        action={currentPath}
+        className={style.verticalForm}
+        encType="multipart/form-data"
+      >
         <label>
-          {t("project-name")}
+          {t("project-name")} {t("required")}
           <input name="title" type="text" required />
         </label>
 
         <label>
-          {t("project-description")}
+          {t("project-description")} {t("required")}
           <textarea name="description" required></textarea>
+        </label>
+
+        <label>
+          {t("select-main-photo")} {t("required")}
+          <input
+            type="file"
+            name="main-photo"
+            accept="image/*"
+            onClick={resetSizeCheckWarning}
+            onChange={sizeCheck}
+          />
+          {mainPhotoTooLarge ? t("main-photo-too-large") : ""}
         </label>
 
         {userFetcher.state == "loading" ? "Loading..." : ""}
         <MultiSelect
           inputPlaceholder={t("typeahead-users")}
-          inputLabel={t("select-other-users")}
+          inputLabel={`${t("select-other-users")} ${t("optional")}`}
           inputName="coworkers"
           chosenValues={chosenUsers}
           valuesToSuggest={availableUsers.map(({ username }) => username)}
@@ -147,7 +192,7 @@ export default function NewProject() {
         {tagFetcher.state == "loading" ? "Loading..." : ""}
         <MultiSelect
           inputPlaceholder={t("typeahead-tags")}
-          inputLabel={t("select-tags")}
+          inputLabel={`${t("select-tags")} ${t("optional")}`}
           inputName="tags"
           chosenValues={chosenTags}
           onFilterInput={(filterInput) => loadMoreTags(filterInput)}

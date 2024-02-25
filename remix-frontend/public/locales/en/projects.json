@@ -5,6 +5,8 @@
   "project-update-headline": "Update from {{date}}",
   "project-name": "Project name",
   "project-description": "Description",
+  "select-main-photo": "Project main photo",
+  "main-photo-too-large": "Main photo may be at most 10MB",
   "select-tags": "Tags",
   "select-other-users": "Co-Workers",
   "select-need-space": "I need project space",
@@ -15,5 +17,7 @@
   "typeahead-users": "Type to add co-worker...",
   "missing-name-or-description": "Name and description must be provided!",
   "missing-description": "Description must be provided!",
-  "creation-failed": "Creation failed: "
+  "creation-failed": "Creation failed: ",
+  "required": "(required",
+  "optional": "(optional)"
 }
