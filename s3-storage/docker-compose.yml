@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  minio:
+    image: quay.io/minio/minio
+    command: server --console-address ":9001" /data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    # networks:
+    #   - minionetwork
+    volumes:
+      - "./data:/data"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_REGION=${S3_STORAGE_REGION}
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  minio-init:
+    image: quay.io/minio/minio
+    depends_on:
+      minio:
+        condition: service_healthy
+        restart: false
+    entrypoint: >
+      /bin/sh -c '
+        /usr/bin/mc config host add myminio http://minio:9000 "${MINIO_ROOT_USER}" "${MINIO_ROOT_PASSWORD}";
+        /usr/bin/mc mb "myminio/${S3_STORAGE_BUCKET}";
+        /usr/bin/mc admin user svcacct add --access-key "${S3_STORAGE_ACCESS_KEY}" --secret-key "${S3_STORAGE_SECRET_KEY}"  myminio "${MINIO_ROOT_USER}"
+        echo "{\"Statement\":[{\"Action\":[\"s3:GetObject\"],\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Resource\":[\"arn:aws:s3:::${S3_STORAGE_BUCKET}/*\"]}],\"Version\":\"2012-10-17\"}" > policy.json;
+        /usr/bin/mc anonymous set-json policy.json myminio/${S3_STORAGE_BUCKET};
+      '
+#      /usr/bin/mc policy download wlkminio/${S3_STORAGE_BUCKET};
+# networks:
+#   minionetwork:
+#     driver: bridge
+
+# volumes:
+#   minio_data:
+#     driver: local
+
+
+# mc config host add myminio http://minio:9000 minionmaster TEzNi00NGZmLTkzNDAtOTkwMjt
+# mc admin user svcacct add --access-key "sjv9ywcOcN5ojLa8a6Az" --secret-key "B8UCJkos7BTRmPDhA6l4TRQ9bwurLIkysklS3jC6"  myminio minionmaster
