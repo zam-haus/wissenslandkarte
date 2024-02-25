@@ -2,10 +2,10 @@ import type { User } from "@prisma/client";
 import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { KeycloakStrategy } from "remix-keycloak";
-import invariant from "tiny-invariant";
 
 import { prisma } from "~/db.server";
 
+import { getFromEnv, getFromEnvOrThrow } from "./environment";
 import { sessionStorage } from "./session";
 
 export const zamKeycloakStrategyName = "zam-keycloak";
@@ -15,17 +15,11 @@ export const enum LoginErrorReason {
   emailNotVerified = "emailNotVerified",
 }
 
-function getFromEnvOrThrow(key: string): string {
-  const value = process.env[key];
-  invariant(value, `Missing authentication config environent variable ${key}`);
-  return value;
-}
-
 export const authenticator = new Authenticator<User>(sessionStorage, {
   throwOnError: true,
 });
 
-if (process.env["DANGER_ENABLE_FAKE_LOGIN_ON_DEV"] === "true") {
+if (getFromEnv("DANGER_ENABLE_FAKE_LOGIN_ON_DEV", Boolean)) {
   if (process.env.NODE_ENV !== "development") {
     console.warn(
       "WARNING: DANGER_ENABLE_FAKE_LOGIN_ON_DEV should not be set in non-dev mode. Ignoring."
