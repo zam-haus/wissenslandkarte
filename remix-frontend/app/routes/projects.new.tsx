@@ -119,6 +119,17 @@ export default function NewProject() {
     }
   };
 
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+
+  const newPhotoSelected = (event: ChangeEvent<HTMLInputElement>) => {
+    sizeCheck(event);
+
+    const input = event.target;
+    if (input.files !== null) {
+      setPhotoPreviews([...input.files].map((file) => URL.createObjectURL(file)));
+    }
+  };
+
   useEffect(() => {
     setAvailableTags((availableTags) =>
       [...availableTags, ...(tagFetcher.data?.tags ?? [])].sort(
@@ -168,10 +179,13 @@ export default function NewProject() {
             name="main-photo"
             accept="image/*"
             onClick={resetSizeCheckWarning}
-            onChange={sizeCheck}
+            onChange={newPhotoSelected}
           />
           {mainPhotoTooLarge ? t("main-photo-too-large") : ""}
         </label>
+        {photoPreviews.map((data) => (
+          <img key={data} src={data} alt={t("main-photo-preview")} className={style.imagePreview} />
+        ))}
 
         {userFetcher.state == "loading" ? "Loading..." : ""}
         <MultiSelect

@@ -7,6 +7,7 @@
   "project-description": "Beschreibung",
   "select-main-photo": "Hauptfoto",
   "main-photo-too-large": "Hauptfoto darf maximal 10MB groß sein",
+  "main-photo-preview": "Hauptfoto Vorschau",
   "select-tags": "Tags",
   "select-other-users": "Mitbearbeiter",
   "select-need-space": "Ich brauche Projektfläche",

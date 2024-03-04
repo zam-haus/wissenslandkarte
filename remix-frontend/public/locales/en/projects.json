@@ -7,6 +7,7 @@
   "project-description": "Description",
   "select-main-photo": "Project main photo",
   "main-photo-too-large": "Main photo may be at most 10MB",
+  "main-photo-preview": "Main photo preview",
   "select-tags": "Tags",
   "select-other-users": "Co-Workers",
   "select-need-space": "I need project space",
