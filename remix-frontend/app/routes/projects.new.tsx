@@ -8,10 +8,11 @@ import {
 } from "@remix-run/node";
 import { Form, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import type { ChangeEvent } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { MultiSelect } from "~/components/multi-select/multi-select";
+import { TagSelect } from "~/components/form-input/tag-select";
+import { UserSelect } from "~/components/form-input/user-select";
 import { authenticator } from "~/lib/authentication.server";
 import { createS3UploadHandler, MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
 import { createProject } from "~/models/projects.server";
@@ -96,18 +97,8 @@ export default function NewProject() {
   const { tags, users, maxPhotoSize } = useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
-  const [availableTags, setAvailableTags] = useState(tags);
-  const [availableUsers, setAvailableUsers] = useState(users);
-
-  const [chosenTags, setChosenTags] = useState<string[]>([]);
-  const [chosenUsers, setChosenUsers] = useState<string[]>([]);
-
   const tagFetcher = useFetcher<typeof loader>();
   const userFetcher = useFetcher<typeof loader>();
-  const loadMoreTags = (filter: string) =>
-    tagFetcher.load(`${currentPath}?tagsFilter=${filter}&ignoreUsers=true`);
-  const loadMoreUsers = (filter: string) =>
-    userFetcher.load(`${currentPath}?usersFilter=${filter}&ignoreTags=true`);
 
   const [mainPhotoTooLarge, setMainPhotoTooLarge] = useState(false);
   const resetSizeCheckWarning = () => setMainPhotoTooLarge(false);
@@ -129,22 +120,6 @@ export default function NewProject() {
       setPhotoPreviews([...input.files].map((file) => URL.createObjectURL(file)));
     }
   };
-
-  useEffect(() => {
-    setAvailableTags((availableTags) =>
-      [...availableTags, ...(tagFetcher.data?.tags ?? [])].sort(
-        (a, b) => (b._count.projects ?? 0) - (a._count.projects ?? 0)
-      )
-    );
-  }, [tagFetcher.data]);
-  useEffect(() => {
-    setAvailableUsers((availableUsers) =>
-      [...availableUsers, ...(userFetcher.data?.users ?? [])].sort((a, b) =>
-        a.username.localeCompare(b.username)
-      )
-    );
-  }, [userFetcher.data]);
-
   const actionData = useActionData<typeof action>();
 
   return (
@@ -187,38 +162,23 @@ export default function NewProject() {
           <img key={data} src={data} alt={t("main-photo-preview")} className={style.imagePreview} />
         ))}
 
-        {userFetcher.state == "loading" ? "Loading..." : ""}
-        <MultiSelect
-          inputPlaceholder={t("typeahead-users")}
-          inputLabel={`${t("select-other-users")} ${t("optional")}`}
-          inputName="coworkers"
-          chosenValues={chosenUsers}
-          valuesToSuggest={availableUsers.map(({ username }) => username)}
-          onFilterInput={(filterInput) => loadMoreUsers(filterInput)}
-          onValueChosen={(newUser) => {
-            setChosenUsers([...chosenUsers, newUser]);
-          }}
-          onValueRemoved={(removedUser) =>
-            setChosenUsers(chosenUsers.filter((user) => user != removedUser))
+        <UserSelect
+          initiallyAvailableUsers={users}
+          userFetcher={userFetcher}
+          t={t}
+          fetchMoreUsers={(filter: string) =>
+            userFetcher.load(`${currentPath}?usersFilter=${filter}&ignoreTags=true`)
           }
-        ></MultiSelect>
+        />
 
-        {tagFetcher.state == "loading" ? "Loading..." : ""}
-        <MultiSelect
-          inputPlaceholder={t("typeahead-tags")}
-          inputLabel={`${t("select-tags")} ${t("optional")}`}
-          inputName="tags"
-          chosenValues={chosenTags}
-          onFilterInput={(filterInput) => loadMoreTags(filterInput)}
-          valuesToSuggest={availableTags.map(({ name }) => name)}
-          allowAddingNew={true}
-          onValueChosen={(newValue) => {
-            setChosenTags([...chosenTags, newValue]);
-          }}
-          onValueRemoved={(removedValue) =>
-            setChosenTags(chosenTags.filter((value) => value != removedValue))
+        <TagSelect
+          initiallyAvailableTags={tags}
+          tagFetcher={tagFetcher}
+          t={t}
+          fetchMoreTags={(filter: string) =>
+            tagFetcher.load(`${currentPath}?tagsFilter=${filter}&ignoreUsers=true`)
           }
-        ></MultiSelect>
+        />
 
         <label>
           {t("select-need-space")} <input type="checkbox" name="needProjectSpace" />
