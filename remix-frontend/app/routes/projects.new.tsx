@@ -7,10 +7,9 @@ import {
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
 import { Form, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
-import type { ChangeEvent } from "react";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { ImageSelect } from "~/components/form-input/image-select";
 import { TagSelect } from "~/components/form-input/tag-select";
 import { UserSelect } from "~/components/form-input/user-select";
 import { authenticator } from "~/lib/authentication.server";
@@ -99,27 +98,6 @@ export default function NewProject() {
 
   const tagFetcher = useFetcher<typeof loader>();
   const userFetcher = useFetcher<typeof loader>();
-
-  const [mainPhotoTooLarge, setMainPhotoTooLarge] = useState(false);
-  const resetSizeCheckWarning = () => setMainPhotoTooLarge(false);
-  const sizeCheck = (event: ChangeEvent<HTMLInputElement>) => {
-    const input = event.target;
-    if (input.files !== null && [...input.files].some((file) => file.size > maxPhotoSize)) {
-      setMainPhotoTooLarge(true);
-      input.value = "";
-    }
-  };
-
-  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
-
-  const newPhotoSelected = (event: ChangeEvent<HTMLInputElement>) => {
-    sizeCheck(event);
-
-    const input = event.target;
-    if (input.files !== null) {
-      setPhotoPreviews([...input.files].map((file) => URL.createObjectURL(file)));
-    }
-  };
   const actionData = useActionData<typeof action>();
 
   return (
@@ -147,20 +125,12 @@ export default function NewProject() {
           <textarea name="description" required></textarea>
         </label>
 
-        <label>
-          {t("select-main-photo")} {t("required")}
-          <input
-            type="file"
-            name="main-photo"
-            accept="image/*"
-            onClick={resetSizeCheckWarning}
-            onChange={newPhotoSelected}
-          />
-          {mainPhotoTooLarge ? t("main-photo-too-large") : ""}
-        </label>
-        {photoPreviews.map((data) => (
-          <img key={data} src={data} alt={t("main-photo-preview")} className={style.imagePreview} />
-        ))}
+        <ImageSelect
+          name="main-photo"
+          t={t}
+          label={`${t("select-main-photo")} ${t("required")}`}
+          maxPhotoSize={maxPhotoSize}
+        />
 
         <UserSelect
           initiallyAvailableUsers={users}
