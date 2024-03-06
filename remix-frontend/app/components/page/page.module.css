@@ -50,7 +50,7 @@
   }
 
   .pageContainer {
-    height: 100vh;
+    height: 100dvh;
 
     display: grid;
     grid-template-rows: min-content 1fr min-content;
@@ -70,7 +70,7 @@
     transition: left 200ms;
 
     width: 50vw;
-    height: 100vh;
+    height: 100dvh;
 
     z-index: 100;
   }
