@@ -6,6 +6,7 @@
   "project-name": "Projektname",
   "project-description": "Beschreibung",
   "select-main-photo": "Hauptfoto",
+  "file-system-suffix": "(Galerie)",
   "camera-suffix": "(Kamera)",
   "main-photo-too-large": "Hauptfoto darf maximal 10MB groß sein",
   "main-photo-preview": "Hauptfoto Vorschau",

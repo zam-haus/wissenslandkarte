@@ -58,7 +58,7 @@ export function ImageSelect({
   return (
     <>
       <label>
-        {label} {hasCamera ? "(Gallery)" : ""}
+        {label} {hasCamera ? t("file-system-suffix") : ""}
         <input
           type="file"
           name={nameFileSystem}
@@ -70,7 +70,7 @@ export function ImageSelect({
       </label>
       {hasCamera ? (
         <label>
-          {label} (Camera)
+          {label} {t("camera-suffix")}
           <input
             type="file"
             name={nameCamera}
