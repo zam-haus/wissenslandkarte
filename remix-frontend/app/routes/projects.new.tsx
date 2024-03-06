@@ -30,13 +30,18 @@ export const action = async ({
 
   const formData = await parseMultipartFormData(
     request,
-    composeUploadHandlers(createS3UploadHandler(["main-photo"]), createMemoryUploadHandler())
+    composeUploadHandlers(
+      createS3UploadHandler(["main-photo"]),
+      createS3UploadHandler(["main-photo-camera"]),
+      createMemoryUploadHandler()
+    )
   );
   const title = (formData.get("title") ?? "").toString().trim();
   const description = (formData.get("description") ?? "").toString().trim();
   const coworkers = formData.getAll("coworkers").map((value) => value.toString());
   const tags = formData.getAll("tags").map((value) => value.toString());
   const mainPhotoUrl = formData.get("main-photo");
+  const mainPhotoCameraUrl = formData.get("main-photo-camera");
   const needProjectSpace = Boolean(formData.get("needProjectSpace") ?? false);
 
   if (title.length === 0 || description.length === 0) {
@@ -45,16 +50,19 @@ export const action = async ({
     });
   }
 
-  const mainPhoto =
-    mainPhotoUrl === null || typeof mainPhotoUrl !== "string" || mainPhotoUrl?.length === 0
-      ? undefined
-      : mainPhotoUrl.toString();
+  const urlFormDataToString = (url: FormDataEntryValue | null) =>
+    url === null || typeof url !== "string" || url?.length === 0 ? undefined : url.toString();
+
+  const mainPhoto = urlFormDataToString(mainPhotoUrl);
+  const mainPhotoCamera = urlFormDataToString(mainPhotoCameraUrl);
+
+  console.log(mainPhoto, mainPhotoCamera);
 
   try {
     const result = await createProject({
       title,
       description,
-      mainPhoto,
+      mainPhoto: mainPhotoCamera ?? mainPhoto,
       owners: [user.username],
       coworkers,
       tags,
@@ -126,7 +134,8 @@ export default function NewProject() {
         </label>
 
         <ImageSelect
-          name="main-photo"
+          nameFileSystem="main-photo"
+          nameCamera="main-photo-camera"
           t={t}
           label={`${t("select-main-photo")} ${t("required")}`}
           maxPhotoSize={maxPhotoSize}

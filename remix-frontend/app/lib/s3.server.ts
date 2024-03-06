@@ -25,17 +25,38 @@ const s3 = new AWS.S3({
     : {}),
 });
 
+const allowedSuffixes = [
+  "apng",
+  "avif",
+  "gif",
+  "jpg",
+  "jpeg",
+  "jfif",
+  "pjpeg",
+  "pjp",
+  "png",
+  "svg",
+  "webp",
+];
+
 export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandler {
   return async ({ name, data, contentType, filename }) => {
+    console.log("checking ", name);
     if (!formFieldsToUpload.includes(name)) {
+      console.log("doesn't match name", formFieldsToUpload, name);
       return undefined;
     }
-    if (!contentType.startsWith("image/")) {
+    if (!allowedSuffixes.some((suffix) => filename?.endsWith(suffix))) {
+      return undefined;
+    }
+    if (!contentType.startsWith("image/") && !contentType.startsWith("application/octet-stream")) {
+      console.log("doesn't match type", contentType, "image/");
       //TODO: check if file is really an image
       return undefined;
     }
 
     const newFilename = createValidFilename(filename);
+    console.log("uploading to", newFilename);
     try {
       const uploadedFileLocation = await uploadStreamToS3(data, newFilename, contentType);
       if (uploadedFileLocation.success) {
@@ -98,19 +119,6 @@ function createValidFilename(filename: string | undefined) {
 
   const elements = filename.toLowerCase().split(".");
   const [suffix, ..._] = elements.reverse();
-  const allowedSuffixes = [
-    "apng",
-    "avif",
-    "gif",
-    "jpg",
-    "jpeg",
-    "jfif",
-    "pjpeg",
-    "pjp",
-    "png",
-    "svg",
-    "webp",
-  ];
   if (!allowedSuffixes.includes(suffix)) {
     return uuid;
   }

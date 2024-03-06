@@ -6,6 +6,7 @@
   "project-name": "Project name",
   "project-description": "Description",
   "select-main-photo": "Project main photo",
+  "camera-suffix": "(camera)",
   "main-photo-too-large": "Main photo may be at most 10MB",
   "main-photo-preview": "Main photo preview",
   "select-tags": "Tags",
