@@ -1,0 +1,9 @@
+.attachments {
+  display: flex;
+  gap: 15px;
+  list-style: none;
+}
+
+.attachments img {
+  max-width: 150px;
+}

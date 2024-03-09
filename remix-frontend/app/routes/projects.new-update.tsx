@@ -1,12 +1,20 @@
 import type { ActionArgs, LoaderArgs, TypedResponse } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import {
+  json,
+  redirect,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+} from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { mapDeserializedDates } from "~/components/date-rendering";
+import { ImageSelect } from "~/components/form-input/image-select";
 import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
+import { createS3UploadHandler, MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
 import {
   createProjectUpdate,
   getProjectDetails,
@@ -21,9 +29,20 @@ const CREATE_FAILED = "CREATE_FAILED";
 export const action = async ({
   request,
 }: ActionArgs): Promise<TypedResponse<{ error: string; exception?: string }>> => {
-  const formData = await request.formData();
+  const urlFormDataToString = (url: FormDataEntryValue | null) =>
+    url === null || typeof url !== "string" || url?.length === 0 ? undefined : url.toString();
+
+  const formData = await parseMultipartFormData(
+    request,
+    composeUploadHandlers(createS3UploadHandler(["photo-attachments"]), createMemoryUploadHandler())
+  );
   const projectId = (formData.get("projectId") ?? "").toString().trim();
   const description = (formData.get("description") ?? "").toString().trim();
+
+  const photoAttachmentUrls = formData
+    .getAll("photo-attachments")
+    .map(urlFormDataToString)
+    .filter((s): s is string => s !== undefined);
 
   if (description.length === 0) {
     return json({
@@ -38,7 +57,7 @@ export const action = async ({
       exception: "No such project",
     });
   }
-  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners);
+  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners); // TODO: at this point the file is already uploaded. we have to authorize the user earlier.
   const memberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
   if (!ownerLoggedIn && !memberLoggedIn) {
     return redirect("/");
@@ -48,6 +67,7 @@ export const action = async ({
     const result = await createProjectUpdate({
       description,
       projectId,
+      photoAttachmentUrls,
     });
     return redirect(`/projects/${result.id}`);
   } catch (e: any) {
@@ -63,7 +83,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const projects = await getProjectsByUser(user.username);
 
-  return json({ projects });
+  return json({ projects, maxPhotoSize: MAX_UPLOAD_SIZE_IN_BYTE });
 };
 
 export const handle = {
@@ -72,12 +92,12 @@ export const handle = {
 
 export default function NewProject() {
   const currentPath = "/projects/new-update";
-  const { projects } = useLoaderData<typeof loader>();
+  const { projects, maxPhotoSize } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const { t } = useTranslation("projects");
 
   if (projects.length === 0) {
-    return <main>t("no-projects");</main>;
+    return <main>{t("no-projects")}</main>;
   }
 
   const projectsWithDates = projects.map(mapDeserializedDates("latestModificationDate"));
@@ -92,7 +112,12 @@ export default function NewProject() {
         </div>
       ) : null}
 
-      <Form method="post" action={currentPath} className={style.verticalForm}>
+      <Form
+        method="post"
+        action={currentPath}
+        encType="multipart/form-data"
+        className={style.verticalForm}
+      >
         <label>
           {t("project-name")}
           <select name="projectId" required>
@@ -103,6 +128,14 @@ export default function NewProject() {
             ))}
           </select>
         </label>
+
+        <ImageSelect
+          name="photo-attachments"
+          t={t}
+          label={`${t("select-photo")} ${t("optional")}`}
+          maxPhotoSize={maxPhotoSize}
+          multiple={true}
+        />
 
         <label>
           {t("update-text")}

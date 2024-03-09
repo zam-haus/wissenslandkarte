@@ -1,4 +1,5 @@
-import type { Attachment, Project, ProjectUpdate, Tag, User } from "@prisma/client";
+import type { Project } from "@prisma/client";
+import type { AttachmentType } from "prisma/fake-data-generators";
 
 import { prisma } from "~/db.server";
 
@@ -59,16 +60,7 @@ export async function searchProjects(tags: string[]): Promise<ProjectList[]> {
   });
 }
 
-type UsernameList = Pick<User, "id" | "username">[];
-type ProjectDetails = Omit<Project, "needsProjectArea"> & {
-  // TODO: Could this be inferred from a built-in prisma type?
-  owners: UsernameList;
-  members: UsernameList;
-  updates: Omit<ProjectUpdate, "id" | "projectId">[];
-  tags: Tag[];
-  attachments: Attachment[];
-};
-export async function getProjectDetails(projectId: Project["id"]): Promise<ProjectDetails | null> {
+export async function getProjectDetails(projectId: Project["id"]) {
   return prisma.project.findUnique({
     where: { id: projectId },
     select: {
@@ -85,12 +77,7 @@ export async function getProjectDetails(projectId: Project["id"]): Promise<Proje
         select: {
           description: true,
           creationDate: true,
-          attachments: {
-            select: {
-              type: true,
-              url: true,
-            },
-          },
+          attachments: true,
         },
       },
       description: true,
@@ -128,6 +115,7 @@ export async function createProject(request: ProjectCreateRequest) {
 type ProjectUpdateCreateRequest = {
   projectId: string;
   description: string;
+  photoAttachmentUrls: string[];
 };
 export async function createProjectUpdate(request: ProjectUpdateCreateRequest) {
   return prisma.project.update({
@@ -137,6 +125,14 @@ export async function createProjectUpdate(request: ProjectUpdateCreateRequest) {
         create: {
           creationDate: new Date(),
           description: request.description,
+          attachments: {
+            create: request.photoAttachmentUrls.map((url) => ({
+              type: "image" as AttachmentType,
+              url,
+              text: "",
+              creationDate: new Date(),
+            })),
+          },
         },
       },
     },

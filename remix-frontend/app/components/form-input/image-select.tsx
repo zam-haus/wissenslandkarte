@@ -158,9 +158,9 @@ export function ImageSelect({
           />
         </label>
       ) : null}
-      {fileTooLarge ? t("main-photo-too-large") : ""}
+      {fileTooLarge ? t("photo-too-large") : ""}
       {photoPreviews.map((url) => (
-        <img key={url} src={url} alt={t("main-photo-preview")} className={style.imagePreview} />
+        <img key={url} src={url} alt={t("photo-preview")} className={style.imagePreview} /> // TODO: Add text input for alt text
       ))}
     </>
   );

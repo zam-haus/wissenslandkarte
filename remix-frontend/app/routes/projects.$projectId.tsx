@@ -6,11 +6,17 @@ import { isAttachmentType } from "prisma/fake-data-generators";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
-import { renderDate, withDeserializedDates } from "~/components/date-rendering";
+import {
+  mapDeserializedDates,
+  renderDate,
+  withDeserializedDates,
+} from "~/components/date-rendering";
 import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectTagList } from "~/components/tags";
 import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { getProjectDetails } from "~/models/projects.server";
+
+import style from "./projects.$projectId.module.css";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   invariant(params.projectId, `params.slug is required`);
@@ -58,7 +64,7 @@ export default function Project() {
 
       <ProjectTagList className="tags" tags={project.tags} />
 
-      <ul className="attachments">
+      <ul className={style.attachments}>
         {attachments.map((attachment) => (
           <li key={attachment.id}>
             <AttachmentEntry {...attachment} />
@@ -75,6 +81,14 @@ export default function Project() {
               })}
             </h4>
             {update.description}
+
+            <ul className={style.attachments}>
+              {update.attachments.map(mapDeserializedDates("creationDate")).map((attachment) => (
+                <li key={attachment.id}>
+                  <AttachmentEntry {...attachment} />
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>

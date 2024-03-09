@@ -6,10 +6,11 @@
   "project-name": "Project name",
   "project-description": "Description",
   "select-main-photo": "Project main photo",
+  "select-photo": "Photo",
   "file-system-suffix": "(gallery)",
   "camera-suffix": "(camera)",
-  "main-photo-too-large": "Main photo may be at most 10MB",
-  "main-photo-preview": "Main photo preview",
+  "photo-too-large": "Photo may be at most 10MB",
+  "photo-preview": "Photo preview",
   "select-tags": "Tags",
   "select-other-users": "Co-Workers",
   "select-need-space": "I need project space",
@@ -23,5 +24,5 @@
   "creation-failed": "Creation failed: ",
   "required": "(required",
   "optional": "(optional)",
-  "javascript-warning": "Image upload requires javascript to be enabled."
+  "noscript-warning": "Image upload requires javascript to be enabled."
 }

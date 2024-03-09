@@ -6,10 +6,11 @@
   "project-name": "Projektname",
   "project-description": "Beschreibung",
   "select-main-photo": "Hauptfoto",
+  "select-photo": "Foto",
   "file-system-suffix": "(Galerie)",
   "camera-suffix": "(Kamera)",
-  "main-photo-too-large": "Hauptfoto darf maximal 10MB groß sein",
-  "main-photo-preview": "Hauptfoto Vorschau",
+  "photo-too-large": "Foto darf maximal 10MB groß sein",
+  "photo-preview": "Foto Vorschau",
   "select-tags": "Tags",
   "select-other-users": "Mitbearbeiter",
   "select-need-space": "Ich brauche Projektfläche",
@@ -23,5 +24,5 @@
   "creation-failed": "Erstellung fehlgeschlagen: ",
   "required": "(erforderlich)",
   "optional": "(optional)",
-  "javascript-warning": "Bildupload erfordert javascript."
+  "noscript-warning": "Bildupload erfordert javascript."
 }
