@@ -1,27 +1,19 @@
 import type { TFunction } from "i18next";
-import type { ChangeEvent, RefObject } from "react";
-import { useMemo, useRef, useState } from "react";
+import type { ChangeEvent } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useHydrated } from "remix-utils";
 
 import style from "./image-select.module.css";
 
-export function ImageSelect({
-  label,
-  nameFileSystem,
-  nameCamera,
-  maxPhotoSize,
-  t,
+function useFileUploadHelpers({
+  maxFileSize,
+  clearInputWhenSizeExceeded,
 }: {
-  label: string;
-  nameFileSystem: string;
-  nameCamera: string;
-  maxPhotoSize: number;
-  t: TFunction<"projects", undefined>;
+  maxFileSize: number;
+  clearInputWhenSizeExceeded?: boolean;
 }) {
-  const [mainPhotoTooLarge, setMainPhotoTooLarge] = useState(false);
-  const resetSizeCheckWarning = () => setMainPhotoTooLarge(false);
-
-  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [fileTooLarge, setFileTooLarge] = useState(false);
+  const resetSizeCheckWarning = () => setFileTooLarge(false);
 
   const isHydrated = useHydrated();
   const hasCamera = useMemo(
@@ -29,43 +21,129 @@ export function ImageSelect({
     [isHydrated]
   );
 
-  const fileSystemInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-
-  const sizeCheck = (event: ChangeEvent<HTMLInputElement>) => {
+  const checkFileSize = (event: ChangeEvent<HTMLInputElement>) => {
     const input = event.target;
-    if (input.files !== null && [...input.files].some((file) => file.size > maxPhotoSize)) {
-      setMainPhotoTooLarge(true);
+    const sizeExceeded =
+      input.files !== null && [...input.files].some((file) => file.size > maxFileSize);
+
+    setFileTooLarge(sizeExceeded);
+    if (sizeExceeded && clearInputWhenSizeExceeded) {
       input.value = "";
     }
+
+    return sizeExceeded;
   };
 
-  const newPhotoSelected = (
-    event: ChangeEvent<HTMLInputElement>,
-    refToReset: RefObject<HTMLInputElement>
-  ) => {
-    sizeCheck(event);
+  const removeFileFromInput = useCallback((input: HTMLInputElement, index: number) => {
+    const { files } = input;
+    if (files === null) {
+      return;
+    }
+    const newFilesList = new DataTransfer();
 
-    const input = event.target;
+    for (let i = 0; i < files.length; i++) {
+      if (i === index) {
+        continue;
+      }
+      newFilesList.items.add(files[i]);
+    }
+
+    input.files = newFilesList.files;
+  }, []);
+
+  const addFilesToInput = useCallback((input: HTMLInputElement, newFiles: FileList) => {
+    const newFilesList = new DataTransfer();
+
     if (input.files !== null) {
-      setPhotoPreviews([...input.files].map((file) => URL.createObjectURL(file)));
-      if (refToReset.current !== null) {
-        refToReset.current.value = "";
+      for (let i = 0; i < input.files.length; i++) {
+        newFilesList.items.add(input.files[i]);
       }
     }
+    for (let i = 0; i < newFiles.length; i++) {
+      const current = newFiles[i];
+      newFilesList.items.add(
+        new File([current], current.name, {
+          type: current.type,
+          lastModified: current.lastModified,
+        })
+      ); // TODO: prevent file being added twice
+    }
+
+    input.files = newFilesList.files;
+  }, []);
+
+  return {
+    fileTooLarge,
+    resetSizeCheckWarning,
+    hasCamera,
+    checkFileSize,
+    removeFileFromInput,
+    addFilesToInput,
+  };
+}
+
+export function ImageSelect({
+  label,
+  name,
+  maxPhotoSize,
+  multiple,
+  t,
+}: {
+  label: string;
+  name: string;
+  maxPhotoSize: number;
+  multiple?: boolean;
+  t: TFunction<"projects", undefined>;
+}) {
+  const { fileTooLarge, resetSizeCheckWarning, hasCamera, checkFileSize, addFilesToInput } =
+    useFileUploadHelpers({
+      maxFileSize: maxPhotoSize,
+      clearInputWhenSizeExceeded: true,
+    });
+
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+
+  const actualFileUploadRef = useRef<HTMLInputElement>(null);
+
+  const newPhotoSelected = (event: ChangeEvent<HTMLInputElement>) => {
+    checkFileSize(event);
+
+    const selectInput = event.target;
+    const uploadInput = actualFileUploadRef.current;
+    if (selectInput.files === null || selectInput.files.length === 0 || uploadInput === null) {
+      return;
+    }
+
+    if (!multiple) {
+      uploadInput.value = "";
+    }
+
+    addFilesToInput(uploadInput, selectInput.files);
+    const newFileUrls = Array.from(uploadInput.files ?? []).map(
+      (file) => URL.createObjectURL(file) // TODO: This file needs to be released to avoid memleak
+    );
+
+    if (multiple) {
+      setPhotoPreviews((photoPreviews) => [...photoPreviews, ...newFileUrls]);
+    } else {
+      setPhotoPreviews(newFileUrls);
+    }
+
+    selectInput.value = "";
   };
 
   return (
     <>
+      <noscript>{t("noscript-warning")}</noscript>
+      <input type="file" name={name} ref={actualFileUploadRef} />
       <label>
         {label} {hasCamera ? t("file-system-suffix") : ""}
         <input
           type="file"
-          name={nameFileSystem}
           accept="image/*"
+          multiple={multiple}
           onClick={resetSizeCheckWarning}
-          onChange={(event) => newPhotoSelected(event, cameraInputRef)}
-          ref={fileSystemInputRef}
+          onChange={(event) => newPhotoSelected(event)}
         />
       </label>
       {hasCamera ? (
@@ -73,18 +151,16 @@ export function ImageSelect({
           {label} {t("camera-suffix")}
           <input
             type="file"
-            name={nameCamera}
             capture="environment"
             accept="image/*"
             onClick={resetSizeCheckWarning}
-            onChange={(event) => newPhotoSelected(event, fileSystemInputRef)}
-            ref={cameraInputRef}
+            onChange={(event) => newPhotoSelected(event)}
           />
         </label>
       ) : null}
-      {mainPhotoTooLarge ? t("main-photo-too-large") : ""}
-      {photoPreviews.map((data) => (
-        <img key={data} src={data} alt={t("main-photo-preview")} className={style.imagePreview} />
+      {fileTooLarge ? t("main-photo-too-large") : ""}
+      {photoPreviews.map((url) => (
+        <img key={url} src={url} alt={t("main-photo-preview")} className={style.imagePreview} />
       ))}
     </>
   );

@@ -22,5 +22,6 @@
   "missing-description": "Beschreibung muss ausgefüllt werden!",
   "creation-failed": "Erstellung fehlgeschlagen: ",
   "required": "(erforderlich)",
-  "optional": "(optional)"
+  "optional": "(optional)",
+  "javascript-warning": "Bildupload erfordert javascript."
 }

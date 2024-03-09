@@ -30,18 +30,13 @@ export const action = async ({
 
   const formData = await parseMultipartFormData(
     request,
-    composeUploadHandlers(
-      createS3UploadHandler(["main-photo"]),
-      createS3UploadHandler(["main-photo-camera"]),
-      createMemoryUploadHandler()
-    )
+    composeUploadHandlers(createS3UploadHandler(["main-photo"]), createMemoryUploadHandler())
   );
   const title = (formData.get("title") ?? "").toString().trim();
   const description = (formData.get("description") ?? "").toString().trim();
   const coworkers = formData.getAll("coworkers").map((value) => value.toString());
   const tags = formData.getAll("tags").map((value) => value.toString());
   const mainPhotoUrl = formData.get("main-photo");
-  const mainPhotoCameraUrl = formData.get("main-photo-camera");
   const needProjectSpace = Boolean(formData.get("needProjectSpace") ?? false);
 
   if (title.length === 0 || description.length === 0) {
@@ -54,15 +49,12 @@ export const action = async ({
     url === null || typeof url !== "string" || url?.length === 0 ? undefined : url.toString();
 
   const mainPhoto = urlFormDataToString(mainPhotoUrl);
-  const mainPhotoCamera = urlFormDataToString(mainPhotoCameraUrl);
-
-  console.log(mainPhoto, mainPhotoCamera);
 
   try {
     const result = await createProject({
       title,
       description,
-      mainPhoto: mainPhotoCamera ?? mainPhoto,
+      mainPhoto,
       owners: [user.username],
       coworkers,
       tags,
@@ -134,10 +126,9 @@ export default function NewProject() {
         </label>
 
         <ImageSelect
-          nameFileSystem="main-photo"
-          nameCamera="main-photo-camera"
+          name="main-photo"
           t={t}
-          label={`${t("select-main-photo")} ${t("required")}`}
+          label={`${t("select-main-photo")} ${t("optional")}`}
           maxPhotoSize={maxPhotoSize}
         />
 

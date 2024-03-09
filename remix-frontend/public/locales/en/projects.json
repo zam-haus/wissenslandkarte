@@ -22,5 +22,6 @@
   "missing-description": "Description must be provided!",
   "creation-failed": "Creation failed: ",
   "required": "(required",
-  "optional": "(optional)"
+  "optional": "(optional)",
+  "javascript-warning": "Image upload requires javascript to be enabled."
 }
