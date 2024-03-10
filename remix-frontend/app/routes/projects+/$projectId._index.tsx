@@ -16,7 +16,7 @@ import { ProjectTagList } from "~/components/tags";
 import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { getProjectDetails } from "~/models/projects.server";
 
-import style from "./projects.$projectId._index.module.css";
+import style from "./$projectId._index.module.css";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   invariant(params.projectId, `params.slug is required`);
