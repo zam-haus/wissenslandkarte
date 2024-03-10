@@ -89,7 +89,6 @@ export const handle = {
 };
 
 export default function NewProject() {
-  const currentPath = "/projects/new";
   const { tags, users, maxPhotoSize } = useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
@@ -106,12 +105,7 @@ export default function NewProject() {
         </div>
       ) : null}
 
-      <Form
-        method="post"
-        action={currentPath}
-        className={style.verticalForm}
-        encType="multipart/form-data"
-      >
+      <Form method="post" className={style.verticalForm} encType="multipart/form-data">
         <label>
           {t("project-name")} {t("required")}
           <input name="title" type="text" required />
@@ -134,7 +128,9 @@ export default function NewProject() {
           userFetcher={userFetcher}
           t={t}
           fetchMoreUsers={(filter: string) =>
-            userFetcher.load(`${currentPath}?usersFilter=${filter}&ignoreTags=true`)
+            userFetcher.load(
+              `${new URL(location.href).pathname}?usersFilter=${filter}&ignoreTags=true`
+            )
           }
         />
 
@@ -143,7 +139,9 @@ export default function NewProject() {
           tagFetcher={tagFetcher}
           t={t}
           fetchMoreTags={(filter: string) =>
-            tagFetcher.load(`${currentPath}?tagsFilter=${filter}&ignoreUsers=true`)
+            tagFetcher.load(
+              `${new URL(location.href).pathname}?tagsFilter=${filter}&ignoreUsers=true`
+            )
           }
         />
 

@@ -157,7 +157,9 @@ export default function EditProject() {
           defaultValue={project.members}
           t={t}
           fetchMoreUsers={(filter: string) =>
-            userFetcher.load(`?usersFilter=${filter}&ignoreTags=true`)
+            userFetcher.load(
+              `${new URL(location.href).pathname}?usersFilter=${filter}&ignoreTags=true`
+            )
           }
         />
 
@@ -170,7 +172,9 @@ export default function EditProject() {
           defaultValue={project.tags}
           t={t}
           fetchMoreTags={(filter: string) =>
-            tagFetcher.load(`?tagsFilter=${filter}&ignoreUsers=true`)
+            tagFetcher.load(
+              `${new URL(location.href).pathname}?tagsFilter=${filter}&ignoreUsers=true`
+            )
           }
         />
 
