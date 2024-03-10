@@ -21,7 +21,7 @@ import {
   getProjectsByUser,
 } from "~/models/projects.server";
 
-import style from "./projects.new.module.css";
+import style from "./new.module.css";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const CREATE_FAILED = "CREATE_FAILED";
