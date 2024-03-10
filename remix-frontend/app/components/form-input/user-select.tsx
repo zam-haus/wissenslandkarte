@@ -11,14 +11,18 @@ export function UserSelect({
   userFetcher,
   t,
   fetchMoreUsers,
+  defaultValue,
 }: {
   initiallyAvailableUsers: User[];
   userFetcher: FetcherWithComponents<{ users: User[] }>;
   fetchMoreUsers: (filter: string) => void;
   t: TFunction<"projects", undefined>;
+  defaultValue?: User[];
 }) {
   const [availableUsers, setAvailableUsers] = useState(initiallyAvailableUsers);
-  const [chosenUsers, setChosenUsers] = useState<string[]>([]);
+  const [chosenUsers, setChosenUsers] = useState<string[]>(
+    defaultValue?.map(({ username }) => username) ?? []
+  );
 
   useEffect(() => {
     setAvailableUsers((availableUsers) =>

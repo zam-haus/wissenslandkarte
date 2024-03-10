@@ -112,6 +112,33 @@ export async function createProject(request: ProjectCreateRequest) {
   });
 }
 
+type ProjectUpdateRequest = { id: string } & ProjectCreateRequest;
+type ProjectUpdateOptions = { removePhotoIfNoNewValueGiven: boolean };
+export async function updateProject(request: ProjectUpdateRequest, options: ProjectUpdateOptions) {
+  function determineMainPhoto() {
+    if (request.mainPhoto !== undefined) return { mainPhoto: request.mainPhoto };
+    if (options.removePhotoIfNoNewValueGiven) return { mainPhoto: null };
+    return {};
+  }
+
+  return prisma.project.update({
+    where: { id: request.id },
+    data: {
+      title: request.title,
+      description: request.description,
+      owners: { connect: request.owners.map((username) => ({ username })) },
+      members: { connect: request.coworkers.map((username) => ({ username })) },
+      tags: {
+        connectOrCreate: request.tags.map((name) => ({ create: { name }, where: { name } })),
+      },
+      needsProjectArea: request.needProjectSpace,
+      creationDate: new Date(),
+      latestModificationDate: new Date(),
+      ...determineMainPhoto(),
+    },
+  });
+}
+
 type ProjectUpdateCreateRequest = {
   projectId: string;
   description: string;

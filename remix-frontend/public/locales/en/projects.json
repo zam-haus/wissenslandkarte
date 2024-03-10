@@ -6,6 +6,7 @@
   "project-name": "Project name",
   "project-description": "Description",
   "select-main-photo": "Project main photo",
+  "current-main-photo": "Current main photo",
   "select-photo": "Photo",
   "file-system-suffix": "(gallery)",
   "camera-suffix": "(camera)",

@@ -7,15 +7,13 @@ import { MultiSelect } from "./multi-select/multi-select";
 type Tag = {
   name: string;
   id: string;
-  _count: {
-    projects?: number | undefined;
-    users?: number | undefined;
-  };
+  priority?: number;
 };
 
 export function TagSelect({
   initiallyAvailableTags,
   tagFetcher,
+  defaultValue,
   t,
   fetchMoreTags,
 }: {
@@ -23,14 +21,17 @@ export function TagSelect({
   tagFetcher: FetcherWithComponents<{ tags: Tag[] }>;
   fetchMoreTags: (filter: string) => void;
   t: TFunction<"projects", undefined>;
+  defaultValue?: Tag[];
 }) {
   const [availableTags, setAvailableTags] = useState(initiallyAvailableTags);
-  const [chosenTags, setChosenTags] = useState<string[]>([]);
+  const [chosenTags, setChosenTags] = useState<string[]>(
+    defaultValue?.map(({ name }) => name) ?? []
+  );
 
   useEffect(() => {
     setAvailableTags((availableTags) =>
       [...availableTags, ...(tagFetcher.data?.tags ?? [])].sort(
-        (a, b) => (b._count.projects ?? 0) - (a._count.projects ?? 0)
+        (a, b) => (b.priority ?? 0) - (a.priority ?? 0)
       )
     );
   }, [tagFetcher.data]);

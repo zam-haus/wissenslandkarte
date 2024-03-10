@@ -1,0 +1,8 @@
+.verticalForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.mainPhoto {
+  max-width: 150px;
+}
