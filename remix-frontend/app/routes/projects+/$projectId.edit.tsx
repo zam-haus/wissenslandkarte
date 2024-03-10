@@ -24,6 +24,12 @@ import {
 } from "~/routes/projects+/lib/loader-helpers.server";
 
 import style from "./$projectId.edit.module.css";
+import {
+  getBooleanDefaultFalse,
+  getStringArray,
+  getStringsDefaultUndefined,
+  getTrimmedStringsDefaultEmpty,
+} from "./lib/formDataParser";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";
@@ -40,23 +46,13 @@ export const action = async ({
     request,
     composeUploadHandlers(createS3UploadHandler(["main-photo"]), createMemoryUploadHandler())
   );
-  const title = (formData.get("title") ?? "").toString().trim();
-  const description = (formData.get("description") ?? "").toString().trim();
-  const coworkers = formData.getAll("coworkers").map((value) => value.toString());
-  const tags = formData.getAll("tags").map((value) => value.toString());
-  const mainPhotoUrl = formData.get("main-photo");
-  const needProjectSpace = Boolean(formData.get("needProjectSpace") ?? false);
 
+  const { title, description } = getTrimmedStringsDefaultEmpty(formData, "title", "description");
   if (title.length === 0 || description.length === 0) {
     return json({
       error: FIELD_EMPTY,
     });
   }
-
-  const urlFormDataToString = (url: FormDataEntryValue | null) =>
-    url === null || typeof url !== "string" || url?.length === 0 ? undefined : url.toString();
-
-  const mainPhoto = urlFormDataToString(mainPhotoUrl);
 
   try {
     const result = await updateProject(
@@ -64,11 +60,10 @@ export const action = async ({
         id: params.projectId,
         title,
         description,
-        mainPhoto,
         owners: [user.username],
-        coworkers,
-        tags,
-        needProjectSpace,
+        ...getStringArray(formData, "coworkers", "tags"),
+        ...getStringsDefaultUndefined(formData, "mainPhoto"),
+        ...getBooleanDefaultFalse(formData, "needProjectSpace"),
       },
       { removePhotoIfNoNewValueGiven: Boolean(formData.get("removeMainPhoto")) }
     );

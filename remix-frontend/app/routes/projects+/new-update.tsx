@@ -21,6 +21,7 @@ import {
   getProjectsByUser,
 } from "~/models/projects.server";
 
+import { getStringArray, getTrimmedStringsDefaultEmpty } from "./lib/formDataParser";
 import style from "./new.module.css";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
@@ -29,20 +30,17 @@ const CREATE_FAILED = "CREATE_FAILED";
 export const action = async ({
   request,
 }: ActionArgs): Promise<TypedResponse<{ error: string; exception?: string }>> => {
-  const urlFormDataToString = (url: FormDataEntryValue | null) =>
-    url === null || typeof url !== "string" || url?.length === 0 ? undefined : url.toString();
-
   const formData = await parseMultipartFormData(
     request,
-    composeUploadHandlers(createS3UploadHandler(["photo-attachments"]), createMemoryUploadHandler())
+    composeUploadHandlers(createS3UploadHandler(["photoAttachments"]), createMemoryUploadHandler())
   );
-  const projectId = (formData.get("projectId") ?? "").toString().trim();
-  const description = (formData.get("description") ?? "").toString().trim();
 
-  const photoAttachmentUrls = formData
-    .getAll("photo-attachments")
-    .map(urlFormDataToString)
-    .filter((s): s is string => s !== undefined);
+  const { projectId, description } = getTrimmedStringsDefaultEmpty(
+    formData,
+    "projectId",
+    "description"
+  );
+  const { photoAttachments } = getStringArray(formData, "photoAttachments");
 
   if (description.length === 0) {
     return json({
@@ -67,7 +65,7 @@ export const action = async ({
     const result = await createProjectUpdate({
       description,
       projectId,
-      photoAttachmentUrls,
+      photoAttachmentUrls: photoAttachments,
     });
     return redirect(`/projects/${result.id}`);
   } catch (e: any) {
@@ -130,7 +128,7 @@ export default function NewProject() {
         </label>
 
         <ImageSelect
-          name="photo-attachments"
+          name="photoAttachments"
           t={t}
           label={`${t("select-photo")} ${t("optional")}`}
           maxPhotoSize={maxPhotoSize}
