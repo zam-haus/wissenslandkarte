@@ -46,7 +46,8 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
       console.log("doesn't match name", formFieldsToUpload, name);
       return undefined;
     }
-    if (!allowedSuffixes.some((suffix) => filename?.endsWith(suffix))) {
+    if (!allowedSuffixes.some((suffix) => filename?.toLowerCase().endsWith(suffix))) {
+      console.log("doesn't match suffix");
       return undefined;
     }
     if (!contentType.startsWith("image/") && !contentType.startsWith("application/octet-stream")) {
