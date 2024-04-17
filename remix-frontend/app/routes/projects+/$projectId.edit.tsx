@@ -44,7 +44,7 @@ export const action = async ({
 
   const formData = await parseMultipartFormData(
     request,
-    composeUploadHandlers(createS3UploadHandler(["main-photo"]), createMemoryUploadHandler())
+    composeUploadHandlers(createS3UploadHandler(["mainPhoto"]), createMemoryUploadHandler())
   );
 
   const { title, description } = getTrimmedStringsDefaultEmpty(formData, "title", "description");
@@ -145,7 +145,7 @@ export default function EditProject() {
         )}
 
         <ImageSelect
-          name="main-photo"
+          name="mainPhoto"
           t={t}
           label={`${t("select-main-photo")} ${t("optional")}`}
           maxPhotoSize={maxPhotoSize}
