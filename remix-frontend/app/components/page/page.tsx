@@ -77,7 +77,9 @@ export function Page({
           {loginSection}
         </ul>
       </nav>
-      <div className={style.innerContainer}>{children}</div>
+      <div id="globalScrollContainer" className={style.innerContainer}>
+        {children}
+      </div>
       <footer>{isLoggedIn ? <ActionBar /> : <></>}</footer>
     </div>
   );

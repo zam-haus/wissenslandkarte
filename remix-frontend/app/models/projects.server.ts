@@ -7,6 +7,7 @@ export type ProjectList = Pick<Project, "id" | "title" | "latestModificationDate
 
 export async function getProjectList(options?: {
   limit?: number;
+  page?: number;
   byNewestModification?: boolean;
 }): Promise<ProjectList[]> {
   return prisma.project.findMany({
@@ -18,6 +19,7 @@ export async function getProjectList(options?: {
     },
     orderBy: options?.byNewestModification ? { latestModificationDate: "desc" } : undefined,
     take: options?.limit,
+    skip: (options?.limit ?? 0) * (options?.page ?? 0),
   });
 }
 
