@@ -27,8 +27,6 @@ export default async function handleRequest(
   const lng = await i18next.getLocale(request);
   const ns = i18next.getRouteNamespaces(remixContext);
 
-  console.log(`using ${lng} and ${ns}`);
-
   await i18nInstance
     .use(initReactI18next)
     .use(Backend)

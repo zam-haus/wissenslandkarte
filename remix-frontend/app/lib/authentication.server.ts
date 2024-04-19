@@ -37,7 +37,6 @@ if (getFromEnv("DANGER_ENABLE_FAKE_LOGIN_ON_DEV", Boolean)) {
         console.error("No user found in database. Fake login failed");
         throw Error("No user found.");
       }
-      console.log("what");
       return user;
     });
     authenticator.use(fakeLoginStrategy, fakeLoginOnDevStrategyName);
