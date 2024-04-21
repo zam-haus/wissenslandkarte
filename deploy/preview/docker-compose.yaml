@@ -1,0 +1,90 @@
+services:
+  minio:
+    image: quay.io/minio/minio
+    command: server --console-address ":9001" /data
+    expose:
+      - 9000
+      - 9001
+    volumes:
+      - "./minio-data:/data"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-preview-minio-root}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:?error}
+      - MINIO_REGION=${S3_STORAGE_REGION:-eu-west-3}
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.scope=watchtowerwlkscope"
+      - "traefik.enable=true"
+      - "traefik.http.routers.s3.rule=Host(`storage.${DOMAIN:?error}`)"
+
+  minio-init:
+    image: quay.io/minio/minio
+    depends_on:
+      minio:
+        condition: service_healthy
+        restart: false
+    entrypoint: >
+      /bin/sh -c '
+        /usr/bin/mc config host add myminio http://minio:9000 "${MINIO_ROOT_USER:-preview-minio-root}" "${MINIO_ROOT_PASSWORD:?error}";
+        /usr/bin/mc mb "myminio/${S3_STORAGE_BUCKET:-wissenslandkarte-user-fileupload}";
+        /usr/bin/mc admin user svcacct add --access-key "${S3_STORAGE_ACCESS_KEY:?error}" --secret-key "${S3_STORAGE_SECRET_KEY:?error}"  myminio "${MINIO_ROOT_USER:-preview-minio-root}"
+        echo "{\"Statement\":[{\"Action\":[\"s3:GetObject\"],\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Resource\":[\"arn:aws:s3:::${S3_STORAGE_BUCKET:-wissenslandkarte-user-fileupload}/*\"]}],\"Version\":\"2012-10-17\"}" > policy.json;
+        /usr/bin/mc anonymous set-json policy.json myminio/${S3_STORAGE_BUCKET:-wissenslandkarte-user-fileupload};
+      '
+    labels:
+      - "com.centurylinklabs.watchtower.scope=watchtowerwlkscope"
+
+  wlk:
+    image: ghcr.io/zam-haus/wissenslandkarte/wlk:edge
+    expose:
+      - 8080
+    volumes: 
+      - "./wlk-database:/database"
+    environment:
+      - DATABASE_URL=file:/database/data.db
+      - SESSION_SECRET=${SESSION_SECRET:?error}
+      - AUTH_ENABLE_ZAM_KEYCLOAK=false
+      - AUTH_ZAM_KEYCLOAK_DOMAIN=${AUTH_ZAM_KEYCLOAK_DOMAIN:-sso.zam.haus}
+      - AUTH_ZAM_KEYCLOAK_REALM=${AUTH_ZAM_KEYCLOAK_REALM:-ZAM}
+      - AUTH_ZAM_KEYCLOAK_CLIENT_ID=${AUTH_ZAM_KEYCLOAK_CLIENT_ID:-wissen.zam.haus}
+      - AUTH_ZAM_KEYCLOAK_CLIENT_SECRET=${AUTH_ZAM_KEYCLOAK_CLIENT_SECRET:?error}
+      - AUTH_CALLBACK_BASE=${AUTH_CALLBACK_BASE:-${DOMAIN:?error}}
+      - S3_STORAGE_IS_MINIO=true
+      - S3_STORAGE_BUCKET=${S3_STORAGE_BUCKET:-wissenslandkarte-user-fileupload}
+      - S3_STORAGE_REGION=${S3_STORAGE_REGION:-eu-west-3}
+      - S3_STORAGE_ENDPOINT=http://minio:9000
+      - S3_STORAGE_ACCESS_KEY=${S3_STORAGE_ACCESS_KEY:?error}
+      - S3_STORAGE_SECRET_KEY=${S3_STORAGE_SECRET_KEY:?error}
+      - S3_STORAGE_OVERRIDE_DOWNLOAD_HOST_AND_PATH=storage.${DOMAIN:?error}
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.scope=watchtowerwlkscope"
+      - "traefik.enable=true"
+      - "traefik.http.routers.wlk.rule=Host(`${DOMAIN:?error}`)"
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKER_CONFIG_JSON:?error}:/config.json
+    command: --interval ${WATCHTOWER_INTERVAL:-3600} --scope watchtowerwlkscope --label-enable
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.scope=watchtowerwlkscope"
+
+  reverse-proxy:
+    image: traefik:v2.11
+    expose:
+      - 80
+    command: 
+      - "--providers.docker"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.scope=watchtowerwlkscope"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
