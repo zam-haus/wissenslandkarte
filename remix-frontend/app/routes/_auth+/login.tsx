@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { Page } from "~/components/page/page";
 import { authenticator } from "~/lib/authentication.server";
+import { environment } from "~/lib/environment";
 
 export const handles = {
   i18n: ["login"],
@@ -12,9 +13,7 @@ export const handles = {
 
 export const loader: LoaderFunction = async ({ request }) => {
   await authenticator.isAuthenticated(request, { successRedirect: "/" });
-  const fakeLoginEnabled =
-    process.env["DANGER_ENABLE_FAKE_LOGIN_ON_DEV"] === "true" &&
-    process.env.NODE_ENV === "development";
+  const fakeLoginEnabled = environment.auth.DANGER_ENABLE_FAKE_LOGIN_ON_DEV;
 
   return json({ fakeLoginEnabled });
 };

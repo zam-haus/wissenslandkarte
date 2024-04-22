@@ -4,21 +4,21 @@ import AWS from "aws-sdk";
 import { randomUUID } from "crypto";
 import { PassThrough } from "stream";
 
-import { getFromEnv, getFromEnvOrThrow } from "./environment";
+import { environment } from "./environment";
 
-const bucket = getFromEnvOrThrow("S3_STORAGE_BUCKET");
+const bucket = environment.s3.BUCKET;
 export const MAX_UPLOAD_SIZE_IN_BYTE = 10 * 1024 * 1024;
 
 const s3 = new AWS.S3({
   credentials: {
-    accessKeyId: getFromEnvOrThrow("S3_STORAGE_ACCESS_KEY"),
-    secretAccessKey: getFromEnvOrThrow("S3_STORAGE_SECRET_KEY"),
+    accessKeyId: environment.s3.ACCESS_KEY,
+    secretAccessKey: environment.s3.SECRET_KEY,
   },
-  region: getFromEnvOrThrow("S3_STORAGE_REGION"),
+  region: environment.s3.REGION,
 
-  ...(getFromEnv("S3_STORAGE_IS_MINIO", Boolean)
+  ...(environment.s3.IS_MINIO
     ? {
-        endpoint: getFromEnvOrThrow("S3_STORAGE_ENDPOINT"),
+        endpoint: environment.s3.ENDPOINT,
         s3ForcePathStyle: true,
         sslEnabled: false,
       }

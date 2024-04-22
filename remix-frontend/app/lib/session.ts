@@ -1,7 +1,7 @@
 import type { Session, SessionData } from "@remix-run/node";
 import { createCookieSessionStorage } from "@remix-run/node";
 
-import { getFromEnvOrThrow } from "./environment";
+import { environment } from "./environment";
 
 type WrappedType = Session<SessionData, SessionData>;
 type ArgOf<P extends keyof WrappedType> = WrappedType[P] extends (...args: any) => any
@@ -17,7 +17,7 @@ export const sessionStorage =
     : createCookieSessionStorage({
         cookie: {
           name: "__session",
-          secrets: [getFromEnvOrThrow("SESSION_SECRET")],
+          secrets: [environment.SESSION_SECRET],
         },
       });
 
