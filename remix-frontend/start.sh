@@ -7,8 +7,8 @@
 
 set -ex
 
-if  [[ "$DATABASE_URL" != /* ]]; then
- echo "Database url must be an absolute path"
+if  [[ "$DATABASE_URL" != file:/* ]]; then
+ echo "Database url must be an absolute path (i.e. begin with file:/)"
  exit 1
 fi
 
