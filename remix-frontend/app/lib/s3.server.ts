@@ -60,12 +60,18 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
     console.log("uploading to", newFilename);
     try {
       const uploadedFileLocation = await uploadStreamToS3(data, newFilename, contentType);
-      if (uploadedFileLocation.success) {
-        return uploadedFileLocation.data?.Location;
-      } else {
+      if (!uploadedFileLocation.success || uploadedFileLocation.data === undefined) {
         console.error("Uploading of a file to S3 failed!");
         return "";
       }
+
+      const uploadedFileUrl = new URL(uploadedFileLocation.data.Location);
+
+      if (environment.s3.OVERRIDE_HOST !== undefined) {
+        uploadedFileUrl.host = environment.s3.OVERRIDE_HOST;
+      }
+
+      return uploadedFileUrl.toString().replace(/https?:/, "");
     } catch (e) {
       console.error("Uploading of a file to S3 failed!");
       return "";

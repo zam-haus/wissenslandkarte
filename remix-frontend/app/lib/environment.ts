@@ -52,6 +52,9 @@ export const environment = {
     get IS_MINIO() {
       return getFromEnv("S3_STORAGE_IS_MINIO", Boolean);
     },
+    get OVERRIDE_HOST() {
+      return getFromEnv("OVERRIDE_HOST");
+    },
   },
 };
 
