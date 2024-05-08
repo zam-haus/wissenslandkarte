@@ -13,5 +13,7 @@
   "nav-logout": "Log out",
   "nav-profile": "Profile",
   "toplevel-edit": "Edit",
-  "loading-more": "Loading more..."
+  "loading-more": "Loading more...",
+  "prev-page": "Previous page",
+  "next-page": "Next page"
 }
