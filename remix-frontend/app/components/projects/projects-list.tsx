@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import type { ProjectList } from "~/models/projects.server";
+import type { ProjectListEntry } from "~/models/projects.server";
 
 import { LocalDate } from "../date-rendering";
 import localStyle from "./project-list.module.css";
@@ -16,7 +16,7 @@ export function ProjectsList({
   projects,
   styles,
 }: {
-  projects: ProjectList[];
+  projects: ProjectListEntry[];
   styles?: { [key in StyleableParts]?: string };
 }) {
   const { t } = useTranslation("users");

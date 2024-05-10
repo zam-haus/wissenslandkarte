@@ -8,7 +8,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { mapDeserializedDates } from "~/components/date-rendering";
 import { Pager, usePagedInfinitScroll } from "~/components/infinite-scroll-pager";
 import { ProjectsList } from "~/components/projects/projects-list";
-import type { ProjectList } from "~/models/projects.server";
+import type { ProjectListEntry } from "~/models/projects.server";
 import { getProjectList } from "~/models/projects.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -34,7 +34,7 @@ export default function Projects() {
     page,
     hasMore,
     fetcher,
-  } = usePagedInfinitScroll<ProjectList>(
+  } = usePagedInfinitScroll<ProjectListEntry>(
     loaderData,
     useCallback(
       (loadedData) => ({

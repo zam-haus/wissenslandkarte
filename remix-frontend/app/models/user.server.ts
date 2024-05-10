@@ -2,7 +2,7 @@ import type { Tag, User } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
-import type { ProjectList } from "./projects.server";
+import type { ProjectListEntry } from "./projects.server";
 
 export async function getUserList(
   properties: { image?: boolean; registrationDate?: boolean } = {}
@@ -33,8 +33,8 @@ export type UserOverview = Pick<
   "id" | "firstName" | "lastName" | "username" | "description" | "image" | "registrationDate"
 > & {
   tags: Tag[];
-  ownedProjects: ProjectList[];
-  memberProjects: ProjectList[];
+  ownedProjects: ProjectListEntry[];
+  memberProjects: ProjectListEntry[];
 };
 export async function getUserOverview(username: User["id"]): Promise<UserOverview | null> {
   return prisma.user.findUnique({

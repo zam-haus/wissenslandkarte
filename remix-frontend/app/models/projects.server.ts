@@ -3,13 +3,16 @@ import type { AttachmentType } from "prisma/fake-data-generators";
 
 import { prisma } from "~/db.server";
 
-export type ProjectList = Pick<Project, "id" | "title" | "latestModificationDate" | "mainPhoto">;
+export type ProjectListEntry = Pick<
+  Project,
+  "id" | "title" | "latestModificationDate" | "mainPhoto"
+>;
 
 export async function getProjectList(options?: {
   limit?: number;
   page?: number;
   byNewestModification?: boolean;
-}): Promise<ProjectList[]> {
+}): Promise<ProjectListEntry[]> {
   return prisma.project.findMany({
     select: {
       id: true,
@@ -23,7 +26,7 @@ export async function getProjectList(options?: {
   });
 }
 
-export async function getProjectsByUser(username: string): Promise<ProjectList[]> {
+export async function getProjectsByUser(username: string): Promise<ProjectListEntry[]> {
   const result = await prisma.user.findUnique({
     where: { username },
     select: {
@@ -48,7 +51,7 @@ export async function getProjectsByUser(username: string): Promise<ProjectList[]
   return [...(result?.ownedProjects ?? []), ...(result?.memberProjects ?? [])];
 }
 
-export async function searchProjects(tags: string[]): Promise<ProjectList[]> {
+export async function searchProjects(tags: string[]): Promise<ProjectListEntry[]> {
   return prisma.project.findMany({
     select: {
       id: true,
