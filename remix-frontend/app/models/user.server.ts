@@ -4,9 +4,16 @@ import { prisma } from "~/db.server";
 
 import type { ProjectListEntry } from "./projects.server";
 
+export type UserListEntry = Pick<User, "id" | "username"> &
+  Partial<Pick<User, "image" | "registrationDate">>;
+
 export async function getUserList(
-  properties: { image?: boolean; registrationDate?: boolean } = {}
-) {
+  properties: { image?: boolean; registrationDate?: boolean } = {},
+  options?: {
+    limit?: number;
+    page?: number;
+  }
+): Promise<UserListEntry[]> {
   return prisma.user.findMany({
     select: {
       id: true,
@@ -14,6 +21,8 @@ export async function getUserList(
       image: properties.image ?? false,
       registrationDate: properties.registrationDate ?? false,
     },
+    take: options?.limit,
+    skip: (options?.limit ?? 0) * (options?.page ?? 0),
   });
 }
 
