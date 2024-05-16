@@ -47,8 +47,10 @@ export function makeRandomFakeProjectUpdate(
   faker: Faker,
   project: Pick<Project, "creationDate" | "latestModificationDate">
 ): Omit<ProjectUpdate, "id" | "projectId"> {
+  const creationDate = faker.date.between(project.creationDate, project.latestModificationDate);
   return {
-    creationDate: faker.date.between(project.creationDate, project.latestModificationDate),
+    creationDate,
+    latestModificationDate: creationDate,
     description: faker.lorem.paragraph(),
   };
 }

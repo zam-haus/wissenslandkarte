@@ -80,7 +80,8 @@ model Project {
 model ProjectUpdate {
   id String @id @default(nanoid())
 
-  creationDate DateTime
+  creationDate           DateTime
+  latestModificationDate DateTime
 
   attachments Attachment[]
   description String
