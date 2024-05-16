@@ -48,9 +48,9 @@ model Attachment {
   text         String
   creationDate DateTime
 
-  Project         Project?       @relation(fields: [projectId], references: [id])
+  Project         Project?       @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId       String?
-  ProjectUpdate   ProjectUpdate? @relation(fields: [projectUpdateId], references: [id])
+  ProjectUpdate   ProjectUpdate? @relation(fields: [projectUpdateId], references: [id], onDelete: Cascade)
   projectUpdateId String?
 
   @@index(fields: [projectId, projectUpdateId])
@@ -86,7 +86,7 @@ model ProjectUpdate {
   attachments Attachment[]
   description String
 
-  Project   Project? @relation(fields: [projectId], references: [id])
+  Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String?
 
   @@index(fields: [projectId])
