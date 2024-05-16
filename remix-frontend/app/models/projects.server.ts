@@ -80,6 +80,7 @@ export async function getProjectDetails(projectId: Project["id"]) {
       attachments: true,
       updates: {
         select: {
+          id: true,
           description: true,
           creationDate: true,
           attachments: true,

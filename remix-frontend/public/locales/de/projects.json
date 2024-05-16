@@ -25,5 +25,8 @@
   "creation-failed": "Erstellung fehlgeschlagen: ",
   "required": "(erforderlich)",
   "optional": "(optional)",
-  "noscript-warning": "Bildupload erfordert javascript."
+  "noscript-warning": "Bildupload erfordert javascript.",
+  "delete-update": "Löschen",
+  "edit-update": "Bearbeiten",
+  "delete-update-confirm": "Willst du dieses Update wirklich löschen?"
 }

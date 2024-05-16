@@ -3,6 +3,7 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { isAttachmentType } from "prisma/fake-data-generators";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
@@ -11,6 +12,7 @@ import {
   renderDate,
   withDeserializedDates,
 } from "~/components/date-rendering";
+import { ModalDialog } from "~/components/modal";
 import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectTagList } from "~/components/tags";
 import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
@@ -27,7 +29,12 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners);
   const memberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
 
-  return json({ project, ...conditionalShowEditButton(ownerLoggedIn || memberLoggedIn) });
+  return json({
+    project,
+    ...conditionalShowEditButton(ownerLoggedIn || memberLoggedIn),
+    ownerLoggedIn,
+    memberLoggedIn,
+  });
 };
 
 export const handle = {
@@ -36,7 +43,7 @@ export const handle = {
 
 export default function Project() {
   const { t, i18n } = useTranslation("projects");
-  const { project } = useLoaderData<typeof loader>();
+  const { project, ownerLoggedIn, memberLoggedIn } = useLoaderData<typeof loader>();
 
   const allUsers = [...project.owners, ...project.members];
 
@@ -57,7 +64,9 @@ export default function Project() {
             </li>
           ))}
         </ul>
-        {project.mainPhoto ? <img src={project.mainPhoto} alt={t("main-photo")} /> : null}
+        {project.mainPhoto ? (
+          <img style={{ maxWidth: 500 }} src={project.mainPhoto} alt={t("main-photo")} />
+        ) : null}
       </header>
 
       <p>{project.description}</p>
@@ -75,24 +84,69 @@ export default function Project() {
       <ul>
         {updates.map((update) => (
           <li key={update.creationDate.valueOf()}>
-            <h4>
-              {t("project-update-headline", {
-                date: renderDate(update.creationDate, i18n.language),
-              })}
-            </h4>
-            {update.description}
+            <article>
+              <header>
+                <h4>
+                  {t("project-update-headline", {
+                    date: renderDate(update.creationDate, i18n.language),
+                  })}
+                </h4>
+                {ownerLoggedIn || memberLoggedIn ? DeleteAndEditButton(update.id) : null}
+              </header>
+              {update.description}
 
-            <ul className={style.attachments}>
-              {update.attachments.map(mapDeserializedDates("creationDate")).map((attachment) => (
-                <li key={attachment.id}>
-                  <AttachmentEntry {...attachment} />
-                </li>
-              ))}
-            </ul>
+              <ul className={style.attachments}>
+                {update.attachments.map(mapDeserializedDates("creationDate")).map((attachment) => (
+                  <li key={attachment.id}>
+                    <AttachmentEntry {...attachment} />
+                  </li>
+                ))}
+              </ul>
+            </article>
           </li>
         ))}
       </ul>
     </main>
+  );
+}
+
+function DeleteAndEditButton(updateId: string) {
+  const { t } = useTranslation("projects");
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  return (
+    <>
+      <ModalDialog
+        visible={confirmDelete}
+        closed={() => setConfirmDelete(false)}
+        render={(close) => (
+          <>
+            {t("delete-update-confirm")}
+            <footer>
+              <form action={`/projects/update/${updateId}/delete`} method="post">
+                <button type="submit">{t("yes", { ns: "common" })}</button>
+                <button type="button" autoFocus onClick={close}>
+                  {t("no", { ns: "common" })}
+                </button>
+              </form>
+            </footer>
+          </>
+        )}
+      />
+      <a
+        href={`/projects/update/${updateId}/delete`}
+        onClick={(event) => {
+          setConfirmDelete(true);
+          event.stopPropagation();
+          event.preventDefault();
+          return false;
+        }}
+      >
+        {t("delete-update")}
+      </a>
+      | <Link to={`/projects/update/${updateId}/edit`}>{t("edit-update")}</Link>
+    </>
   );
 }
 

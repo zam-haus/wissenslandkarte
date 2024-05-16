@@ -25,5 +25,8 @@
   "creation-failed": "Creation failed: ",
   "required": "(required",
   "optional": "(optional)",
-  "noscript-warning": "Image upload requires javascript to be enabled."
+  "noscript-warning": "Image upload requires javascript to be enabled.",
+  "delete-update": "Delete",
+  "edit-update": "Edit",
+  "delete-update-confirm": "Do you really want to delete this update?"
 }
