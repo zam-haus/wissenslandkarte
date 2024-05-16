@@ -7,9 +7,9 @@
   box-sizing: border-box;
 }
 /*
-  2. Remove default margin
+  2. Remove default margin, but keep for dialog, or it breaks
 */
-* {
+*:not(dialog) {
   margin: 0;
 }
 /*
