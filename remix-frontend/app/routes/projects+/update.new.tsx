@@ -89,7 +89,7 @@ export const handle = {
 };
 
 export default function NewProject() {
-  const currentPath = "/projects/new-update";
+  const currentPath = "/projects/update/new";
   const { projects, maxPhotoSize } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const { t } = useTranslation("projects");
