@@ -1,5 +1,4 @@
 import type { Project } from "@prisma/client";
-import type { AttachmentType } from "prisma/fake-data-generators";
 
 import { prisma } from "~/db.server";
 
@@ -141,34 +140,6 @@ export async function updateProject(request: ProjectUpdateRequest, options: Proj
       creationDate: new Date(),
       latestModificationDate: new Date(),
       ...determineMainPhoto(),
-    },
-  });
-}
-
-type ProjectUpdateCreateRequest = {
-  projectId: string;
-  description: string;
-  photoAttachmentUrls: string[];
-};
-export async function createProjectUpdate(request: ProjectUpdateCreateRequest) {
-  return prisma.project.update({
-    where: { id: request.projectId },
-    data: {
-      updates: {
-        create: {
-          creationDate: new Date(),
-          latestModificationDate: new Date(),
-          description: request.description,
-          attachments: {
-            create: request.photoAttachmentUrls.map((url) => ({
-              type: "image" as AttachmentType,
-              url,
-              text: "",
-              creationDate: new Date(),
-            })),
-          },
-        },
-      },
     },
   });
 }

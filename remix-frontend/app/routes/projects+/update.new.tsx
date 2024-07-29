@@ -14,11 +14,8 @@ import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { createS3UploadHandler, MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
-import {
-  createProjectUpdate,
-  getProjectDetails,
-  getProjectsByUser,
-} from "~/models/projects.server";
+import { getProjectDetails, getProjectsByUser } from "~/models/projects.server";
+import { createProjectUpdate } from "~/models/projectUpdates.server";
 
 import { UpdateForm } from "./components/update-form";
 import { getStringArray, getTrimmedStringsDefaultEmpty } from "./lib/formDataParser";
