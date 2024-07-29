@@ -157,6 +157,7 @@ export async function createProjectUpdate(request: ProjectUpdateCreateRequest) {
       updates: {
         create: {
           creationDate: new Date(),
+          latestModificationDate: new Date(),
           description: request.description,
           attachments: {
             create: request.photoAttachmentUrls.map((url) => ({
