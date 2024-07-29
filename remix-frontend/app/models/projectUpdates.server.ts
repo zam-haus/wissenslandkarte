@@ -49,6 +49,31 @@ export async function getProjectUpdateWithProjectOwnersAndMembers(
   });
 }
 
+export async function getEditableProjectUpdateDetails(projectUpdateId: ProjectUpdate["id"]) {
+  return prisma.projectUpdate.findUnique({
+    where: { id: projectUpdateId },
+    select: {
+      id: true,
+      attachments: {
+        select: {
+          id: true,
+          text: true,
+          type: true,
+          url: true,
+        },
+      },
+      description: true,
+      Project: {
+        select: {
+          id: true,
+          owners: { select: { id: true, username: true } },
+          members: { select: { id: true, username: true } },
+        },
+      },
+    },
+  });
+}
+
 export async function deleteProjectUpdate(projectUpdateId: ProjectUpdate["id"]) {
   return prisma.projectUpdate.delete({ where: { id: projectUpdateId } });
 }

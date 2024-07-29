@@ -1,3 +1,4 @@
+import type { Attachment, Project, ProjectUpdate } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import type { TFunction } from "i18next";
 
@@ -11,10 +12,27 @@ export type UpdateFormProps = {
   maxPhotoSize: number;
   t: TFunction<"projects">;
   projectsWithDates: ProjectListEntry[];
+  mode: "create" | "update";
 };
 
-export function UpdateForm(props: UpdateFormProps) {
+export type CreateUpdateFormProps = UpdateFormProps & {
+  mode: "create";
+};
+
+export type EditUpdateFormProps = UpdateFormProps & {
+  mode: "update";
+  currentState: EditableUpdateProps;
+};
+type EditableUpdateProps = Pick<ProjectUpdate, "description" | "id"> & {
+  attachments: Pick<Attachment, "id" | "text" | "type" | "url">[];
+  Project: Pick<Project, "id"> | null;
+};
+
+export function UpdateForm(props: CreateUpdateFormProps | EditUpdateFormProps) {
   const { action, maxPhotoSize, t, projectsWithDates } = props;
+
+  const currentState: EditableUpdateProps | null =
+    props.mode === "update" ? props.currentState : null;
 
   return (
     <Form
@@ -25,7 +43,7 @@ export function UpdateForm(props: UpdateFormProps) {
     >
       <label>
         {t("project-name")}
-        <select name="projectId" required>
+        <select name="projectId" required defaultValue={currentState?.Project?.id}>
           {projectsWithDates.map((project) => (
             <option key={project.id} value={project.id}>
               {project.title}
@@ -44,7 +62,7 @@ export function UpdateForm(props: UpdateFormProps) {
 
       <label>
         {t("update-text")}
-        <textarea name="description" required></textarea>
+        <textarea name="description" required defaultValue={currentState?.description}></textarea>
       </label>
 
       <button type="submit">{t("save")}</button>

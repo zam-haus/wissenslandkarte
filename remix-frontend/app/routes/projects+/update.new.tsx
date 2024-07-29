@@ -110,6 +110,7 @@ export default function CreateUpdate() {
         action={currentPath}
         maxPhotoSize={maxPhotoSize}
         projectsWithDates={projectsWithDates}
+        mode="create"
         t={t}
       ></UpdateForm>
     </main>
