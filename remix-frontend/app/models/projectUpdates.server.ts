@@ -31,7 +31,9 @@ export async function createProjectUpdate(request: ProjectUpdateCreateRequest) {
   });
 }
 
-export async function getProjectUpdateDetails(projectUpdateId: ProjectUpdate["id"]) {
+export async function getProjectUpdateWithProjectOwnersAndMembers(
+  projectUpdateId: ProjectUpdate["id"]
+) {
   return prisma.projectUpdate.findUnique({
     where: { id: projectUpdateId },
     select: {
