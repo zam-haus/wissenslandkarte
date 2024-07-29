@@ -6,11 +6,10 @@ import {
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { mapDeserializedDates } from "~/components/date-rendering";
-import { ImageSelect } from "~/components/form-input/image-select";
 import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
@@ -21,8 +20,8 @@ import {
   getProjectsByUser,
 } from "~/models/projects.server";
 
+import { UpdateForm } from "./components/update-form";
 import { getStringArray, getTrimmedStringsDefaultEmpty } from "./lib/formDataParser";
-import style from "./new.module.css";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const CREATE_FAILED = "CREATE_FAILED";
@@ -88,7 +87,7 @@ export const handle = {
   i18n: ["projects"],
 };
 
-export default function NewProject() {
+export default function CreateUpdate() {
   const currentPath = "/projects/update/new";
   const { projects, maxPhotoSize } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
@@ -110,38 +109,12 @@ export default function NewProject() {
         </div>
       ) : null}
 
-      <Form
-        method="post"
+      <UpdateForm
         action={currentPath}
-        encType="multipart/form-data"
-        className={style.verticalForm}
-      >
-        <label>
-          {t("project-name")}
-          <select name="projectId" required>
-            {projectsWithDates.map((project) => (
-              <option key={project.id} value={project.id}>
-                {project.title}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <ImageSelect
-          name="photoAttachments"
-          t={t}
-          label={`${t("select-photo")} ${t("optional")}`}
-          maxPhotoSize={maxPhotoSize}
-          multiple={true}
-        />
-
-        <label>
-          {t("update-text")}
-          <textarea name="description" required></textarea>
-        </label>
-
-        <button type="submit">{t("save")}</button>
-      </Form>
+        maxPhotoSize={maxPhotoSize}
+        projectsWithDates={projectsWithDates}
+        t={t}
+      ></UpdateForm>
     </main>
   );
 }
