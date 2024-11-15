@@ -1,18 +1,18 @@
-import type { ProjectUpdate } from "@prisma/client";
+import type { ProjectStep } from "@prisma/client";
 import type { AttachmentType } from "prisma/fake-data-generators";
 
 import { prisma } from "~/db.server";
 
-type ProjectUpdateCreateRequest = {
+type ProjectStepCreateRequest = {
   projectId: string;
   description: string;
   photoAttachmentUrls: string[];
 };
-export async function createProjectUpdate(request: ProjectUpdateCreateRequest) {
+export async function createProjectStep(request: ProjectStepCreateRequest) {
   return prisma.project.update({
     where: { id: request.projectId },
     data: {
-      updates: {
+      steps: {
         create: {
           creationDate: new Date(),
           latestModificationDate: new Date(),
@@ -31,11 +31,9 @@ export async function createProjectUpdate(request: ProjectUpdateCreateRequest) {
   });
 }
 
-export async function getProjectUpdateWithProjectOwnersAndMembers(
-  projectUpdateId: ProjectUpdate["id"]
-) {
-  return prisma.projectUpdate.findUnique({
-    where: { id: projectUpdateId },
+export async function getProjectStepWithProjectOwnersAndMembers(projectStepId: ProjectStep["id"]) {
+  return prisma.projectStep.findUnique({
+    where: { id: projectStepId },
     select: {
       id: true,
       Project: {
@@ -49,9 +47,9 @@ export async function getProjectUpdateWithProjectOwnersAndMembers(
   });
 }
 
-export async function getEditableProjectUpdateDetails(projectUpdateId: ProjectUpdate["id"]) {
-  return prisma.projectUpdate.findUnique({
-    where: { id: projectUpdateId },
+export async function getEditableProjectStepDetails(projectStepId: ProjectStep["id"]) {
+  return prisma.projectStep.findUnique({
+    where: { id: projectStepId },
     select: {
       id: true,
       attachments: {
@@ -74,6 +72,6 @@ export async function getEditableProjectUpdateDetails(projectUpdateId: ProjectUp
   });
 }
 
-export async function deleteProjectUpdate(projectUpdateId: ProjectUpdate["id"]) {
-  return prisma.projectUpdate.delete({ where: { id: projectUpdateId } });
+export async function deleteProjectStep(projectStepId: ProjectStep["id"]) {
+  return prisma.projectStep.delete({ where: { id: projectStepId } });
 }

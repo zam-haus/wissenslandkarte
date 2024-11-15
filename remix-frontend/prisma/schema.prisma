@@ -48,12 +48,12 @@ model Attachment {
   text         String
   creationDate DateTime
 
-  Project         Project?       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId       String?
-  ProjectUpdate   ProjectUpdate? @relation(fields: [projectUpdateId], references: [id], onDelete: Cascade)
-  projectUpdateId String?
+  Project       Project?     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId     String?
+  ProjectStep   ProjectStep? @relation(fields: [projectStepId], references: [id], onDelete: Cascade)
+  projectStepId String?
 
-  @@index(fields: [projectId, projectUpdateId])
+  @@index(fields: [projectId, projectStepId])
 }
 
 model Project {
@@ -63,11 +63,11 @@ model Project {
   description String
   mainPhoto   String?
 
-  owners      User[]          @relation("projectOwners")
-  members     User[]          @relation("projectMembers")
+  owners      User[]        @relation("projectOwners")
+  members     User[]        @relation("projectMembers")
   tags        Tag[]
   attachments Attachment[]
-  updates     ProjectUpdate[]
+  steps       ProjectStep[]
 
   creationDate           DateTime
   latestModificationDate DateTime
@@ -77,7 +77,7 @@ model Project {
   @@index(fields: [title, description])
 }
 
-model ProjectUpdate {
+model ProjectStep {
   id String @id @default(nanoid())
 
   creationDate           DateTime

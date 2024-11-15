@@ -1,31 +1,26 @@
-import type { ActionArgs, LoaderArgs, TypedResponse } from "@remix-run/node";
-import {
-  json,
-  redirect,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-} from "@remix-run/node";
+import type { LoaderArgs, TypedResponse } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import invariant from "tiny-invariant";
 
 import { mapDeserializedDates } from "~/components/date-rendering";
-import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
-import { createS3UploadHandler, MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
-import { getProjectDetails, getProjectsByUser } from "~/models/projects.server";
-import { createProjectUpdate } from "~/models/projectUpdates.server";
+import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
+import { getProjectsByUser } from "~/models/projects.server";
+import { getEditableProjectStepDetails } from "~/models/projectSteps.server";
 
-import { UpdateForm } from "./components/update-form";
-import { getStringArray, getTrimmedStringsDefaultEmpty } from "./lib/formDataParser";
+import { StepForm } from "./components/step-form";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const CREATE_FAILED = "CREATE_FAILED";
 
-export const action = async ({
-  request,
-}: ActionArgs): Promise<TypedResponse<{ error: string; exception?: string }>> => {
+export const action = async (/*{}:ActionArgs */): Promise<
+  TypedResponse<{ error: string; exception?: string }>
+> => {
+  throw Error("TODO");
+  /*
   const formData = await parseMultipartFormData(
     request,
     composeUploadHandlers(createS3UploadHandler(["photoAttachments"]), createMemoryUploadHandler())
@@ -54,14 +49,11 @@ export const action = async ({
   const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners); // TODO: at this point the file is already uploaded. we have to authorize the user earlier.
   const memberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
   if (!ownerLoggedIn && !memberLoggedIn) {
-    console.warn(
-      `Someone tried creating a new step for project ${projectId} but was not authorized to do so!`
-    );
     return redirect("/");
   }
 
   try {
-    const result = await createProjectUpdate({
+    const result = await createProjectStep({
       description,
       projectId,
       photoAttachmentUrls: photoAttachments,
@@ -72,24 +64,29 @@ export const action = async ({
       error: CREATE_FAILED,
       exception: e.message,
     });
-  }
+  }*/
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  invariant(params.stepId, `params.stepId is required`);
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/" });
 
   const projects = await getProjectsByUser(user.username);
+  const currentState = await getEditableProjectStepDetails(params.stepId);
 
-  return json({ projects, maxPhotoSize: MAX_UPLOAD_SIZE_IN_BYTE });
+  invariant(currentState, "Could not load project step");
+  invariant(currentState.Project, "Could not load project step");
+
+  return json({ projects, currentState, maxPhotoSize: MAX_UPLOAD_SIZE_IN_BYTE });
 };
 
 export const handle = {
   i18n: ["projects"],
 };
 
-export default function CreateUpdate() {
-  const currentPath = "/projects/update/new";
-  const { projects, maxPhotoSize } = useLoaderData<typeof loader>();
+export default function EditStep() {
+  const currentPath = location.pathname;
+  const { projects, maxPhotoSize, currentState } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const { t } = useTranslation("projects");
 
@@ -109,13 +106,14 @@ export default function CreateUpdate() {
         </div>
       ) : null}
 
-      <UpdateForm
+      <StepForm
         action={currentPath}
         maxPhotoSize={maxPhotoSize}
         projectsWithDates={projectsWithDates}
-        mode="create"
+        mode="edit"
+        currentState={currentState}
         t={t}
-      ></UpdateForm>
+      ></StepForm>
     </main>
   );
 }

@@ -50,7 +50,7 @@ export default function Project() {
   const attachments = project.attachments.map((project) =>
     withDeserializedDates(project, "creationDate")
   );
-  const updates = project.updates.map((update) => withDeserializedDates(update, "creationDate"));
+  const steps = project.steps.map((step) => withDeserializedDates(step, "creationDate"));
 
   return (
     <main>
@@ -82,21 +82,21 @@ export default function Project() {
       </ul>
 
       <ul>
-        {updates.map((update) => (
-          <li key={update.creationDate.valueOf()}>
+        {steps.map((step) => (
+          <li key={step.creationDate.valueOf()}>
             <article>
               <header>
                 <h4>
-                  {t("project-update-headline", {
-                    date: renderDate(update.creationDate, i18n.language),
+                  {t("project-step-headline", {
+                    date: renderDate(step.creationDate, i18n.language),
                   })}
                 </h4>
-                {ownerLoggedIn || memberLoggedIn ? DeleteAndEditButton(update.id) : null}
+                {ownerLoggedIn || memberLoggedIn ? DeleteAndEditButton(step.id) : null}
               </header>
-              {update.description}
+              {step.description}
 
               <ul className={style.attachments}>
-                {update.attachments.map(mapDeserializedDates("creationDate")).map((attachment) => (
+                {step.attachments.map(mapDeserializedDates("creationDate")).map((attachment) => (
                   <li key={attachment.id}>
                     <AttachmentEntry {...attachment} />
                   </li>
@@ -110,7 +110,7 @@ export default function Project() {
   );
 }
 
-function DeleteAndEditButton(updateId: string) {
+function DeleteAndEditButton(stepId: string) {
   const { t } = useTranslation("projects");
 
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -122,9 +122,9 @@ function DeleteAndEditButton(updateId: string) {
         closed={() => setConfirmDelete(false)}
         render={(close) => (
           <>
-            {t("delete-update-confirm")}
+            {t("delete-step-confirm")}
             <footer>
-              <form action={`/projects/update/${updateId}/delete`} method="post">
+              <form action={`/projects/step/${stepId}/delete`} method="post">
                 <button type="submit">{t("yes", { ns: "common" })}</button>
                 <button type="button" autoFocus onClick={close}>
                   {t("no", { ns: "common" })}
@@ -135,7 +135,7 @@ function DeleteAndEditButton(updateId: string) {
         )}
       />
       <a
-        href={`/projects/update/${updateId}/delete`}
+        href={`/projects/step/${stepId}/delete`}
         onClick={(event) => {
           setConfirmDelete(true);
           event.stopPropagation();
@@ -143,9 +143,9 @@ function DeleteAndEditButton(updateId: string) {
           return false;
         }}
       >
-        {t("delete-update")}
+        {t("delete-step")}
       </a>
-      | <Link to={`/projects/update/${updateId}/edit`}>{t("edit-update")}</Link>
+      | <Link to={`/projects/step/${stepId}/edit`}>{t("edit-step")}</Link>
     </>
   );
 }

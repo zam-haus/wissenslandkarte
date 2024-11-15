@@ -2,7 +2,7 @@
   "main-headline": "Projects",
   "by": "By",
   "main-photo": "The main photo of this project as uploaded by the user",
-  "project-update-headline": "Update from {{date}}",
+  "project-step-headline": "Update from {{date}}",
   "project-name": "Project name",
   "project-description": "Description",
   "select-main-photo": "Project main photo",
@@ -15,7 +15,7 @@
   "select-tags": "Tags",
   "select-other-users": "Co-Workers",
   "select-need-space": "I need project space",
-  "update-text": "Description",
+  "step-text": "Description",
   "no-projects": "You don't have any projects yet. Create a project before creating a project update.",
   "save": "Save",
   "typeahead-tags": "Type to add tag...",
@@ -26,7 +26,7 @@
   "required": "(required",
   "optional": "(optional)",
   "noscript-warning": "Image upload requires javascript to be enabled.",
-  "delete-update": "Delete",
-  "edit-update": "Edit",
-  "delete-update-confirm": "Do you really want to delete this update?"
+  "delete-step": "Delete",
+  "edit-step": "Edit",
+  "delete-step-confirm": "Do you really want to delete this update?"
 }

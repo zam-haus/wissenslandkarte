@@ -6,7 +6,7 @@ import { PrismaClient } from "@prisma/client";
 import {
   makeRandomFakeAttachmentDto,
   makeRandomFakeProject,
-  makeRandomFakeProjectUpdate,
+  makeRandomFakeProjectStep,
   makeRandomTag,
   makeRandomUser,
 } from "./fake-data-generators";
@@ -25,8 +25,8 @@ async function seed() {
   await prisma.project.deleteMany().catch(() => {
     console.error("Could not remove pre-existing projects!");
   });
-  await prisma.projectUpdate.deleteMany().catch(() => {
-    console.error("Could not remove pre-existing project updates!");
+  await prisma.projectStep.deleteMany().catch(() => {
+    console.error("Could not remove pre-existing project steps!");
   });
   await prisma.attachment.deleteMany().catch(() => {
     console.error("Could not remove pre-existing attachments!");
@@ -76,9 +76,9 @@ async function seedProjects(count: number, faker: Faker, allTags: Tag[], allUser
   while (count-- > 0) {
     const data = makeRandomFakeProject(faker);
 
-    const updates = Array(faker.datatype.number({ min: 0, max: 12 }))
+    const steps = Array(faker.datatype.number({ min: 0, max: 12 }))
       .fill("")
-      .map(() => makeRandomFakeProjectUpdate(faker, data));
+      .map(() => makeRandomFakeProjectStep(faker, data));
 
     const tags = faker.helpers.arrayElements(allTags, faker.datatype.number(10));
     const owners = faker.helpers.arrayElements(allUsers, faker.datatype.number({ min: 1, max: 2 }));
@@ -105,10 +105,10 @@ async function seedProjects(count: number, faker: Faker, allTags: Tag[], allUser
             makeRandomFakeAttachmentDto(faker)
           ),
         },
-        updates: {
+        steps: {
           create: [
-            ...updates.map((update) => ({
-              ...update,
+            ...steps.map((step) => ({
+              ...step,
               attachments: {
                 create: Array.from(Array(faker.datatype.number({ min: 0, max: 3 })), () =>
                   makeRandomFakeAttachmentDto(faker)

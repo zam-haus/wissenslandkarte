@@ -35,7 +35,7 @@ export default function Index() {
 
         <Link to="search/projects">{t("search-button")}</Link>
 
-        <h2>{t("newest-updates-headline")}</h2>
+        <h2>{t("newest-steps-headline")}</h2>
         <ProjectsList
           projects={projects.map(mapDeserializedDates("latestModificationDate"))}
         ></ProjectsList>

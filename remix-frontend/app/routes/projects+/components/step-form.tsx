@@ -1,38 +1,37 @@
-import type { Attachment, Project, ProjectUpdate } from "@prisma/client";
+import type { Attachment, Project, ProjectStep } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { ImageSelect } from "~/components/form-input/image-select";
 import type { ProjectListEntry } from "~/models/projects.server";
 
-import style from "./update-form.module.css";
+import style from "./step-form.module.css";
 
-type UpdateFormProps = {
+type StepFormProps = {
   action: string | undefined;
   maxPhotoSize: number;
   projectsWithDates: ProjectListEntry[];
-  mode: "create" | "update";
+  mode: "create" | "step";
 };
 
-export type CreateUpdateFormProps = UpdateFormProps & {
+export type CreateStepFormProps = StepFormProps & {
   mode: "create";
 };
 
-export type EditUpdateFormProps = UpdateFormProps & {
-  mode: "update";
-  currentState: EditableUpdateProps;
+export type EditStepFormProps = StepFormProps & {
+  mode: "step";
+  currentState: EditableStepProps;
 };
-type EditableUpdateProps = Pick<ProjectUpdate, "description" | "id"> & {
+type EditableStepProps = Pick<ProjectStep, "description" | "id"> & {
   attachments: Pick<Attachment, "id" | "text" | "type" | "url">[];
   Project: Pick<Project, "id"> | null;
 };
 
-export function UpdateForm(props: CreateUpdateFormProps | EditUpdateFormProps) {
+export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
   const { action, maxPhotoSize, projectsWithDates } = props;
   const { t } = useTranslation("projects");
 
-  const currentState: EditableUpdateProps | null =
-    props.mode === "update" ? props.currentState : null;
+  const currentState: EditableStepProps | null = props.mode === "step" ? props.currentState : null;
 
   return (
     <Form
@@ -61,7 +60,7 @@ export function UpdateForm(props: CreateUpdateFormProps | EditUpdateFormProps) {
       />
 
       <label>
-        {t("update-text")}
+        {t("step-text")}
         <textarea name="description" required defaultValue={currentState?.description}></textarea>
       </label>
 

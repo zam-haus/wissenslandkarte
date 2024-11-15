@@ -2,7 +2,7 @@
   "main-headline": "Projekte",
   "by": "Von",
   "main-photo": "Das Hauptfoto dieses Projekts wie von dem oder der Nutzer:in hochgeladen.",
-  "project-update-headline": "Update vom {{date}}",
+  "project-step-headline": "Update vom {{date}}",
   "project-name": "Projektname",
   "project-description": "Beschreibung",
   "select-main-photo": "Hauptfoto",
@@ -15,7 +15,7 @@
   "select-tags": "Tags",
   "select-other-users": "Mitbearbeiter",
   "select-need-space": "Ich brauche Projektfläche",
-  "update-text": "Beschreibung",
+  "step-text": "Beschreibung",
   "no-projects": "Du hast noch keine Projekte. Erstelle ein Projekt, bevor du Projektupdates erstellst.",
   "save": "Speichern",
   "typeahead-tags": "Tippen zum Tag hinzufügen...",
@@ -26,7 +26,7 @@
   "required": "(erforderlich)",
   "optional": "(optional)",
   "noscript-warning": "Bildupload erfordert javascript.",
-  "delete-update": "Löschen",
-  "edit-update": "Bearbeiten",
-  "delete-update-confirm": "Willst du dieses Update wirklich löschen?"
+  "delete-step": "Löschen",
+  "edit-step": "Bearbeiten",
+  "delete-step-confirm": "Willst du dieses Update wirklich löschen?"
 }

@@ -22,7 +22,7 @@ type ProjectFormProps = {
     users: User[];
   }>;
   maxPhotoSize: number;
-  mode: "create" | "update";
+  mode: "create" | "edit";
 };
 
 export type CreateProjectFormProps = ProjectFormProps & {
@@ -30,17 +30,17 @@ export type CreateProjectFormProps = ProjectFormProps & {
 };
 
 export type EditProjectFormProps = ProjectFormProps & {
-  mode: "update";
+  mode: "edit";
   currentState: EditableProject;
 };
 
-type EditableProject = Omit<NonNullable<Awaited<ReturnType<typeof getProjectDetails>>>, "updates">;
+type EditableProject = Omit<NonNullable<Awaited<ReturnType<typeof getProjectDetails>>>, "steps">;
 
 export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps) {
   const { action, maxPhotoSize, tags, tagFetcher, users, userFetcher } = props;
   const { t } = useTranslation("projects");
 
-  const currentState: EditableProject | null = props.mode === "update" ? props.currentState : null;
+  const currentState: EditableProject | null = props.mode === "edit" ? props.currentState : null;
 
   return (
     <Form
