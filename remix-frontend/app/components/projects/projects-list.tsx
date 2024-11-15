@@ -22,7 +22,7 @@ export function ProjectsList({
   const { t } = useTranslation("users");
 
   return (
-    <ul>
+    <ul className={localStyle.projectList}>
       {projects.map((project) => (
         <li key={project.id} className={localStyle.projectEntry + " " + styles?.projectEntry}>
           <Link to={`/projects/${encodeURIComponent(project.id)}`} className={styles?.projectTitle}>

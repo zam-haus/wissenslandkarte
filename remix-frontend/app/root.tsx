@@ -15,10 +15,12 @@ import { useChangeLanguage } from "remix-i18next";
 
 import i18next from "~/i18next.server";
 import mainStylesheetUrl from "~/styles/main.css";
+import variablesUrl from "~/styles/variables.css";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
   { rel: "stylesheet", href: mainStylesheetUrl },
+  { rel: "stylesheet", href: variablesUrl },
 ];
 
 export async function loader({ request }: LoaderArgs) {

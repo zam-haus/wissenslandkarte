@@ -1,12 +1,24 @@
+.projectList {
+  padding: 0;
+  padding-right: 4px;
+}
+
 .projectEntry {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 120px auto;
   margin-bottom: 1em;
+  padding: var(--padding-medium);
+
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+  box-shadow: var(--primary-shadow);
 }
 
 .projectMainPhoto {
   grid-row: 1/3;
-  grid-column: 2;
+  grid-column: 1;
 
   width: 110px;
+
+  float: right;
 }
