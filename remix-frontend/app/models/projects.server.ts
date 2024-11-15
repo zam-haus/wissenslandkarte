@@ -125,15 +125,21 @@ export async function updateProject(request: ProjectUpdateRequest, options: Proj
     if (options.removePhotoIfNoNewValueGiven) return { mainPhoto: null };
     return {};
   }
-
   return prisma.project.update({
     where: { id: request.id },
     data: {
       title: request.title,
       description: request.description,
-      owners: { connect: request.owners.map((username) => ({ username })) },
-      members: { connect: request.coworkers.map((username) => ({ username })) },
+      owners: {
+        set: [], // deletes all connections, then "reconnects" the updated list
+        connect: request.owners.map((username) => ({ username })),
+      },
+      members: {
+        set: [],
+        connect: request.coworkers.map((username) => ({ username })),
+      },
       tags: {
+        set: [],
         connectOrCreate: request.tags.map((name) => ({ create: { name }, where: { name } })),
       },
       needsProjectArea: request.needProjectSpace,
