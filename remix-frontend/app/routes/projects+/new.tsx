@@ -6,12 +6,9 @@ import {
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
-import { Form, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
+import { useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import { ImageSelect } from "~/components/form-input/image-select";
-import { TagSelect } from "~/components/form-input/tag-select";
-import { UserSelect } from "~/components/form-input/user-select";
 import { authenticator } from "~/lib/authentication.server";
 import { createS3UploadHandler, MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
 import { createProject } from "~/models/projects.server";
@@ -20,13 +17,13 @@ import {
   loaderForUserFetcher,
 } from "~/routes/projects+/lib/loader-helpers.server";
 
+import { ProjectForm } from "./components/project-form";
 import {
   getBooleanDefaultFalse,
   getStringArray,
   getStringsDefaultUndefined,
   getTrimmedStringsDefaultEmpty,
 } from "./lib/formDataParser";
-import style from "./new.module.css";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const CREATE_FAILED = "CREATE_FAILED";
@@ -105,52 +102,15 @@ export default function NewProject() {
         </div>
       ) : null}
 
-      <Form method="post" className={style.verticalForm} encType="multipart/form-data">
-        <label>
-          {t("project-name")} {t("required")}
-          <input name="title" type="text" required />
-        </label>
-
-        <label>
-          {t("project-description")} {t("required")}
-          <textarea name="description" required></textarea>
-        </label>
-
-        <ImageSelect
-          name="mainPhoto"
-          t={t}
-          label={`${t("select-main-photo")} ${t("optional")}`}
-          maxPhotoSize={maxPhotoSize}
-        />
-
-        <UserSelect
-          initiallyAvailableUsers={users}
-          userFetcher={userFetcher}
-          t={t}
-          fetchMoreUsers={(filter: string) =>
-            userFetcher.load(
-              `${new URL(location.href).pathname}?usersFilter=${filter}&ignoreTags=true`
-            )
-          }
-        />
-
-        <TagSelect
-          initiallyAvailableTags={tags}
-          tagFetcher={tagFetcher}
-          t={t}
-          fetchMoreTags={(filter: string) =>
-            tagFetcher.load(
-              `${new URL(location.href).pathname}?tagsFilter=${filter}&ignoreUsers=true`
-            )
-          }
-        />
-
-        <label>
-          {t("select-need-space")} <input type="checkbox" name="needProjectSpace" />
-        </label>
-
-        <button type="submit">{t("save")}</button>
-      </Form>
+      <ProjectForm
+        mode="create"
+        action={undefined} // undefined means current url
+        users={users}
+        tags={tags}
+        maxPhotoSize={maxPhotoSize}
+        tagFetcher={tagFetcher}
+        userFetcher={userFetcher}
+      />
     </main>
   );
 }

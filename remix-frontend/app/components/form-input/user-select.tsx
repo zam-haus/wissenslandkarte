@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { MultiSelect } from "./multi-select/multi-select";
 
-type User = { id: string; username: string };
+export type User = { id: string; username: string };
 
 export function UserSelect({
   initiallyAvailableUsers,

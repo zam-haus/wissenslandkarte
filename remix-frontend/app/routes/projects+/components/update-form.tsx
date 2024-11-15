@@ -1,16 +1,15 @@
 import type { Attachment, Project, ProjectUpdate } from "@prisma/client";
 import { Form } from "@remix-run/react";
-import type { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 
 import { ImageSelect } from "~/components/form-input/image-select";
 import type { ProjectListEntry } from "~/models/projects.server";
 
 import style from "./update-form.module.css";
 
-export type UpdateFormProps = {
-  action: string;
+type UpdateFormProps = {
+  action: string | undefined;
   maxPhotoSize: number;
-  t: TFunction<"projects">;
   projectsWithDates: ProjectListEntry[];
   mode: "create" | "update";
 };
@@ -29,7 +28,8 @@ type EditableUpdateProps = Pick<ProjectUpdate, "description" | "id"> & {
 };
 
 export function UpdateForm(props: CreateUpdateFormProps | EditUpdateFormProps) {
-  const { action, maxPhotoSize, t, projectsWithDates } = props;
+  const { action, maxPhotoSize, projectsWithDates } = props;
+  const { t } = useTranslation("projects");
 
   const currentState: EditableUpdateProps | null =
     props.mode === "update" ? props.currentState : null;

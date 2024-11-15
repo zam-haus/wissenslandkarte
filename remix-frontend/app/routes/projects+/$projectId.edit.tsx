@@ -7,13 +7,11 @@ import {
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
-import { Form, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
+import { useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
-import { ImageSelect } from "~/components/form-input/image-select";
-import { TagSelect } from "~/components/form-input/tag-select";
-import { UserSelect } from "~/components/form-input/user-select";
+import { mapDeserializedDates, withDeserializedDates } from "~/components/date-rendering";
 import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { createS3UploadHandler, MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
@@ -23,7 +21,7 @@ import {
   loaderForUserFetcher,
 } from "~/routes/projects+/lib/loader-helpers.server";
 
-import style from "./$projectId.edit.module.css";
+import { ProjectForm } from "./components/project-form";
 import {
   getBooleanDefaultFalse,
   getStringArray,
@@ -108,12 +106,20 @@ export const handle = {
 };
 
 export default function EditProject() {
-  const { project, tags, users, maxPhotoSize } = useLoaderData<typeof loader>();
+  const { project: serializedProject, tags, users, maxPhotoSize } = useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
   const tagFetcher = useFetcher<typeof loader>();
   const userFetcher = useFetcher<typeof loader>();
   const actionData = useActionData<typeof action>();
+
+  const project = withDeserializedDates(
+    {
+      ...serializedProject,
+      attachments: serializedProject.attachments.map(mapDeserializedDates(["creationDate"])),
+    },
+    ["creationDate", "latestModificationDate"]
+  );
 
   return (
     <main>
@@ -123,67 +129,16 @@ export default function EditProject() {
           {t("creation-failed")} {actionData?.exception}
         </div>
       ) : null}
-
-      <Form method="post" className={style.verticalForm} encType="multipart/form-data">
-        <label>
-          {t("project-name")} {t("required")}
-          <input name="title" type="text" defaultValue={project.title} required />
-        </label>
-
-        <label>
-          {t("project-description")} {t("required")}
-          <textarea name="description" required defaultValue={project.description}></textarea>
-        </label>
-
-        {project.mainPhoto === null ? null : (
-          <>
-            {t("current-main-photo")}
-            <img className={style.mainPhoto} src={project.mainPhoto} alt={t("main-photo")} />
-            Remove main photo: <input type="checkbox" name="removeMainPhoto" />{" "}
-            {/*autoset and hide when image removal is done*/}
-          </>
-        )}
-
-        <ImageSelect
-          name="mainPhoto"
-          t={t}
-          label={`${t("select-main-photo")} ${t("optional")}`}
-          maxPhotoSize={maxPhotoSize}
-        />
-
-        <UserSelect
-          initiallyAvailableUsers={[...project.members, ...users]}
-          userFetcher={userFetcher}
-          defaultValue={project.members}
-          t={t}
-          fetchMoreUsers={(filter: string) =>
-            userFetcher.load(
-              `${new URL(location.href).pathname}?usersFilter=${filter}&ignoreTags=true`
-            )
-          }
-        />
-
-        <TagSelect
-          initiallyAvailableTags={[
-            ...project.tags.map(({ id, name }) => ({ id, name, priority: Infinity })),
-            ...tags,
-          ]}
-          tagFetcher={tagFetcher}
-          defaultValue={project.tags}
-          t={t}
-          fetchMoreTags={(filter: string) =>
-            tagFetcher.load(
-              `${new URL(location.href).pathname}?tagsFilter=${filter}&ignoreUsers=true`
-            )
-          }
-        />
-
-        <label>
-          {t("select-need-space")} <input type="checkbox" name="needProjectSpace" />
-        </label>
-
-        <button type="submit">{t("save")}</button>
-      </Form>
+      <ProjectForm
+        action={undefined} // undefined means current url
+        mode="update"
+        users={users}
+        tags={tags}
+        maxPhotoSize={maxPhotoSize}
+        currentState={project}
+        tagFetcher={tagFetcher}
+        userFetcher={userFetcher}
+      />
     </main>
   );
 }
