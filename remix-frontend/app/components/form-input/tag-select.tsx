@@ -45,7 +45,9 @@ export function TagSelect({
         inputName="tags"
         chosenValues={chosenTags}
         onFilterInput={fetchMoreTags}
-        valuesToSuggest={availableTags.map(({ name }) => name)}
+        valuesToSuggest={availableTags
+          .map(({ name }) => name)
+          .filter((name) => !chosenTags.includes(name))}
         allowAddingNew={true}
         onValueChosen={(newValue) => {
           setChosenTags([...chosenTags, newValue]);

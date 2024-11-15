@@ -40,7 +40,9 @@ export function UserSelect({
         inputLabel={`${t("select-other-users")} ${t("optional")}`}
         inputName="coworkers"
         chosenValues={chosenUsers}
-        valuesToSuggest={availableUsers.map(({ username }) => username)}
+        valuesToSuggest={availableUsers
+          .map(({ username }) => username)
+          .filter((username) => !chosenUsers.includes(username))}
         onFilterInput={fetchMoreUsers}
         onValueChosen={(newUser) => {
           setChosenUsers([...chosenUsers, newUser]);
