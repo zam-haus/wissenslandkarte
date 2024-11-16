@@ -112,7 +112,6 @@ export default function EditStep() {
         projectsWithDates={projectsWithDates}
         mode="edit"
         currentState={currentState}
-        t={t}
       ></StepForm>
     </main>
   );

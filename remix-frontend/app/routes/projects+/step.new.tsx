@@ -114,7 +114,6 @@ export default function CreateStep() {
         maxPhotoSize={maxPhotoSize}
         projectsWithDates={projectsWithDates}
         mode="create"
-        t={t}
       ></StepForm>
     </main>
   );
