@@ -15,7 +15,7 @@ import { mapDeserializedDates, withDeserializedDates } from "~/components/date-r
 import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { createS3UploadHandler, MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
-import { getProjectDetails, stepProject } from "~/models/projects.server";
+import { getProjectDetails, updateProject } from "~/models/projects.server";
 import {
   loaderForTagFetcher,
   loaderForUserFetcher,
@@ -53,7 +53,7 @@ export const action = async ({
   }
 
   try {
-    const result = await stepProject(
+    const result = await updateProject(
       {
         id: params.projectId,
         title,
@@ -131,7 +131,7 @@ export default function EditProject() {
       ) : null}
       <ProjectForm
         action={undefined} // undefined means current url
-        mode="step"
+        mode="edit"
         users={users}
         tags={tags}
         maxPhotoSize={maxPhotoSize}

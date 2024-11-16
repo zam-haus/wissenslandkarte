@@ -11,7 +11,7 @@ type StepFormProps = {
   action: string | undefined;
   maxPhotoSize: number;
   projectsWithDates: ProjectListEntry[];
-  mode: "create" | "step";
+  mode: "create" | "edit";
 };
 
 export type CreateStepFormProps = StepFormProps & {
@@ -19,7 +19,7 @@ export type CreateStepFormProps = StepFormProps & {
 };
 
 export type EditStepFormProps = StepFormProps & {
-  mode: "step";
+  mode: "edit";
   currentState: EditableStepProps;
 };
 type EditableStepProps = Pick<ProjectStep, "description" | "id"> & {
@@ -31,7 +31,7 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
   const { action, maxPhotoSize, projectsWithDates } = props;
   const { t } = useTranslation("projects");
 
-  const currentState: EditableStepProps | null = props.mode === "step" ? props.currentState : null;
+  const currentState: EditableStepProps | null = props.mode === "edit" ? props.currentState : null;
 
   return (
     <Form

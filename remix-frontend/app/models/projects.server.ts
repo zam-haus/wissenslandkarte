@@ -119,7 +119,7 @@ export async function createProject(request: ProjectCreateRequest) {
 
 type ProjectStepRequest = { id: string } & ProjectCreateRequest;
 type ProjectStepOptions = { removePhotoIfNoNewValueGiven: boolean };
-export async function stepProject(request: ProjectStepRequest, options: ProjectStepOptions) {
+export async function updateProject(request: ProjectStepRequest, options: ProjectStepOptions) {
   function determineMainPhoto() {
     if (request.mainPhoto !== undefined) return { mainPhoto: request.mainPhoto };
     if (options.removePhotoIfNoNewValueGiven) return { mainPhoto: null };
@@ -131,7 +131,7 @@ export async function stepProject(request: ProjectStepRequest, options: ProjectS
       title: request.title,
       description: request.description,
       owners: {
-        set: [], // deletes all connections, then "reconnects" the stepd list
+        set: [], // deletes all connections, then "reconnects" the updated list
         connect: request.owners.map((username) => ({ username })),
       },
       members: {
