@@ -54,6 +54,9 @@ export const action = async ({
   const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners); // TODO: at this point the file is already uploaded. we have to authorize the user earlier.
   const memberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
   if (!ownerLoggedIn && !memberLoggedIn) {
+    console.warn(
+      `Someone tried creating a new step for project ${projectId} but was not authorized to do so!`
+    );
     return redirect("/");
   }
 
