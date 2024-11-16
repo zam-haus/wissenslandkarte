@@ -57,9 +57,9 @@ export default function Project() {
       <header>
         <h2>{project.title}</h2>
         {t("by")}:{" "}
-        <ul>
+        <ul className={style.memberList}>
           {allUsers.map(({ username }) => (
-            <li key={username}>
+            <li key={username} className={style.member}>
               <Link to={`/users/${username}`}>{username}</Link>
             </li>
           ))}
@@ -81,10 +81,10 @@ export default function Project() {
         ))}
       </ul>
 
-      <ul>
+      <ul className={style.stepList}>
         {steps.map((step) => (
           <li key={step.creationDate.valueOf()}>
-            <article>
+            <article className={style.step}>
               <header>
                 <h4>
                   {t("project-step-headline", {

@@ -1,8 +1,18 @@
 :root {
+  --padding-large: 16px;
   --padding-medium: 8px;
+  --padding-small: 4px;
+  --margin-large: 16px;
+  --margin-medium: 8px;
+  --margin-small: 4px;
 
   --primary-border: 1px solid black;
   --primary-border-radius: 2px;
 
   --primary-shadow: 2px 2px 5px #aaa;
+
+  --secondary-border: 1px solid #aaa;
+  --secondary-border-radius: 8px;
+  --secondary-background: #eee;
+  --secondary-gap: 8px;
 }

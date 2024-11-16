@@ -1,0 +1,18 @@
+.tagList {
+  display: flex;
+  gap: var(--secondary-gap);
+  list-style: none;
+  padding: 0;
+}
+
+.tag {
+  border: var(--secondary-border);
+  border-radius: var(--secondary-border-radius);
+  padding: var(--padding-small);
+  background: var(--secondary-background);
+}
+
+.tag::before {
+  content: "🏷 ";
+  filter: saturate(0);
+}

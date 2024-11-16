@@ -1,9 +1,11 @@
 import type { Tag } from "@prisma/client";
 import { Link } from "@remix-run/react";
 
+import localStyles from "./tags.module.css";
+
 export function ProjectTagList({ tags, className }: { tags: Tag[]; className: string }) {
   return (
-    <ul className={className}>
+    <ul className={[className, localStyles.tagList].join(" ")}>
       {tags.map((tag) => (
         <TagElem
           key={tag.id}
@@ -17,7 +19,7 @@ export function ProjectTagList({ tags, className }: { tags: Tag[]; className: st
 
 export function PeopleTagList({ tags, className }: { tags: Tag[]; className?: string }) {
   return (
-    <ul className={className}>
+    <ul className={[className, localStyles.tagList].join(" ")}>
       {tags.map((tag) => (
         <TagElem
           key={tag.id}
@@ -31,7 +33,7 @@ export function PeopleTagList({ tags, className }: { tags: Tag[]; className?: st
 
 function TagElem({ url, text }: { url: string; text: string }) {
   return (
-    <li>
+    <li className={localStyles.tag}>
       <Link to={url}>{text}</Link>
     </li>
   );

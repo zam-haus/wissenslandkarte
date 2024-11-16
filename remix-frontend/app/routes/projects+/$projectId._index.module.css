@@ -1,9 +1,49 @@
 .attachments {
   display: flex;
+  flex-direction: column;
   gap: 15px;
   list-style: none;
 }
 
 .attachments img {
   max-width: 150px;
+}
+
+.memberList {
+  padding: 0;
+  display: inline-flex;
+  gap: var(--secondary-gap);
+  list-style: none;
+  margin-bottom: 0.8em;
+}
+
+.member {
+  border: var(--secondary-border);
+  border-radius: var(--secondary-border-radius);
+  padding: var(--padding-small);
+  background: var(--secondary-background);
+}
+
+.member::before {
+  content: "👤 ";
+  filter: saturate(0);
+}
+
+.stepList {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+}
+
+.step {
+  border: var(--primary-border);
+  border-radius: var(--primary-border-radius);
+  padding: var(--padding-medium);
+  margin: var(--margin-medium);
+}
+
+.step header {
+  display: flex;
+  gap: 1ex;
 }
