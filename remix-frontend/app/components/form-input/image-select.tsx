@@ -135,7 +135,7 @@ export function ImageSelect({
   return (
     <>
       <noscript>{t("noscript-warning")}</noscript>
-      <input type="file" name={name} ref={actualFileUploadRef} />
+      <input className={style.actualFileInput} type="file" name={name} ref={actualFileUploadRef} />
       <label>
         {label} {hasCamera ? t("file-system-suffix") : ""}
         <input

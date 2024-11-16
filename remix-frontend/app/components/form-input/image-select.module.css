@@ -1,3 +1,8 @@
 .imagePreview {
   max-width: 120px;
 }
+
+.actualFileInput {
+  opacity: 0.5;
+  pointer-events: none;
+}
