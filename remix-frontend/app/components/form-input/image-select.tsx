@@ -71,7 +71,6 @@ function useFileUploadHelpers({
 
     input.files = newFilesList.files;
   }, []);
-
   return {
     fileTooLarge,
     resetSizeCheckWarning,
@@ -95,15 +94,30 @@ export function ImageSelect({
   multiple?: boolean;
   t: TFunction<"projects", undefined>;
 }) {
-  const { fileTooLarge, resetSizeCheckWarning, hasCamera, checkFileSize, addFilesToInput } =
-    useFileUploadHelpers({
-      maxFileSize: maxPhotoSize,
-      clearInputWhenSizeExceeded: true,
-    });
+  const {
+    fileTooLarge,
+    resetSizeCheckWarning,
+    hasCamera,
+    checkFileSize,
+    addFilesToInput,
+    removeFileFromInput,
+  } = useFileUploadHelpers({
+    maxFileSize: maxPhotoSize,
+    clearInputWhenSizeExceeded: true,
+  });
 
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
 
   const actualFileUploadRef = useRef<HTMLInputElement>(null);
+
+  const rebuildPhotoPreviews = (sourceInput: HTMLInputElement) => {
+    photoPreviews.every((url) => URL.revokeObjectURL(url));
+    const newFileUrls = Array.from(sourceInput.files ?? []).map(
+      (file) => URL.createObjectURL(file) // TODO: This file needs to be released to avoid memleak before navigating away
+    );
+
+    setPhotoPreviews(newFileUrls);
+  };
 
   const newPhotoSelected = (event: ChangeEvent<HTMLInputElement>) => {
     checkFileSize(event);
@@ -119,13 +133,18 @@ export function ImageSelect({
     }
 
     addFilesToInput(uploadInput, selectInput.files);
-    const newFileUrls = Array.from(uploadInput.files ?? []).map(
-      (file) => URL.createObjectURL(file) // TODO: This file needs to be released to avoid memleak
-    );
-
-    setPhotoPreviews(newFileUrls);
+    rebuildPhotoPreviews(uploadInput);
 
     selectInput.value = "";
+  };
+
+  const removePhotoByIndex = (index: number) => {
+    const uploadInput = actualFileUploadRef.current;
+    if (uploadInput === null) {
+      return;
+    }
+    removeFileFromInput(uploadInput, index);
+    rebuildPhotoPreviews(uploadInput);
   };
 
   return (
@@ -155,8 +174,16 @@ export function ImageSelect({
         </label>
       ) : null}
       {fileTooLarge ? t("photo-too-large") : ""}
-      {photoPreviews.map((url) => (
-        <img key={url} src={url} alt={t("photo-preview")} className={style.imagePreview} /> // TODO: Add text input for alt text
+      {photoPreviews.map((url, index) => (
+        <div
+          key={url}
+          className={style.deleteImageButtonContainer}
+          onClick={() => removePhotoByIndex(index)}
+        >
+          <button className={style.deleteImageButton}>×</button>
+          <img src={url} alt={t("photo-preview")} className={style.imagePreview} />{" "}
+          {/*TODO: Add text input for alt text */}
+        </div>
       ))}
     </>
   );

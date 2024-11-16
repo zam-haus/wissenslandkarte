@@ -6,3 +6,24 @@
   opacity: 0.5;
   pointer-events: none;
 }
+
+.deleteImageButtonContainer {
+  position: relative;
+  width: fit-content;
+  margin-top: 5px;
+  margin-right: 5px;
+}
+
+.deleteImageButton {
+  border-radius: 100%;
+  padding: 2px;
+  border: 1px solid black;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+}
