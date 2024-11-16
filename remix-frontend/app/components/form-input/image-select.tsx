@@ -123,11 +123,7 @@ export function ImageSelect({
       (file) => URL.createObjectURL(file) // TODO: This file needs to be released to avoid memleak
     );
 
-    if (multiple) {
-      setPhotoPreviews((photoPreviews) => [...photoPreviews, ...newFileUrls]);
-    } else {
-      setPhotoPreviews(newFileUrls);
-    }
+    setPhotoPreviews(newFileUrls);
 
     selectInput.value = "";
   };
