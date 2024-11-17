@@ -24,7 +24,7 @@ export type EditStepFormProps = StepFormProps & {
 };
 type EditableStepProps = Pick<ProjectStep, "description" | "id"> & {
   attachments: Pick<Attachment, "id" | "text" | "type" | "url">[];
-  Project: Pick<Project, "id"> | null;
+  project: Pick<Project, "id"> | null;
 };
 
 export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
@@ -42,7 +42,7 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
     >
       <label>
         {t("project-name")}
-        <select name="projectId" required defaultValue={currentState?.Project?.id}>
+        <select name="projectId" required defaultValue={currentState?.project?.id}>
           {projectsWithDates.map((project) => (
             <option key={project.id} value={project.id}>
               {project.title}

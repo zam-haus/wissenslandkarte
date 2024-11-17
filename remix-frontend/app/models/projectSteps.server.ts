@@ -36,7 +36,7 @@ export async function getProjectStepWithProjectOwnersAndMembers(projectStepId: P
     where: { id: projectStepId },
     select: {
       id: true,
-      Project: {
+      project: {
         select: {
           id: true,
           owners: { select: { id: true, username: true } },
@@ -61,7 +61,7 @@ export async function getEditableProjectStepDetails(projectStepId: ProjectStep["
         },
       },
       description: true,
-      Project: {
+      project: {
         select: {
           id: true,
           owners: { select: { id: true, username: true } },

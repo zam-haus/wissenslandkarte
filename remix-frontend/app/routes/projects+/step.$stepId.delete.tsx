@@ -14,8 +14,8 @@ export const action = async ({ params, request }: LoaderArgs) => {
   const step = await getProjectStepWithProjectOwnersAndMembers(params.stepId);
   invariant(step, `Step not found: ${params.stepId}`);
 
-  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, step.Project?.owners ?? []);
-  const memberLoggedIn = await isAnyUserFromListLoggedIn(request, step.Project?.members ?? []);
+  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, step.project?.owners ?? []);
+  const memberLoggedIn = await isAnyUserFromListLoggedIn(request, step.project?.members ?? []);
 
   if (!ownerLoggedIn && !memberLoggedIn) {
     return redirect("/");

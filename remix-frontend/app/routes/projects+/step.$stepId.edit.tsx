@@ -75,7 +75,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const currentState = await getEditableProjectStepDetails(params.stepId);
 
   invariant(currentState, "Could not load project step");
-  invariant(currentState.Project, "Could not load project step");
+  invariant(currentState.project, "Could not load step's project");
 
   return json({ projects, currentState, maxPhotoSize: MAX_UPLOAD_SIZE_IN_BYTE });
 };
