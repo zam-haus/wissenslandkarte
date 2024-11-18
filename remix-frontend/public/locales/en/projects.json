@@ -28,5 +28,6 @@
   "noscript-warning": "Image upload requires javascript to be enabled.",
   "delete-step": "Delete",
   "edit-step": "Edit",
-  "delete-step-confirm": "Do you really want to delete this update?"
+  "delete-step-confirm": "Do you really want to delete this update?",
+  "delete-image": "Delete this image:"
 }

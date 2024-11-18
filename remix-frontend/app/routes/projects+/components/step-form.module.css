@@ -2,3 +2,7 @@
   display: flex;
   flex-direction: column;
 }
+
+.imagePreview {
+  max-width: 120px;
+}

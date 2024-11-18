@@ -1,37 +1,42 @@
-import type { LoaderArgs, TypedResponse } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, TypedResponse } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
 import { mapDeserializedDates } from "~/components/date-rendering";
+import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
-import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
-import { getProjectsByUser } from "~/models/projects.server";
-import { getEditableProjectStepDetails } from "~/models/projectSteps.server";
+import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
+import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
+import { getProjectDetails, getProjectsByUser } from "~/models/projects.server";
+import { getEditableProjectStepDetails, updateProjectStep } from "~/models/projectSteps.server";
 
 import { StepForm } from "./components/step-form";
+import { getStringArray, getTrimmedStringsDefaultEmpty } from "./lib/formDataParser";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
-const CREATE_FAILED = "CREATE_FAILED";
+const UPDATE_FAILED = "UPDATE_FAILED";
 
-export const action = async (/*{}:ActionArgs */): Promise<
-  TypedResponse<{ error: string; exception?: string }>
-> => {
-  throw Error("TODO");
-  /*
-  const formData = await parseMultipartFormData(
-    request,
-    composeUploadHandlers(createS3UploadHandler(["photoAttachments"]), createMemoryUploadHandler())
-  );
+export const action = async ({
+  request,
+  params,
+}: ActionArgs): Promise<TypedResponse<{ error: string; exception?: string }>> => {
+  invariant(params.stepId, `params.stepId is required`);
 
-  const { projectId, description } = getTrimmedStringsDefaultEmpty(
+  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["photoAttachments"]);
+
+  const { projectId: newProjectId, description } = getTrimmedStringsDefaultEmpty(
     formData,
     "projectId",
     "description"
   );
-  const { photoAttachments } = getStringArray(formData, "photoAttachments");
+  const { photoAttachments, attachmentsToRemove } = getStringArray(
+    formData,
+    "photoAttachments",
+    "attachmentsToRemove"
+  );
 
   if (description.length === 0) {
     return json({
@@ -39,32 +44,53 @@ export const action = async (/*{}:ActionArgs */): Promise<
     });
   }
 
-  const project = await getProjectDetails(projectId);
-  if (project === null) {
+  const step = await getEditableProjectStepDetails(params.stepId);
+  if (step === null || step.project === null) {
     return json({
-      error: CREATE_FAILED,
-      exception: "No such project",
+      error: UPDATE_FAILED,
+      exception: "No such step or no such project",
     });
   }
-  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners); // TODO: at this point the file is already uploaded. we have to authorize the user earlier.
+  const project = step.project;
+  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners); // TODO: at this point the image files are already uploaded. we have to authorize the user earlier.
   const memberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
   if (!ownerLoggedIn && !memberLoggedIn) {
+    console.warn(`Someone tried editing step ${params.stepId} but was not authorized to do so!`);
     return redirect("/");
   }
 
+  if (project.id !== newProjectId) {
+    const newProject = await getProjectDetails(newProjectId);
+    if (newProject === null) {
+      return json({
+        error: UPDATE_FAILED,
+        exception: "No such new project",
+      });
+    }
+    const newOwnerLoggedIn = await isAnyUserFromListLoggedIn(request, newProject.owners);
+    const newMemberLoggedIn = await isAnyUserFromListLoggedIn(request, newProject.members);
+    if (!newOwnerLoggedIn && !newMemberLoggedIn) {
+      console.warn(
+        `Someone tried assigning step ${params.stepId} to project ${newProjectId} but was not authorized to do so!`
+      );
+      return redirect("/");
+    }
+  }
+
   try {
-    const result = await createProjectStep({
+    const result = await updateProjectStep(params.stepId, {
       description,
-      projectId,
+      projectId: newProjectId,
       photoAttachmentUrls: photoAttachments,
+      attachmentsToRemove,
     });
-    return redirect(`/projects/${result.id}`);
+    return redirect(`/projects/${result.projectId}`);
   } catch (e: any) {
     return json({
-      error: CREATE_FAILED,
+      error: UPDATE_FAILED,
       exception: e.message,
     });
-  }*/
+  }
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -85,7 +111,7 @@ export const handle = {
 };
 
 export default function EditStep() {
-  const currentPath = location.pathname;
+  const currentPath = ".";
   const { projects, maxPhotoSize, currentState } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const { t } = useTranslation("projects");
@@ -100,7 +126,7 @@ export default function EditStep() {
   return (
     <main>
       {actionData?.error === FIELD_EMPTY ? <div>{t("missing-description")}</div> : null}
-      {actionData?.error === CREATE_FAILED ? (
+      {actionData?.error === UPDATE_FAILED ? (
         <div>
           {t("creation-failed")} {actionData?.exception}
         </div>

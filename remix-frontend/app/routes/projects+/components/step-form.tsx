@@ -51,6 +51,20 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
         </select>
       </label>
 
+      {currentState?.attachments.map((attachment) => {
+        if (attachment.type !== "image") {
+          return null;
+        }
+
+        return (
+          <label key={attachment.id}>
+            {t("delete-image")}
+            <input type="checkbox" name="attachmentsToRemove" value={attachment.id} />
+            <img src={attachment.url} alt={attachment.text} className={style.imagePreview} />
+          </label>
+        );
+      })}
+
       <ImageSelect
         name="photoAttachments"
         t={t}

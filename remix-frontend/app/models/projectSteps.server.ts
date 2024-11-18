@@ -75,3 +75,28 @@ export async function getEditableProjectStepDetails(projectStepId: ProjectStep["
 export async function deleteProjectStep(projectStepId: ProjectStep["id"]) {
   return prisma.projectStep.delete({ where: { id: projectStepId } });
 }
+
+type ProjectStepUpdateRequest = ProjectStepCreateRequest & {
+  attachmentsToRemove: string[];
+};
+export async function updateProjectStep(
+  projectStepId: ProjectStep["id"],
+  request: ProjectStepUpdateRequest
+) {
+  return prisma.projectStep.update({
+    where: { id: projectStepId },
+    data: {
+      description: request.description,
+      projectId: request.projectId,
+      attachments: {
+        create: request.photoAttachmentUrls.map((url) => ({
+          type: "image" satisfies AttachmentType,
+          url,
+          text: "",
+          creationDate: new Date(),
+        })),
+        deleteMany: request.attachmentsToRemove.map((id) => ({ id })),
+      },
+    },
+  });
+}
