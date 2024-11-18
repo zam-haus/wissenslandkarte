@@ -1,4 +1,4 @@
-import type { LoaderFunction, V2_MetaFunction } from "@remix-run/node";
+import type { DataFunctionArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
@@ -11,7 +11,7 @@ import { getProjectList } from "~/models/projects.server";
 
 export const meta: V2_MetaFunction = () => [{ title: "Remix Notes" }];
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: DataFunctionArgs) => {
   const projects = await getProjectList({
     byNewestModification: true,
     limit: 5,

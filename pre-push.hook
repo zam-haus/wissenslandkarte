@@ -18,6 +18,7 @@ if [[ $branch == 'main' ]]; then
   cd remix-frontend || (echo "Couldn't change to remix-frontend folder" && exit 1)
 
   
+  echo "Checking format..."
   if ! npm run format-check; then
     echo "Did not push because of failing formatter"
     exit 1
@@ -25,12 +26,19 @@ if [[ $branch == 'main' ]]; then
   echo "Formatting is ok..."
 
   
+  echo "Checking linter..."
   if ! npm run lint; then
     echo "Did not push because of failing linter"
     exit 1
   fi
 
-  echo "Linter didn't complain. Lets'a go!"
+  echo "Linter didn't complain..."
+
+  echo "Checking compiler..."
+  if ! npx tsc --noEmit; then
+    echo "Did not push because of compiler errors"
+    exit 1
+  fi
 fi
 
 exit 0

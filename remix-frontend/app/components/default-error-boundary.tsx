@@ -1,15 +1,20 @@
-import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
+import { isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
+import { isLoggedInLoader } from "~/lib/authentication";
+
 import { Page } from "./page/page";
+
+export const loader = isLoggedInLoader;
 
 export function DefaultErrorBoundary() {
   const { t } = useTranslation("common");
   const error = useRouteError();
+  const { isLoggedIn } = useLoaderData<typeof loader>();
 
   if (isRouteErrorResponse(error)) {
     return (
-      <Page title={t("error-header")}>
+      <Page isLoggedIn={isLoggedIn} title={t("error-header")}>
         <h2>
           `${error.status} ${error.statusText}`
         </h2>
@@ -18,7 +23,7 @@ export function DefaultErrorBoundary() {
     );
   } else if (error instanceof Error) {
     return (
-      <Page title={t("exception-header")}>
+      <Page isLoggedIn={isLoggedIn} title={t("exception-header")}>
         <h2>{error.message}</h2>
         <p>{t("exception-explanation")}</p>
         <pre>{error.stack}</pre>
@@ -26,7 +31,7 @@ export function DefaultErrorBoundary() {
     );
   } else {
     return (
-      <Page title={t("unknown-error-header")}>
+      <Page isLoggedIn={isLoggedIn} title={t("unknown-error-header")}>
         <p>{t("unknown-error-explanation")}</p>
       </Page>
     );

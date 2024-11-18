@@ -1,13 +1,13 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { DataFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
 import { authenticator } from "./authentication.server";
 
 export async function loaderLoginCheck(request: Request) {
-  return { isLoggedIn: await authenticator.isAuthenticated(request) };
+  return { isLoggedIn: (await authenticator.isAuthenticated(request)) !== null };
 }
 
-export const isLoggedInLoader: LoaderFunction = async ({ request }) =>
+export const isLoggedInLoader = async ({ request }: DataFunctionArgs) =>
   json(await loaderLoginCheck(request));
 
 export async function isThisUserLoggedIn(request: Request, user: { id: string }) {
