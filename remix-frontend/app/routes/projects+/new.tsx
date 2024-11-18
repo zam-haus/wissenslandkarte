@@ -1,16 +1,11 @@
 import type { ActionArgs, LoaderArgs, TypedResponse } from "@remix-run/node";
-import {
-  json,
-  redirect,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { authenticator } from "~/lib/authentication.server";
-import { createS3UploadHandler, MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
+import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
+import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import { createProject } from "~/models/projects.server";
 import {
   loaderForTagFetcher,
@@ -33,10 +28,7 @@ export const action = async ({
 }: ActionArgs): Promise<TypedResponse<{ error: string; exception?: string }>> => {
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/" });
 
-  const formData = await parseMultipartFormData(
-    request,
-    composeUploadHandlers(createS3UploadHandler(["mainPhoto"]), createMemoryUploadHandler())
-  );
+  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainPhoto"]);
 
   const { title, description } = getTrimmedStringsDefaultEmpty(formData, "title", "description");
   if (title.length === 0 || description.length === 0) {

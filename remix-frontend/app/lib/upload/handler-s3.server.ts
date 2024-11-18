@@ -4,7 +4,7 @@ import AWS from "aws-sdk";
 import { randomUUID } from "crypto";
 import { PassThrough } from "stream";
 
-import { environment } from "./environment";
+import { environment } from "../environment";
 
 const bucket = environment.s3.BUCKET;
 export const MAX_UPLOAD_SIZE_IN_BYTE = 10 * 1024 * 1024;
@@ -62,7 +62,7 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
       const uploadedFileLocation = await uploadStreamToS3(data, newFilename, contentType);
       if (!uploadedFileLocation.success || uploadedFileLocation.data === undefined) {
         console.error("Uploading of a file to S3 failed!");
-        return "";
+        return undefined;
       }
 
       const uploadedFileUrl = new URL(uploadedFileLocation.data.Location);
@@ -74,7 +74,7 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
       return uploadedFileUrl.toString().replace(/https?:/, "");
     } catch (e) {
       console.error("Uploading of a file to S3 failed!");
-      return "";
+      return undefined;
     }
   };
 }

@@ -1,11 +1,5 @@
 import type { ActionArgs, LoaderArgs, TypedResponse } from "@remix-run/node";
-import {
-  json,
-  redirect,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
@@ -13,7 +7,8 @@ import { mapDeserializedDates } from "~/components/date-rendering";
 import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
-import { createS3UploadHandler, MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/s3.server";
+import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
+import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import { getProjectDetails, getProjectsByUser } from "~/models/projects.server";
 import { createProjectStep } from "~/models/projectSteps.server";
 
@@ -26,10 +21,7 @@ const CREATE_FAILED = "CREATE_FAILED";
 export const action = async ({
   request,
 }: ActionArgs): Promise<TypedResponse<{ error: string; exception?: string }>> => {
-  const formData = await parseMultipartFormData(
-    request,
-    composeUploadHandlers(createS3UploadHandler(["photoAttachments"]), createMemoryUploadHandler())
-  );
+  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["photoAttachments"]);
 
   const { projectId, description } = getTrimmedStringsDefaultEmpty(
     formData,
