@@ -28,9 +28,9 @@ CREATE TABLE "Attachment" (
     "text" TEXT NOT NULL,
     "creationDate" DATETIME NOT NULL,
     "projectId" TEXT,
-    "projectUpdateId" TEXT,
+    "projectStepId" TEXT,
     CONSTRAINT "Attachment_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "Attachment_projectUpdateId_fkey" FOREIGN KEY ("projectUpdateId") REFERENCES "ProjectUpdate" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT "Attachment_projectStepId_fkey" FOREIGN KEY ("projectStepId") REFERENCES "ProjectStep" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -45,13 +45,13 @@ CREATE TABLE "Project" (
 );
 
 -- CreateTable
-CREATE TABLE "ProjectUpdate" (
+CREATE TABLE "ProjectStep" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "creationDate" DATETIME NOT NULL,
     "latestModificationDate" DATETIME NOT NULL,
     "description" TEXT NOT NULL,
     "projectId" TEXT,
-    CONSTRAINT "ProjectUpdate_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT "ProjectStep_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -102,13 +102,13 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 CREATE INDEX "User_username_keycloakId_idx" ON "User"("username", "keycloakId");
 
 -- CreateIndex
-CREATE INDEX "Attachment_projectId_projectUpdateId_idx" ON "Attachment"("projectId", "projectUpdateId");
+CREATE INDEX "Attachment_projectId_projectStepId_idx" ON "Attachment"("projectId", "projectStepId");
 
 -- CreateIndex
 CREATE INDEX "Project_title_description_idx" ON "Project"("title", "description");
 
 -- CreateIndex
-CREATE INDEX "ProjectUpdate_projectId_idx" ON "ProjectUpdate"("projectId");
+CREATE INDEX "ProjectStep_projectId_idx" ON "ProjectStep"("projectId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_TagToUser_AB_unique" ON "_TagToUser"("A", "B");
