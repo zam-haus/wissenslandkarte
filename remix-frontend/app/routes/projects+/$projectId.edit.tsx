@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
 import { mapDeserializedDates, withDeserializedDates } from "~/components/date-rendering";
-import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
+import { isUserAuthorizedForProject } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
@@ -34,6 +34,10 @@ export const action = async ({
   invariant(params.projectId, `params.slug is required`);
 
   const user = await authenticator.isAuthenticated(request, { failureRedirect: "/" });
+
+  if (!(await isUserAuthorizedForProject(request, params.projectId))) {
+    return redirect("/");
+  }
 
   const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainPhoto"]);
 
@@ -72,9 +76,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const project = await getProjectDetails(params.projectId);
   invariant(project, `Project not found: ${params.projectId}`);
 
-  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners);
-  const memberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
-  if (!ownerLoggedIn && !memberLoggedIn) {
+  if (!(await isUserAuthorizedForProject(request, project))) {
     return redirect("/");
   }
 

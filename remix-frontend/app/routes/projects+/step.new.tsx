@@ -4,7 +4,7 @@ import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { mapDeserializedDates } from "~/components/date-rendering";
-import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
+import { isUserAuthorizedForProject } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
@@ -43,9 +43,9 @@ export const action = async ({
       exception: "No such project",
     });
   }
-  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners); // TODO: at this point the file is already uploaded. we have to authorize the user earlier.
-  const memberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
-  if (!ownerLoggedIn && !memberLoggedIn) {
+
+  if (!(await isUserAuthorizedForProject(request, project))) {
+    // TODO: at this point the file is already uploaded. we have to authorize the user earlier.
     console.warn(
       `Someone tried creating a new step for project ${projectId} but was not authorized to do so!`
     );

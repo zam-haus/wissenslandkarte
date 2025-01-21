@@ -2,7 +2,7 @@ import { type LoaderArgs, redirect } from "@remix-run/node";
 import { redirectBack } from "remix-utils";
 import invariant from "tiny-invariant";
 
-import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
+import { isUserAuthorizedForProject } from "~/lib/authentication";
 import {
   deleteProjectStep,
   getProjectStepWithProjectOwnersAndMembers,
@@ -13,11 +13,9 @@ export const action = async ({ params, request }: LoaderArgs) => {
 
   const step = await getProjectStepWithProjectOwnersAndMembers(params.stepId);
   invariant(step, `Step not found: ${params.stepId}`);
+  invariant(step.project, `Step without project: ${params.stepId}`);
 
-  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, step.project?.owners ?? []);
-  const memberLoggedIn = await isAnyUserFromListLoggedIn(request, step.project?.members ?? []);
-
-  if (!ownerLoggedIn && !memberLoggedIn) {
+  if (!(await isUserAuthorizedForProject(request, step.project))) {
     return redirect("/");
   }
 

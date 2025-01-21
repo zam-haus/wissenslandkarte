@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
 import { mapDeserializedDates } from "~/components/date-rendering";
-import { isAnyUserFromListLoggedIn } from "~/lib/authentication";
+import { isUserAuthorizedForProject } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
@@ -52,9 +52,8 @@ export const action = async ({
     });
   }
   const project = step.project;
-  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners); // TODO: at this point the image files are already uploaded. we have to authorize the user earlier.
-  const memberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
-  if (!ownerLoggedIn && !memberLoggedIn) {
+  if (!(await isUserAuthorizedForProject(request, project))) {
+    // TODO: at this point the image files are already uploaded. we have to authorize the user earlier.
     console.warn(`Someone tried editing step ${params.stepId} but was not authorized to do so!`);
     return redirect("/");
   }
@@ -67,9 +66,7 @@ export const action = async ({
         exception: "No such new project",
       });
     }
-    const newOwnerLoggedIn = await isAnyUserFromListLoggedIn(request, newProject.owners);
-    const newMemberLoggedIn = await isAnyUserFromListLoggedIn(request, newProject.members);
-    if (!newOwnerLoggedIn && !newMemberLoggedIn) {
+    if (!(await isUserAuthorizedForProject(request, newProject))) {
       console.warn(
         `Someone tried assigning step ${params.stepId} to project ${newProjectId} but was not authorized to do so!`
       );
@@ -102,6 +99,11 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   invariant(currentState, "Could not load project step");
   invariant(currentState.project, "Could not load step's project");
+
+  if (!(await isUserAuthorizedForProject(request, currentState.project))) {
+    console.warn(`Someone tried editing step ${params.stepId} but was not authorized to do so!`);
+    return redirect("/");
+  }
 
   return json({ projects, currentState, maxPhotoSize: MAX_UPLOAD_SIZE_IN_BYTE });
 };
