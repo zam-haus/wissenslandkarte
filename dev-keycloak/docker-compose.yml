@@ -1,0 +1,43 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    ports:
+      - "4000:8080"
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - KC_DB=dev-file
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME_STRICT=false
+      - KC_LOG_LEVEL=INFO
+    command: ["start-dev"]
+    volumes:
+      - ./keycloak-data:/opt/keycloak/data
+    healthcheck:
+      test: ["CMD", "/opt/keycloak/bin/kcadm.sh", "get", "serverinfo", "--server", "http://localhost:8080", "--realm", "master", "--user", "admin", "--password", "${ADMIN_PASSWORD}"]
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 5s
+
+  keycloak-init:
+    image: quay.io/keycloak/keycloak:latest
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        /opt/keycloak/bin/kcadm.sh config credentials --server http://keycloak:8080 --realm master --user admin --password ${ADMIN_PASSWORD} && 
+        if /opt/keycloak/bin/kcadm.sh get realms/${REALM} > /dev/null 2>&1; then 
+          echo "Initialization already completed. Exiting."; 
+          exit 0; 
+        fi && 
+        /opt/keycloak/bin/kcadm.sh create realms -s realm=${REALM} -s enabled=true && 
+        /opt/keycloak/bin/kcadm.sh create clients -r ${REALM} -s clientId=${CLIENT_ID} -s secret=${CLIENT_SECRET} -s serviceAccountsEnabled=true -s directAccessGrantsEnabled=true -s standardFlowEnabled=true  -s redirectUris='["*"]' && 
+        /opt/keycloak/bin/kcadm.sh create users -r ${REALM} -s username=dev-user -s enabled=true -s firstName=John -s lastName=Doe -s email=johndoe@example.com && 
+        /opt/keycloak/bin/kcadm.sh create users -r ${REALM} -s username=dev-user-no-data -s enabled=true &&
+        /opt/keycloak/bin/kcadm.sh set-password -r ${REALM} --username dev-user --new-password ${USER_PASSWORD} &&
+        /opt/keycloak/bin/kcadm.sh set-password -r ${REALM} --username dev-user-no-data --new-password ${USER_PASSWORD}
+        
