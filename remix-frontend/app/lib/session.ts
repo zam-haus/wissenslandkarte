@@ -23,7 +23,7 @@ export const sessionStorage =
 
 export async function getSession(
   ...args: Parameters<typeof sessionStorage.getSession>
-): Promise<WrappedType & { getAndCommit: ReturnOf<"get"> }> {
+): Promise<WrappedType & { getAndCommit: ReturnOf<"get">; commit: () => Promise<string> }> {
   const wrappedSession: WrappedType = await sessionStorage.getSession(...args);
 
   return {
@@ -40,5 +40,7 @@ export async function getSession(
     set: (...args: ArgOf<"set">): ReturnOf<"set"> => wrappedSession.set(...args),
     flash: (...args: ArgOf<"flash">): ReturnOf<"flash"> => wrappedSession.flash(...args),
     unset: (...args: ArgOf<"unset">): ReturnOf<"unset"> => wrappedSession.unset(...args),
+    /** Commits the session and returns the updated cookie value to set via Set-Cookie header */
+    commit: (): Promise<string> => sessionStorage.commitSession(wrappedSession),
   };
 }

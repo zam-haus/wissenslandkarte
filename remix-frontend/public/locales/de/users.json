@@ -7,5 +7,10 @@
   "projects-counter_one": "{{count}} Projekt",
   "projects-counter_other": "{{count}} Projekte",
   "projects-headline": "Projekte",
-  "project-photo-alt-text": "Hauptfoto von Projekt mit Titel '{{title}}'"
+  "project-photo-alt-text": "Hauptfoto von Projekt mit Titel '{{title}}'",
+  "profile-picture": "Profilfoto",
+  "username": "Nutzername",
+  "username-taken": "Dieser Nutzername ist schon vergeben.",
+  "description": "Beschreibung",
+  "save": "Speichern"
 }

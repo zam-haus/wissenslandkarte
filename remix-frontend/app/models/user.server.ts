@@ -98,3 +98,9 @@ export async function searchUsers(tags?: string[]): Promise<UserSearchResult[]> 
     },
   });
 }
+
+type UpdateUserRequest = Pick<User, "id" | "username" | "description" | "image">;
+export async function updateUser(updateRequest: UpdateUserRequest) {
+  const { id, ...data } = updateRequest;
+  return prisma.user.update({ where: { id }, data });
+}

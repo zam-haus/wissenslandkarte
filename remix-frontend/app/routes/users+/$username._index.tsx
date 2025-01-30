@@ -17,7 +17,7 @@ import { isThisUserLoggedIn } from "~/lib/authentication";
 import type { UserOverview } from "~/models/user.server";
 import { getUserOverview } from "~/models/user.server";
 
-import styles from "./$username.module.css";
+import styles from "./$username._index.module.css";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   invariant(params.username, `params.slug is required`);
