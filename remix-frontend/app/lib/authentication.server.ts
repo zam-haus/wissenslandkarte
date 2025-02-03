@@ -12,6 +12,7 @@ import { environment } from "./environment";
 import { sessionStorage } from "./session";
 
 export const zamKeycloakStrategyName = "zam-keycloak";
+export const devKeycloakStrategyName = "dev-keycloak";
 export const fakeLoginOnDevStrategyName = "fake-login";
 
 export const enum LoginErrorReason {
@@ -24,6 +25,7 @@ export const authenticator = new Authenticator<User>(sessionStorage, {
 
 setupFakeLoginStrategy();
 setupZamKeycloakLogin();
+setupDevKeycloakLogin();
 
 function setupFakeLoginStrategy() {
   if (environment.auth.DANGER_ENABLE_FAKE_LOGIN_ON_DEV) {
@@ -65,6 +67,23 @@ function setupZamKeycloakLogin() {
       handleKeycloakLogin("zamKeycloak")
     );
     authenticator.use(zamKeycloak, zamKeycloakStrategyName);
+  }
+}
+
+function setupDevKeycloakLogin() {
+  if (environment.IS_DEV_MODE) {
+    const devKeycloak = new KeycloakStrategy(
+      {
+        useSSL: false,
+        domain: environment.auth.DEV_KEYCLOAK_DOMAIN,
+        realm: environment.auth.DEV_KEYCLOAK_REALM,
+        clientID: environment.auth.DEV_KEYCLOAK_CLIENT_ID,
+        clientSecret: environment.auth.DEV_KEYCLOAK_CLIENT_SECRET,
+        callbackURL: environment.auth.CALLBACK_BASE + "/auth/dev-keycloak/callback",
+      },
+      handleKeycloakLogin("devKeycloak")
+    );
+    authenticator.use(devKeycloak, devKeycloakStrategyName);
   }
 }
 

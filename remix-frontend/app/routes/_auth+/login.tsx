@@ -1,11 +1,9 @@
 import type { LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Form, Outlet, useLoaderData } from "@remix-run/react";
+import { Form, Outlet } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Page } from "~/components/page/page";
 import { authenticator } from "~/lib/authentication.server";
-import { environment } from "~/lib/environment";
 
 export const handles = {
   i18n: ["login"],
@@ -13,21 +11,22 @@ export const handles = {
 
 export const loader: LoaderFunction = async ({ request }) => {
   await authenticator.isAuthenticated(request, { successRedirect: "/" });
-  const fakeLoginEnabled = environment.auth.DANGER_ENABLE_FAKE_LOGIN_ON_DEV;
-
-  return json({ fakeLoginEnabled });
+  return null;
 };
 
 export default function Login() {
   const { t } = useTranslation("login");
-  const { fakeLoginEnabled } = useLoaderData<typeof loader>();
-
-  if (fakeLoginEnabled) {
+  if (process.env.NODE_ENV === "development") {
     return (
       <Page isLoggedIn={false} title={t("main-headline")}>
         <Form action="/auth/fake-dev-login" method="post">
           <input type="password" name="password" />
-          <button type="submit">Do the fake login</button>
+          <button type="submit">Do the fake login (if enabled)</button>
+          <Outlet></Outlet>
+        </Form>
+
+        <Form action="/auth/dev-keycloak" method="post">
+          <button>Or login using dev-keycloak (must be running, obviously)</button>
           <Outlet></Outlet>
         </Form>
       </Page>

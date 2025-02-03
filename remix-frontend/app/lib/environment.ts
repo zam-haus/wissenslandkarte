@@ -29,6 +29,18 @@ export const environment = {
     get ZAM_KEYCLOAK_CLIENT_SECRET() {
       return getFromEnvOrThrow("AUTH_ZAM_KEYCLOAK_CLIENT_SECRET");
     },
+    get DEV_KEYCLOAK_DOMAIN() {
+      return getFromEnvOrThrow("AUTH_DEV_KEYCLOAK_DOMAIN");
+    },
+    get DEV_KEYCLOAK_REALM() {
+      return getFromEnvOrThrow("AUTH_DEV_KEYCLOAK_REALM");
+    },
+    get DEV_KEYCLOAK_CLIENT_ID() {
+      return getFromEnvOrThrow("AUTH_DEV_KEYCLOAK_CLIENT_ID");
+    },
+    get DEV_KEYCLOAK_CLIENT_SECRET() {
+      return getFromEnvOrThrow("AUTH_DEV_KEYCLOAK_CLIENT_SECRET");
+    },
     get CALLBACK_BASE() {
       return getFromEnvOrThrow("AUTH_CALLBACK_BASE");
     },
