@@ -17,6 +17,10 @@ echo "Running linter and formatter before pushing..."
 if [[ $branch == 'main' ]]; then
   cd remix-frontend || (echo "Couldn't change to remix-frontend folder" && exit 1)
 
+  if git log --oneline origin/main..main | grep ' fixup!'; then
+    echo "Found fixup commits, please squash first!"
+    exit 1
+  fi
   
   echo "Checking format..."
   if ! npm run format-check; then
