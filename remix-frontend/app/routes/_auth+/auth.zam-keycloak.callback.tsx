@@ -1,10 +1,13 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { User } from "@prisma/client";
+import { type LoaderArgs } from "@remix-run/node";
 
-import { authenticator, zamKeycloakStrategyName } from "~/lib/authentication.server";
+import { zamKeycloakStrategyName } from "~/lib/authentication.server";
+
+import { authenticate } from "./lib/handleKeycloakCallback.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  return authenticator.authenticate(zamKeycloakStrategyName, request, {
-    successRedirect: "/",
-    failureRedirect: "/login/failed",
+  return await authenticate(zamKeycloakStrategyName, request, {
+    successRedirect: (user: User) => (user.setupCompleted ? "/" : "/initial-profile-setup"),
+    failureRedirect: "/",
   });
 };
