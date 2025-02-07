@@ -113,7 +113,7 @@ function handleKeycloakLogin(
 
 async function createNewUser(profile: KeycloakProfile, idScope: string): Promise<User> {
   const isUsernameAvailable = async (username: string) =>
-    (await prisma.user.findFirst({ where: { username } })) !== null;
+    (await prisma.user.findFirst({ where: { username } })) === null;
 
   let username = profile.displayName;
   let suffix = 0;
