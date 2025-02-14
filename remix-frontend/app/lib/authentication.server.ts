@@ -122,17 +122,20 @@ async function createNewUser(profile: KeycloakProfile, idScope: string): Promise
     suffix++;
   }
 
-  return await prisma.user.create({
-    data: {
-      keycloakId: idScope + ":" + profile.id,
-      firstName: profile.name.givenName,
-      lastName: profile.name.familyName,
-      contactEmailAddress: profile.emails[0].value,
-      isContactEmailAddressPublic: false,
-      registrationDate: new Date(),
-      username,
-    },
-  });
+  return {
+    id: "",
+    keycloakId: idScope + ":" + profile.id,
+    firstName: profile.name.givenName,
+    lastName: profile.name.familyName,
+    contactEmailAddress: profile.emails[0].value,
+    isContactEmailAddressPublic: false,
+    registrationDate: new Date(),
+    username,
+    image: null,
+    description: null,
+    phoneNumber: null,
+    setupCompleted: false,
+  };
 }
 
 async function updateUserData(user: User, profile: KeycloakProfile): Promise<void> {

@@ -3,11 +3,13 @@ import { type LoaderArgs } from "@remix-run/node";
 
 import { devKeycloakStrategyName } from "~/lib/authentication.server";
 
-import { authenticate } from "./lib/handleKeycloakCallback.server";
+import { tempUserSessionKey } from "./initial-profile-setup";
+import { authenticate, defaultSessionKey } from "./lib/handleKeycloakCallback.server";
 
 export const loader = async ({ request }: LoaderArgs) => {
   return await authenticate(devKeycloakStrategyName, request, {
     successRedirect: (user: User) => (user.setupCompleted ? "/" : "/initial-profile-setup"),
+    sessionKey: (user: User) => (user.setupCompleted ? defaultSessionKey : tempUserSessionKey),
     failureRedirect: "/",
   });
 };
