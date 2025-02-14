@@ -18,7 +18,7 @@ export function makeRandomUser(faker: Faker): Omit<User, "id"> {
   return {
     firstName: firstName ?? null,
     lastName: lastName ?? null,
-    keycloakId: faker.datatype.uuid(),
+    keycloakId: "fakeData:" + faker.datatype.uuid(),
     username: faker.internet.userName(firstName, lastName),
     description: completeProfile ? faker.lorem.paragraphs(2) : null,
     image: completeProfile ? faker.internet.avatar() : null,

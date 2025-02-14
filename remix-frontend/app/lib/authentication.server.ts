@@ -92,7 +92,7 @@ function handleKeycloakLogin(
 ): StrategyVerifyCallback<User, OAuth2StrategyVerifyParams<KeycloakProfile, KeycloakExtraParams>> {
   return async ({ profile }) => {
     const user = await prisma.user.findFirst({
-      where: { keycloakId: keycloakInstanceName + profile.id },
+      where: { keycloakId: keycloakInstanceName + ":" + profile.id },
     });
 
     if (user !== null) {
@@ -124,7 +124,7 @@ async function createNewUser(profile: KeycloakProfile, idScope: string): Promise
 
   return await prisma.user.create({
     data: {
-      keycloakId: idScope + profile.id,
+      keycloakId: idScope + ":" + profile.id,
       firstName: profile.name.givenName,
       lastName: profile.name.familyName,
       contactEmailAddress: profile.emails[0].value,
