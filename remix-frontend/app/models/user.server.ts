@@ -45,7 +45,7 @@ export type UserOverview = Pick<
   ownedProjects: ProjectListEntry[];
   memberProjects: ProjectListEntry[];
 };
-export async function getUserOverview(username: User["id"]): Promise<UserOverview | null> {
+export async function getUserOverview(username: User["username"]): Promise<UserOverview | null> {
   return prisma.user.findUnique({
     where: { username },
     select: {
