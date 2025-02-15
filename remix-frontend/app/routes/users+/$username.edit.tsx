@@ -115,9 +115,9 @@ export default function UserEdit() {
         ></ImageSelect>
         <label>
           {t("username")}
-          <input type="text" name="username" defaultValue={user.username} />
+          <input type="text" required name="username" defaultValue={user.username} />
         </label>
-        {actionData?.success === false && actionData.error === "USERNAME_TAKEN"
+        {actionData?.success === false && actionData.error === USERNAME_TAKEN
           ? t("username-taken")
           : null}
         <label>
