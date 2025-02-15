@@ -12,8 +12,8 @@ import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.ser
 import { getProjectDetails, getProjectsByUser } from "~/models/projects.server";
 import { createProjectStep } from "~/models/projectSteps.server";
 
+import { getStringArray, getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
 import { StepForm } from "./components/step-form";
-import { getStringArray, getTrimmedStringsDefaultEmpty } from "./lib/formDataParser";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const CREATE_FAILED = "CREATE_FAILED";

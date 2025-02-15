@@ -13,8 +13,8 @@ import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.ser
 import { getProjectDetails, getProjectsByUser } from "~/models/projects.server";
 import { getEditableProjectStepDetails, updateProjectStep } from "~/models/projectSteps.server";
 
+import { getStringArray, getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
 import { StepForm } from "./components/step-form";
-import { getStringArray, getTrimmedStringsDefaultEmpty } from "./lib/formDataParser";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";

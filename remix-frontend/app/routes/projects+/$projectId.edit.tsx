@@ -16,13 +16,13 @@ import {
   loaderForUserFetcher,
 } from "~/routes/projects+/lib/loader-helpers.server";
 
-import { ProjectForm } from "./components/project-form";
 import {
   getBooleanDefaultFalse,
   getStringArray,
   getStringsDefaultUndefined,
   getTrimmedStringsDefaultEmpty,
-} from "./lib/formDataParser";
+} from "../../lib/formDataParser";
+import { ProjectForm } from "./components/project-form";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";

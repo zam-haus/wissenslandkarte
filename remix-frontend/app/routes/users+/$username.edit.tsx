@@ -14,7 +14,7 @@ import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import { getUserOverview, updateUser } from "~/models/user.server";
 
-import { getTrimmedStringsDefaultEmpty } from "../projects+/lib/formDataParser";
+import { getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
 import styles from "./$username.edit.module.css";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
