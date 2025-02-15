@@ -6,18 +6,15 @@ import invariant from "tiny-invariant";
 
 import { Page } from "~/components/page/page";
 import { prisma } from "~/db.server";
-import { getSession } from "~/lib/session";
-
-import { defaultSessionKey } from "./lib/handleKeycloakCallback.server";
-
-export const tempUserSessionKey = "tempUser";
+import { getSession, tempUserSessionKey, userSessionKey } from "~/lib/session";
 
 export const action = async ({ request }: ActionArgs): Promise<TypedResponse<never | {}>> => {
-  const session = await getSession(request.headers.get("Cookie"));
+  const session = await getSession(request);
   if (!session.has(tempUserSessionKey)) {
     return redirect("/");
   }
   const user = session.get(tempUserSessionKey);
+  invariant(user, "user should have been in session, but was not");
 
   const username = (await request.formData()).get("username");
   invariant(username, "username must be provided");
@@ -27,10 +24,9 @@ export const action = async ({ request }: ActionArgs): Promise<TypedResponse<nev
   });
 
   session.unset(tempUserSessionKey);
-  session.set(defaultSessionKey, newUser); // TODO: When the auth library has been updated, this should be in a "setLoggedInUser" function
+  session.set(userSessionKey, newUser); // TODO: When the auth library has been updated, this should be in a "setLoggedInUser" function
 
-  const sessionData = await session.commit();
-  const headers = new Headers({ "Set-Cookie": sessionData });
+  const headers = await session.commit();
 
   return redirect(`/users/${newUser.username}/edit`, { headers });
 
@@ -38,11 +34,12 @@ export const action = async ({ request }: ActionArgs): Promise<TypedResponse<nev
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const session = await getSession(request.headers.get("Cookie"));
+  const session = await getSession(request);
   if (!session.has(tempUserSessionKey)) {
     return redirect("/");
   }
-  const user = session.get(tempUserSessionKey); // TODO: Move cookie header getting into getSession //TODO: why is this any?
+  const user = session.get(tempUserSessionKey);
+  invariant(user, "user should have been in session, but was not");
 
   return json({ user });
 };

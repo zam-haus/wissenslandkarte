@@ -3,14 +3,15 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import { authenticator } from "~/lib/authentication.server";
-import { getSession } from "~/lib/session";
+import { authErrorSessionKey, getSession } from "~/lib/session";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const session = await getSession(request.headers.get("cookie"));
-  const error = session.getAndCommit(authenticator.sessionErrorKey);
+  const session = await getSession(request);
+  const error = session.get(authErrorSessionKey);
 
-  return json({ error });
+  const headers = await session.commit();
+
+  return json({ error }, { headers });
 };
 
 export const handles = {
@@ -25,7 +26,7 @@ export default function LoginFailed() {
     <>
       <h2>{t("login-failed")}</h2>
       <p>
-        {t("unexpected-error")} {error.message}
+        {t("unexpected-error")} {error?.message}
       </p>
     </>
   );

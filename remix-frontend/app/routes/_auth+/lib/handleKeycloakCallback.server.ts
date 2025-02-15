@@ -4,13 +4,14 @@ import { redirect } from "@remix-run/node";
 import type { AuthenticateOptions } from "remix-auth";
 
 import { authenticator } from "~/lib/authentication.server";
+import type { SessionData } from "~/lib/session";
 import { getSession } from "~/lib/session";
 
 export type DynamicAuthenticateOptions<T> = Partial<
   Omit<AuthenticateOptions, "successRedirect" | "sessionKey">
 > & {
   successRedirect?: string | ((data: T) => string);
-  sessionKey?: string | ((data: T) => string);
+  sessionKey?: keyof SessionData | ((data: T) => keyof SessionData);
 };
 
 export const defaultSessionKey = "user";
@@ -39,17 +40,16 @@ export async function authenticate(
     }
   }
 
-  const session = await getSession();
+  const session = await getSession(request);
   const sessionKey = getSessionKey(options, data);
   session.set(sessionKey, data);
-  const sessionData = await session.commit();
 
   const href = getSuccessRedirect(options, data);
   if (href === undefined) {
     return data;
   }
 
-  const headers = new Headers({ "Set-Cookie": sessionData });
+  const headers = await session.commit();
   return redirect(href, { headers });
 }
 
@@ -61,9 +61,8 @@ function getSuccessRedirect(options: DynamicAuthenticateOptions<User>, data: Use
   return options.successRedirect(data);
 }
 
-function getSessionKey(options: DynamicAuthenticateOptions<User>, data: User) {
+function getSessionKey(options: DynamicAuthenticateOptions<User>, data: User): keyof SessionData {
   if (typeof options.sessionKey !== "function") {
-    console.log("meh", options);
     return options.sessionKey || defaultSessionKey;
   }
 

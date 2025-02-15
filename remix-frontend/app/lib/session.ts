@@ -1,15 +1,16 @@
-import type { Session, SessionData } from "@remix-run/node";
+import type { User } from "@prisma/client";
+import type { CookieParseOptions, Session } from "@remix-run/node";
 import { createCookieSessionStorage } from "@remix-run/node";
 
 import { environment } from "./environment";
 
-type WrappedType = Session<SessionData, SessionData>;
-type ArgOf<P extends keyof WrappedType> = WrappedType[P] extends (...args: any) => any
-  ? Parameters<WrappedType[P]>
-  : never;
-type ReturnOf<P extends keyof WrappedType> = WrappedType[P] extends (...args: any) => any
-  ? ReturnType<WrappedType[P]>
-  : never;
+export const userSessionKey = "user";
+export const tempUserSessionKey = "tempUser";
+export const authErrorSessionKey = "auth:error";
+
+export type SessionData = { [userSessionKey]?: User; [tempUserSessionKey]?: User };
+export type FlashData = { [authErrorSessionKey]: DOMException };
+type WlkSession = Session<SessionData, FlashData>;
 
 export const sessionStorage =
   process.env.NODE_ENV === "development"
@@ -22,25 +23,16 @@ export const sessionStorage =
       });
 
 export async function getSession(
-  ...args: Parameters<typeof sessionStorage.getSession>
-): Promise<WrappedType & { getAndCommit: ReturnOf<"get">; commit: () => Promise<string> }> {
-  const wrappedSession: WrappedType = await sessionStorage.getSession(...args);
+  request: Request,
+  options?: CookieParseOptions
+): Promise<WlkSession & { commit: () => Promise<Headers> }> {
+  const cookieHeader = request.headers.get("Cookie");
+  const wrappedSession: WlkSession = await sessionStorage.getSession(cookieHeader, options);
 
   return {
-    id: wrappedSession.id,
-    data: wrappedSession.data,
-    has: (name: string) => wrappedSession.has(name),
-    /** If you get something that may have been `flash`ed, use `getAndCommit`! */
-    get: (...args: ArgOf<"get">): ReturnOf<"get"> => wrappedSession.get(...args),
-    getAndCommit: async (...args: ArgOf<"get">): Promise<ReturnOf<"get">> => {
-      const got = wrappedSession.get(...args);
-      await sessionStorage.commitSession(wrappedSession);
-      return got;
-    },
-    set: (...args: ArgOf<"set">): ReturnOf<"set"> => wrappedSession.set(...args),
-    flash: (...args: ArgOf<"flash">): ReturnOf<"flash"> => wrappedSession.flash(...args),
-    unset: (...args: ArgOf<"unset">): ReturnOf<"unset"> => wrappedSession.unset(...args),
-    /** Commits the session and returns the updated cookie value to set via Set-Cookie header */
-    commit: (): Promise<string> => sessionStorage.commitSession(wrappedSession),
+    ...wrappedSession,
+    /** Commits the session and returns the headers that set the new cookie */
+    commit: async (): Promise<Headers> =>
+      new Headers({ "Set-Cookie": await sessionStorage.commitSession(wrappedSession) }),
   };
 }

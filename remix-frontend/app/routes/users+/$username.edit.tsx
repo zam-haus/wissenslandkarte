@@ -51,22 +51,15 @@ export const action = async ({
 
   try {
     const updatedUser = await updateUser({ id: user.id, username, description, image: user.image });
-    const session = await getSession(request.headers.get("cookie")); // todo: move cookie-header-getting inside getSession
+    const session = await getSession(request);
     session.set("user", updatedUser);
-    const cookieHeader = await session.commit();
+    const headers = await session.commit();
 
     if (user.username !== updatedUser.username) {
-      return redirect(`/users/${updatedUser.username}/edit`, {
-        headers: { "Set-Cookie": cookieHeader },
-      });
+      return redirect(`/users/${updatedUser.username}/edit`, { headers });
     }
 
-    return json(
-      { success: true, user: updatedUser },
-      {
-        headers: { "Set-Cookie": cookieHeader },
-      }
-    );
+    return json({ success: true, user: updatedUser }, { headers });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (
