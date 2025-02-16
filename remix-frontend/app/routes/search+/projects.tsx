@@ -4,9 +4,10 @@ import { useLoaderData } from "@remix-run/react";
 
 import { mapDeserializedDates } from "~/components/date-rendering";
 import { ProjectsList } from "~/components/projects/projects-list";
-import { getSearchQuery, SearchForm } from "~/components/search/search-form";
-import { SearchProjectPeopleSwitch } from "~/components/search/search-header";
 import { getProjectList, searchProjects } from "~/models/projects.server";
+
+import { getSearchQuery, SearchForm } from "./components/search-form";
+import { SearchProjectPeopleSwitch } from "./components/search-header";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const query = getSearchQuery(request);
