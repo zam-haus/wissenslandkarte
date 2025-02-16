@@ -68,6 +68,14 @@ export const environment = {
       return getFromEnv("OVERRIDE_HOST");
     },
   },
+  search: {
+    get HOST() {
+      return getFromEnvOrThrow("MEILISEARCH_HOST");
+    },
+    get MASTER_KEY() {
+      return getFromEnvOrThrow("MEILISEARCH_MASTER_KEY");
+    },
+  },
 };
 
 type Mapper<T> = (value: string) => T;
