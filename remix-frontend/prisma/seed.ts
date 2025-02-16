@@ -10,12 +10,15 @@ import {
   makeRandomTag,
   makeRandomUser,
 } from "./fake-data-generators";
+import { rebuildSearchIndex } from "./rebuild-search-index";
 
 const prisma = new PrismaClient();
 
 const onlyIdsFromModels = ({ id }: { id: string }) => ({ id });
 
 async function seed() {
+  console.log("Purging existing data");
+
   await prisma.user.deleteMany().catch(() => {
     console.error("Could not remove pre-existing users!");
   });
@@ -34,15 +37,18 @@ async function seed() {
 
   faker.seed(42);
 
+  console.log("🌱 Seeding tags");
   await seedTags(400);
   const allTags = await prisma.tag.findMany();
 
+  console.log("🌱🌱 Seeding users");
   await seedUsers(500, faker, allTags);
   const allUsers = await prisma.user.findMany();
 
+  console.log("🌱🌱🌱 Seeding projects");
   await seedProjects(800, faker, allTags, allUsers);
 
-  console.log(`Database has been seeded. 🌱`);
+  console.log(`🌱🌱🌱🌱 Database has been seeded.`);
 }
 
 async function seedTags(count: number) {
@@ -123,6 +129,7 @@ async function seedProjects(count: number, faker: Faker, allTags: Tag[], allUser
 }
 
 void seed()
+  .then(() => rebuildSearchIndex(prisma))
   .catch((e) => {
     console.error(e);
     process.exit(1);
