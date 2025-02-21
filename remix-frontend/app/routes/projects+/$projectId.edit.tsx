@@ -8,6 +8,7 @@ import invariant from "tiny-invariant";
 import { mapDeserializedDates, withDeserializedDates } from "~/components/date-rendering";
 import { isUserAuthorizedForProject } from "~/lib/authentication";
 import { authenticator } from "~/lib/authentication.server";
+import { upsertProjectToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import { getProjectDetails, updateProject } from "~/models/projects.server";
@@ -61,6 +62,9 @@ export const action = async ({
       },
       { removePhotoIfNoNewValueGiven: Boolean(formData.get("removeMainPhoto")) }
     );
+
+    await upsertProjectToSearchIndex(result);
+
     return redirect(`/projects/${result.id}`);
   } catch (e: any) {
     return json({

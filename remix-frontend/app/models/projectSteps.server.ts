@@ -9,23 +9,19 @@ type ProjectStepCreateRequest = {
   photoAttachmentUrls: string[];
 };
 export async function createProjectStep(request: ProjectStepCreateRequest) {
-  return prisma.project.update({
-    where: { id: request.projectId },
+  return prisma.projectStep.create({
     data: {
-      steps: {
-        create: {
+      projectId: request.projectId,
+      creationDate: new Date(),
+      latestModificationDate: new Date(),
+      description: request.description,
+      attachments: {
+        create: request.photoAttachmentUrls.map((url) => ({
+          type: "image" as AttachmentType,
+          url,
+          text: "",
           creationDate: new Date(),
-          latestModificationDate: new Date(),
-          description: request.description,
-          attachments: {
-            create: request.photoAttachmentUrls.map((url) => ({
-              type: "image" as AttachmentType,
-              url,
-              text: "",
-              creationDate: new Date(),
-            })),
-          },
-        },
+        })),
       },
     },
   });

@@ -4,6 +4,7 @@ import { useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { authenticator } from "~/lib/authentication.server";
+import { upsertProjectToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import { createProject } from "~/models/projects.server";
@@ -46,6 +47,9 @@ export const action = async ({
       ...getStringsDefaultUndefined(formData, "mainPhoto"),
       ...getBooleanDefaultFalse(formData, "needProjectSpace"),
     });
+
+    await upsertProjectToSearchIndex(result);
+
     return redirect(`/projects/${result.id}`);
   } catch (e: any) {
     return json({
