@@ -11,11 +11,11 @@ const client = new MeiliSearch({
   apiKey: environment.search.MASTER_KEY,
 });
 
-const projectIndex = client.index(projectIndexId);
-const projectStepsIndex = client.index(projectStepsIndexId);
-
 export type SearchableProjectProperties = Pick<Project, "id" | "title" | "description">;
 export type SearchableProjectStepProperties = Pick<ProjectStep, "id" | "projectId" | "description">;
+
+const projectIndex = client.index<SearchableProjectProperties>(projectIndexId);
+const projectStepsIndex = client.index<SearchableProjectStepProperties>(projectStepsIndexId);
 
 export async function upsertProjectToSearchIndex(project: SearchableProjectProperties) {
   const { id, title, description } = project; //destructuring ensures we don't add additional properties that we don't want
