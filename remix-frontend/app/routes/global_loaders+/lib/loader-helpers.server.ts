@@ -8,9 +8,13 @@ export function loaderForUserFetcher(params: URLSearchParams) {
   return ignoreUsers ? Promise.resolve([]) : getUserListFiltered(usersFilter);
 }
 
-export function loaderForTagFetcher(params: URLSearchParams) {
-  const tagsFilter = params.get("tagsFilter") ?? "";
-  const ignoreTags = Boolean(params.get("ignoreTags") ?? false);
+export async function lowLevelTagLoader(filter: string | null) {
+  const tags = await getTagList({ count: "projects", filter: filter ?? "" });
+  const prioritizedTags = tags.map(({ id, name, _count }) => ({
+    id,
+    name,
+    priority: _count.projects ?? 0,
+  }));
 
-  return ignoreTags ? Promise.resolve([]) : getTagList({ count: "projects", filter: tagsFilter });
+  return { tags: prioritizedTags };
 }

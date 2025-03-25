@@ -13,9 +13,9 @@ import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import { getProjectDetails, updateProject } from "~/models/projects.server";
 import {
-  loaderForTagFetcher,
   loaderForUserFetcher,
-} from "~/routes/projects+/lib/loader-helpers.server";
+  lowLevelTagLoader,
+} from "~/routes/global_loaders+/lib/loader-helpers.server";
 
 import {
   getBooleanDefaultFalse,
@@ -85,18 +85,12 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   }
 
   const searchParams = new URL(request.url).searchParams;
-  const [tags, users] = await Promise.all([
-    loaderForTagFetcher(searchParams),
+  const [{ tags }, users] = await Promise.all([
+    lowLevelTagLoader(searchParams.get("tagFilter")),
     loaderForUserFetcher(searchParams),
   ]);
 
-  const tagsByProject = tags.map(({ id, name, _count }) => ({
-    id,
-    name,
-    priority: _count.projects,
-  }));
-
-  return json({ tags: tagsByProject, users, project, maxPhotoSize: MAX_UPLOAD_SIZE_IN_BYTE });
+  return json({ tags, users, project, maxPhotoSize: MAX_UPLOAD_SIZE_IN_BYTE });
 };
 
 export const handle = {
@@ -107,7 +101,6 @@ export default function EditProject() {
   const { project: serializedProject, tags, users, maxPhotoSize } = useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
-  const tagFetcher = useFetcher<typeof loader>();
   const userFetcher = useFetcher<typeof loader>();
   const actionData = useActionData<typeof action>();
 
@@ -134,7 +127,6 @@ export default function EditProject() {
         tags={tags}
         maxPhotoSize={maxPhotoSize}
         currentState={project}
-        tagFetcher={tagFetcher}
         userFetcher={userFetcher}
       />
     </main>

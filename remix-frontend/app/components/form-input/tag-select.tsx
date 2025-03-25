@@ -1,6 +1,8 @@
-import type { FetcherWithComponents } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import type { TFunction } from "i18next";
 import { useEffect, useState } from "react";
+
+import type { globalTagLoader } from "~/routes/global_loaders+/tags";
 
 import { MultiSelect } from "./multi-select/multi-select";
 
@@ -12,14 +14,10 @@ type Tag = {
 
 export function TagSelect({
   initiallyAvailableTags,
-  tagFetcher,
   defaultValue,
   t,
-  fetchMoreTags,
 }: {
   initiallyAvailableTags: Tag[];
-  tagFetcher: FetcherWithComponents<{ tags: Tag[] }>;
-  fetchMoreTags: (filter: string) => void;
   t: TFunction<"projects", undefined>;
   defaultValue?: Tag[];
 }) {
@@ -27,6 +25,10 @@ export function TagSelect({
   const [chosenTags, setChosenTags] = useState<string[]>(
     defaultValue?.map(({ name }) => name) ?? []
   );
+
+  const tagFetcher = useFetcher<typeof globalTagLoader>();
+  const fetchMoreTags = (filter: string) =>
+    tagFetcher.load(`/global_loaders/tags?tagFilter=${filter}`);
 
   useEffect(() => {
     setAvailableTags((availableTags) =>

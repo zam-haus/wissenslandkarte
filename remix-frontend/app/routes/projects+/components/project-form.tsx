@@ -14,9 +14,6 @@ import style from "../new.module.css";
 type ProjectFormProps = {
   action: string | undefined;
   tags: Tag[];
-  tagFetcher: FetcherWithComponents<{
-    tags: Tag[];
-  }>;
   users: User[];
   userFetcher: FetcherWithComponents<{
     users: User[];
@@ -37,7 +34,7 @@ export type EditProjectFormProps = ProjectFormProps & {
 type EditableProject = Omit<NonNullable<Awaited<ReturnType<typeof getProjectDetails>>>, "steps">;
 
 export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps) {
-  const { action, maxPhotoSize, tags, tagFetcher, users, userFetcher } = props;
+  const { action, maxPhotoSize, tags, users, userFetcher } = props;
   const { t } = useTranslation("projects");
 
   const currentState: EditableProject | null = props.mode === "edit" ? props.currentState : null;
@@ -92,14 +89,8 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
           ...(currentState?.tags.map(({ id, name }) => ({ id, name, priority: Infinity })) ?? []),
           ...tags,
         ]}
-        tagFetcher={tagFetcher}
         defaultValue={currentState?.tags}
         t={t}
-        fetchMoreTags={(filter: string) =>
-          tagFetcher.load(
-            `${new URL(location.href).pathname}?tagsFilter=${filter}&ignoreUsers=true`
-          )
-        }
       />
 
       <label>
