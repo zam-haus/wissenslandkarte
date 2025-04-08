@@ -17,8 +17,8 @@ echo "Running linter and formatter before pushing..."
 if [[ $branch == 'main' ]]; then
   cd remix-frontend || (echo "Couldn't change to remix-frontend folder" && exit 1)
 
-  if git log --oneline origin/main..main | grep ' fixup!'; then
-    echo "Found fixup commits, please squash first!"
+  if  git log --oneline origin/main..main | grep ' fixup!'  ||  git log --oneline origin/main..main | grep -E '[a-z0-9]{7} wip$'; then
+    echo "Found fixup or wip commits, please squash or stash first!"
     exit 1
   fi
   
