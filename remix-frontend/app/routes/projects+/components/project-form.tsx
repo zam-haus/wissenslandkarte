@@ -1,5 +1,4 @@
 import type { Tag } from "@prisma/client";
-import type { FetcherWithComponents } from "@remix-run/react";
 import { Form } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
@@ -15,9 +14,6 @@ type ProjectFormProps = {
   action: string | undefined;
   tags: Tag[];
   users: User[];
-  userFetcher: FetcherWithComponents<{
-    users: User[];
-  }>;
   maxPhotoSize: number;
   mode: "create" | "edit";
 };
@@ -34,7 +30,7 @@ export type EditProjectFormProps = ProjectFormProps & {
 type EditableProject = Omit<NonNullable<Awaited<ReturnType<typeof getProjectDetails>>>, "steps">;
 
 export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps) {
-  const { action, maxPhotoSize, tags, users, userFetcher } = props;
+  const { action, maxPhotoSize, tags, users } = props;
   const { t } = useTranslation("projects");
 
   const currentState: EditableProject | null = props.mode === "edit" ? props.currentState : null;
@@ -74,14 +70,8 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
 
       <UserSelect
         initiallyAvailableUsers={[...(currentState?.members ?? []), ...users]}
-        userFetcher={userFetcher}
         defaultValue={currentState?.members}
         t={t}
-        fetchMoreUsers={(filter: string) =>
-          userFetcher.load(
-            `${new URL(location.href).pathname}?usersFilter=${filter}&ignoreTags=true`
-          )
-        }
       />
 
       <TagSelect

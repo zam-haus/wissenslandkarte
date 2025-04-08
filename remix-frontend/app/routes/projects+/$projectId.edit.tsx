@@ -1,7 +1,7 @@
 import type { ActionArgs, TypedResponse } from "@remix-run/node";
 import { type LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { useActionData, useFetcher, useLoaderData } from "@remix-run/react";
+import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
@@ -13,8 +13,8 @@ import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/handler-s3.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import { getProjectDetails, updateProject } from "~/models/projects.server";
 import {
-  loaderForUserFetcher,
   lowLevelTagLoader,
+  lowLevelUserLoader,
 } from "~/routes/global_loaders+/lib/loader-helpers.server";
 
 import {
@@ -85,9 +85,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   }
 
   const searchParams = new URL(request.url).searchParams;
-  const [{ tags }, users] = await Promise.all([
+  const [{ tags }, { users }] = await Promise.all([
     lowLevelTagLoader(searchParams.get("tagFilter")),
-    loaderForUserFetcher(searchParams),
+    lowLevelUserLoader(searchParams.get("userFilter")),
   ]);
 
   return json({ tags, users, project, maxPhotoSize: MAX_UPLOAD_SIZE_IN_BYTE });
@@ -101,7 +101,6 @@ export default function EditProject() {
   const { project: serializedProject, tags, users, maxPhotoSize } = useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
-  const userFetcher = useFetcher<typeof loader>();
   const actionData = useActionData<typeof action>();
 
   const project = withDeserializedDates(
@@ -127,7 +126,6 @@ export default function EditProject() {
         tags={tags}
         maxPhotoSize={maxPhotoSize}
         currentState={project}
-        userFetcher={userFetcher}
       />
     </main>
   );

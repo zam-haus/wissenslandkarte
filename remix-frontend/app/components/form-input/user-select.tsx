@@ -1,6 +1,8 @@
-import type { FetcherWithComponents } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import type { TFunction } from "i18next";
 import { useEffect, useState } from "react";
+
+import type { globalUserLoader } from "~/routes/global_loaders+/users";
 
 import { MultiSelect } from "./multi-select/multi-select";
 
@@ -8,14 +10,10 @@ export type User = { id: string; username: string };
 
 export function UserSelect({
   initiallyAvailableUsers,
-  userFetcher,
   t,
-  fetchMoreUsers,
   defaultValue,
 }: {
   initiallyAvailableUsers: User[];
-  userFetcher: FetcherWithComponents<{ users: User[] }>;
-  fetchMoreUsers: (filter: string) => void;
   t: TFunction<"projects", undefined>;
   defaultValue?: User[];
 }) {
@@ -23,6 +21,14 @@ export function UserSelect({
   const [chosenUsers, setChosenUsers] = useState<string[]>(
     defaultValue?.map(({ username }) => username) ?? []
   );
+
+  const userFetcher = useFetcher<typeof globalUserLoader>();
+  const fetchMoreUsers = (filter: string) =>
+    userFetcher.load(`/global_loaders/users?userFilter=${filter}`);
+
+  useEffect(() => {
+    setAvailableUsers((availableUsers) => [...availableUsers, ...(userFetcher.data?.users ?? [])]);
+  }, [userFetcher.data]);
 
   useEffect(() => {
     setAvailableUsers((availableUsers) =>

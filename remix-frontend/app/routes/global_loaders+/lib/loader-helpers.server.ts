@@ -1,11 +1,8 @@
 import { getTagList } from "~/models/tags.server";
 import { getUserListFiltered } from "~/models/user.server";
 
-export function loaderForUserFetcher(params: URLSearchParams) {
-  const usersFilter = params.get("usersFilter") ?? "";
-  const ignoreUsers = Boolean(params.get("ignoreUsers") ?? false);
-
-  return ignoreUsers ? Promise.resolve([]) : getUserListFiltered(usersFilter);
+export async function lowLevelUserLoader(filter: string | null) {
+  return { users: await getUserListFiltered(filter ?? "") };
 }
 
 export async function lowLevelTagLoader(filter: string | null) {
