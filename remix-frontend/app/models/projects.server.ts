@@ -50,7 +50,7 @@ export async function getProjectsByUser(username: string): Promise<ProjectListEn
   return [...(result?.ownedProjects ?? []), ...(result?.memberProjects ?? [])];
 }
 
-export async function searchProjects(tags: string[]): Promise<ProjectListEntry[]> {
+export async function searchProjectsByTags(tags: string[]): Promise<ProjectListEntry[]> {
   return prisma.project.findMany({
     select: {
       id: true,

@@ -2,5 +2,7 @@
   "main-headline": "Suche",
   "search": "suchen",
   "projects": "Projekte",
-  "people": "Personen"
+  "people": "Personen",
+  "query": "Suchanfrage",
+  "filter-tags": "Nach Tags filtern"
 }

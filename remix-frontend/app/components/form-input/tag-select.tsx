@@ -15,11 +15,13 @@ type Tag = {
 export function TagSelect({
   initiallyAvailableTags,
   defaultValue,
+  allowAddingNew,
   t,
 }: {
   initiallyAvailableTags: Tag[];
   t: TFunction<"projects", undefined>;
   defaultValue?: Tag[];
+  allowAddingNew: boolean;
 }) {
   const [availableTags, setAvailableTags] = useState(initiallyAvailableTags);
   const [chosenTags, setChosenTags] = useState<string[]>(
@@ -50,7 +52,7 @@ export function TagSelect({
         valuesToSuggest={availableTags
           .map(({ name }) => name)
           .filter((name) => !chosenTags.includes(name))}
-        allowAddingNew={true}
+        allowAddingNew={allowAddingNew}
         onValueChosen={(newValue) => {
           setChosenTags([...chosenTags, newValue]);
         }}

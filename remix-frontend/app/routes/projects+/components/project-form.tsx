@@ -80,6 +80,7 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
           ...tags,
         ]}
         defaultValue={currentState?.tags}
+        allowAddingNew={true}
         t={t}
       />
 

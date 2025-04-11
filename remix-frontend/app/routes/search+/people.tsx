@@ -11,7 +11,7 @@ import { getSearchQuery, SearchForm } from "./components/search-form";
 import { SearchProjectPeopleSwitch } from "./components/search-header";
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const query = getSearchQuery(request);
+  const { query } = getSearchQuery(new URL(request.url).searchParams);
 
   if (query === null || query.trim() === "") {
     const users = await searchUsers();
