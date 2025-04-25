@@ -10,7 +10,7 @@ export function ProjectTagList({ tags, className }: { tags: Tag[]; className: st
         <TagElem
           key={tag.id}
           text={tag.name}
-          url={"/search/projects?q=" + encodeURIComponent(tag.name)}
+          url={"/search/projects?tags=" + encodeURIComponent(tag.name)}
         />
       ))}
     </ul>
@@ -24,7 +24,7 @@ export function PeopleTagList({ tags, className }: { tags: Tag[]; className?: st
         <TagElem
           key={tag.id}
           text={tag.name}
-          url={"/search/people?q=" + encodeURIComponent(tag.name)}
+          url={"/search/people?tags=" + encodeURIComponent(tag.name)}
         />
       ))}
     </ul>
