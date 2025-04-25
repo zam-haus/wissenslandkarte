@@ -63,6 +63,7 @@ export async function getUserOverview(username: User["username"]): Promise<UserO
           title: true,
           latestModificationDate: true,
           mainPhoto: true,
+          tags: true,
         },
       },
       memberProjects: {
@@ -71,6 +72,7 @@ export async function getUserOverview(username: User["username"]): Promise<UserO
           title: true,
           latestModificationDate: true,
           mainPhoto: true,
+          tags: true,
         },
       },
     },

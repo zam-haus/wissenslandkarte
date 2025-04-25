@@ -2,22 +2,20 @@ import type { Project } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
-export type ProjectListEntry = Pick<
-  Project,
-  "id" | "title" | "latestModificationDate" | "mainPhoto"
->;
+export type ProjectListEntry = Awaited<ReturnType<typeof getProjectList>>[number];
 
 export async function getProjectList(options?: {
   limit?: number;
   page?: number;
   byNewestModification?: boolean;
-}): Promise<ProjectListEntry[]> {
+}) {
   return prisma.project.findMany({
     select: {
       id: true,
       title: true,
       latestModificationDate: true,
       mainPhoto: true,
+      tags: true,
     },
     orderBy: options?.byNewestModification ? { latestModificationDate: "desc" } : undefined,
     take: options?.limit,
@@ -35,6 +33,7 @@ export async function getProjectsByUser(username: string): Promise<ProjectListEn
           title: true,
           latestModificationDate: true,
           mainPhoto: true,
+          tags: true,
         },
       },
       memberProjects: {
@@ -43,6 +42,7 @@ export async function getProjectsByUser(username: string): Promise<ProjectListEn
           title: true,
           latestModificationDate: true,
           mainPhoto: true,
+          tags: true,
         },
       },
     },
@@ -57,6 +57,7 @@ export async function searchProjectsByTags(tags: string[]): Promise<ProjectListE
       title: true,
       latestModificationDate: true,
       mainPhoto: true,
+      tags: true,
     },
     where: {
       tags: { some: { OR: tags.map((tag) => ({ name: tag })) } },
