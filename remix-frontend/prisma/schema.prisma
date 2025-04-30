@@ -37,6 +37,7 @@ model User {
   memberProjects Project[] @relation("projectMembers")
 
   setupCompleted Boolean @default(false)
+  roles          Role[]
 
   @@index(fields: [username, keycloakId])
 }
@@ -90,4 +91,12 @@ model ProjectStep {
   projectId String?
 
   @@index(fields: [projectId])
+}
+
+model Role {
+  id String @id @default(nanoid())
+
+  title String @unique
+
+  users User[]
 }
