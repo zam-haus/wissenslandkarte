@@ -106,3 +106,16 @@ export async function updateUser(updateRequest: UpdateUserRequest) {
   const { id, ...data } = updateRequest;
   return prisma.user.update({ where: { id }, data });
 }
+
+export type ContactData = Pick<User, "id" | "username" | "contactEmailAddress" | "image">;
+export async function getUserContactData(username: User["username"]): Promise<ContactData | null> {
+  return prisma.user.findUnique({
+    where: { username },
+    select: {
+      id: true,
+      username: true,
+      contactEmailAddress: true,
+      image: true,
+    },
+  });
+}

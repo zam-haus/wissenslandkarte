@@ -6,20 +6,28 @@ import { getProjectDetails } from "~/models/projects.server";
 
 import { authenticator } from "./authentication.server";
 
+export async function getLoggedInUser(request: Request) {
+  return await authenticator.isAuthenticated(request);
+}
+
+export async function isAnyUserLoggedIn(request: Request) {
+  return (await getLoggedInUser(request)) !== null;
+}
+
 export async function loaderLoginCheck(request: Request) {
-  return { isLoggedIn: (await authenticator.isAuthenticated(request)) !== null };
+  return { isLoggedIn: await isAnyUserLoggedIn(request) };
 }
 
 export const isLoggedInLoader = async ({ request }: DataFunctionArgs) =>
   json(await loaderLoginCheck(request));
 
 export async function isThisUserLoggedIn(request: Request, user: { id: string }) {
-  const userFromSession = await authenticator.isAuthenticated(request);
+  const userFromSession = await getLoggedInUser(request);
   return user.id === userFromSession?.id;
 }
 
 export async function isAnyUserFromListLoggedIn(request: Request, users: { id: string }[]) {
-  const userFromSession = await authenticator.isAuthenticated(request);
+  const userFromSession = await getLoggedInUser(request);
   return users.some(({ id }) => id === userFromSession?.id);
 }
 

@@ -76,6 +76,26 @@ export const environment = {
       return getFromEnvOrThrow("MEILISEARCH_MASTER_KEY");
     },
   },
+  email: {
+    get SMTP_HOST() {
+      return getFromEnvOrThrow("EMAIL_SMTP_HOST");
+    },
+    get SMTP_PORT() {
+      return getFromEnvOrThrow("EMAIL_SMTP_PORT", (value) => parseInt(value, 10));
+    },
+    get SMTP_USER() {
+      return getFromEnvOrThrow("EMAIL_SMTP_USER");
+    },
+    get SMTP_PASSWORD() {
+      return getFromEnvOrThrow("EMAIL_SMTP_PASSWORD");
+    },
+    get USE_STARTTLS() {
+      return getFromEnvOrThrow("EMAIL_USE_STARTTLS", Boolean);
+    },
+    get FROM_ADDRESS() {
+      return getFromEnvOrThrow("EMAIL_FROM_ADDRESS");
+    },
+  },
 };
 
 type Mapper<T> = (value: string) => T;
@@ -83,7 +103,7 @@ function getFromEnvOrThrow(key: string): string;
 function getFromEnvOrThrow<T>(key: string, mapper: Mapper<T>): T;
 function getFromEnvOrThrow<T>(key: string, mapper?: Mapper<T>): string | T {
   const value = process.env[key];
-  invariant(value, `Missing authentication config environent variable ${key}`);
+  invariant(value, `Missing config environment variable ${key}`);
   if (mapper === undefined) {
     return value;
   }

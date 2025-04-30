@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
@@ -87,9 +87,9 @@ export function UserMain({ user }: { user: UserOverview }) {
       <section>
         <p className={styles.fullWidth}>{user.description}</p>
 
-        <button className="primary send-message" onClick={() => console.log("message")}>
+        <Link to="./contact" className="send-message">
           {t("send-message")}
-        </button>
+        </Link>
 
         <PeopleTagList className={styles.tagList} tags={user.tags} />
       </section>
