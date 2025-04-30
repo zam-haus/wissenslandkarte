@@ -1,0 +1,1 @@
+export const MAX_UPLOAD_SIZE_IN_BYTE = 10 * 1024 * 1024;
