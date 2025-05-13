@@ -130,7 +130,7 @@ export default function CreateStep() {
 
       <StepForm
         action={currentPath}
-        maxPhotoSize={MAX_UPLOAD_SIZE_IN_BYTE}
+        maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
         projectsWithDates={projectsWithDates}
         mode="create"
       ></StepForm>

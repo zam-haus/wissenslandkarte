@@ -30,7 +30,7 @@ export const action = async ({
 }: ActionFunctionArgs): Promise<TypedResponse<never> | { error: string; exception?: string }> => {
   const user = await getLoggedInUser(request, { ifNotLoggedInRedirectTo: "/" });
 
-  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainPhoto"]);
+  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainImage"]);
 
   const { title, description } = getTrimmedStringsDefaultEmpty(formData, "title", "description");
   if (title.length === 0 || description.length === 0) {
@@ -45,7 +45,7 @@ export const action = async ({
       description,
       owners: [user.username],
       ...getStringArray(formData, "coworkers", "tags"),
-      ...getStringsDefaultUndefined(formData, "mainPhoto"),
+      ...getStringsDefaultUndefined(formData, "mainImage"),
       ...getBooleanDefaultFalse(formData, "needProjectSpace"),
     });
 
@@ -101,7 +101,7 @@ export default function NewProject() {
         action={undefined} // undefined means current url
         users={users}
         tags={tags}
-        maxPhotoSize={MAX_UPLOAD_SIZE_IN_BYTE}
+        maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
       />
     </main>
   );

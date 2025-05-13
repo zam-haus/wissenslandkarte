@@ -14,7 +14,7 @@ export async function getProjectList(options?: {
       id: true,
       title: true,
       latestModificationDate: true,
-      mainPhoto: true,
+      mainImage: true,
       tags: true,
     },
     orderBy: options?.byNewestModification ? { latestModificationDate: "desc" } : undefined,
@@ -32,7 +32,7 @@ export async function getProjectsByUser(username: string): Promise<ProjectListEn
           id: true,
           title: true,
           latestModificationDate: true,
-          mainPhoto: true,
+          mainImage: true,
           tags: true,
         },
       },
@@ -41,7 +41,7 @@ export async function getProjectsByUser(username: string): Promise<ProjectListEn
           id: true,
           title: true,
           latestModificationDate: true,
-          mainPhoto: true,
+          mainImage: true,
           tags: true,
         },
       },
@@ -56,7 +56,7 @@ export async function searchProjectsByTags(tags: string[]): Promise<ProjectListE
       id: true,
       title: true,
       latestModificationDate: true,
-      mainPhoto: true,
+      mainImage: true,
       tags: true,
     },
     where: {
@@ -73,7 +73,7 @@ export async function getProjectDetails(projectId: Project["id"]) {
       title: true,
       creationDate: true,
       latestModificationDate: true,
-      mainPhoto: true,
+      mainImage: true,
       owners: { select: { id: true, username: true } },
       members: { select: { id: true, username: true } },
       tags: true,
@@ -94,7 +94,7 @@ export async function getProjectDetails(projectId: Project["id"]) {
 type ProjectCreateRequest = {
   title: string;
   description: string;
-  mainPhoto?: string;
+  mainImage?: string;
   owners: string[];
   coworkers: string[];
   tags: string[];
@@ -111,7 +111,7 @@ export async function createProject(request: ProjectCreateRequest) {
         connectOrCreate: request.tags.map((name) => ({ create: { name }, where: { name } })),
       },
       needsProjectArea: request.needProjectSpace,
-      mainPhoto: request.mainPhoto ?? null,
+      mainImage: request.mainImage ?? null,
       creationDate: new Date(),
       latestModificationDate: new Date(),
     },
@@ -119,11 +119,11 @@ export async function createProject(request: ProjectCreateRequest) {
 }
 
 type ProjectStepRequest = { id: string } & ProjectCreateRequest;
-type ProjectStepOptions = { removePhotoIfNoNewValueGiven: boolean };
+type ProjectStepOptions = { removeImageIfNoNewValueGiven: boolean };
 export async function updateProject(request: ProjectStepRequest, options: ProjectStepOptions) {
-  function determineMainPhoto() {
-    if (request.mainPhoto !== undefined) return { mainPhoto: request.mainPhoto };
-    if (options.removePhotoIfNoNewValueGiven) return { mainPhoto: null };
+  function determineMainImage() {
+    if (request.mainImage !== undefined) return { mainImage: request.mainImage };
+    if (options.removeImageIfNoNewValueGiven) return { mainImage: null };
     return {};
   }
   return prisma.project.update({
@@ -146,7 +146,7 @@ export async function updateProject(request: ProjectStepRequest, options: Projec
       needsProjectArea: request.needProjectSpace,
       creationDate: new Date(),
       latestModificationDate: new Date(),
-      ...determineMainPhoto(),
+      ...determineMainImage(),
     },
   });
 }

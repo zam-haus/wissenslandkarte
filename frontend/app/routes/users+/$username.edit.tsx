@@ -52,7 +52,7 @@ export const action = async ({
 
   await assertAuthorization(request, user);
 
-  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainPhoto"]);
+  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainImage"]);
 
   const { username, description } = getTrimmedStringsDefaultEmpty(
     formData,
@@ -122,7 +122,7 @@ export default function UserEdit() {
       <Form action="." method="POST" encType="multipart/form-data">
         <UserImage {...user} t={t} className={styles.atRight} />
         <ImageSelect
-          maxPhotoSize={MAX_UPLOAD_SIZE_IN_BYTE}
+          maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
           multiple={false}
           t={useTranslation("projects").t}
           label={t("profile-picture")}

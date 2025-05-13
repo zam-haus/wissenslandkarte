@@ -14,7 +14,7 @@ type ProjectFormProps = {
   action: string | undefined;
   tags: Tag[];
   users: User[];
-  maxPhotoSize: number;
+  maxImageSize: number;
   mode: "create" | "edit";
 };
 
@@ -30,7 +30,7 @@ export type EditProjectFormProps = ProjectFormProps & {
 type EditableProject = Omit<NonNullable<Awaited<ReturnType<typeof getProjectDetails>>>, "steps">;
 
 export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps) {
-  const { action, maxPhotoSize, tags, users } = props;
+  const { action, maxImageSize, tags, users } = props;
   const { t } = useTranslation("projects");
 
   const currentState: EditableProject | null = props.mode === "edit" ? props.currentState : null;
@@ -52,20 +52,20 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
         <textarea name="description" required defaultValue={currentState?.description}></textarea>
       </label>
 
-      {currentState === null || currentState.mainPhoto === null ? null : (
+      {currentState === null || currentState.mainImage === null ? null : (
         <>
-          {t("current-main-photo")}
-          <img className={style.mainPhoto} src={currentState.mainPhoto} alt={t("main-photo")} />
-          Remove main photo: <input type="checkbox" name="removeMainPhoto" />{" "}
+          {t("current-main-image")}
+          <img className={style.mainImage} src={currentState.mainImage} alt={t("main-image")} />
+          Remove main image: <input type="checkbox" name="removeMainImage" />{" "}
           {/*autoset and hide when image removal is done*/}
         </>
       )}
 
       <ImageSelect
-        name="mainPhoto"
+        name="mainImage"
         t={t}
-        label={`${t("select-main-photo")} ${t("optional")}`}
-        maxPhotoSize={maxPhotoSize}
+        label={`${t("select-main-image")} ${t("optional")}`}
+        maxImageSize={maxImageSize}
       />
 
       <UserSelect

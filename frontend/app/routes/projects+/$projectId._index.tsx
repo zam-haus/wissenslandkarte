@@ -67,8 +67,8 @@ export default function Project() {
             </li>
           ))}
         </ul>
-        {project.mainPhoto ? (
-          <img style={{ maxWidth: 500 }} src={project.mainPhoto} alt={t("main-photo")} />
+        {project.mainImage ? (
+          <img style={{ maxWidth: 500 }} src={project.mainImage} alt={t("main-image")} />
         ) : null}
       </header>
 

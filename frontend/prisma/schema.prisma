@@ -62,7 +62,7 @@ model Project {
 
   title       String
   description String
-  mainPhoto   String?
+  mainImage   String?
 
   owners      User[]        @relation("projectOwners")
   members     User[]        @relation("projectMembers")

@@ -169,7 +169,7 @@ export default function EditStep() {
 
       <StepForm
         action={currentPath}
-        maxPhotoSize={MAX_UPLOAD_SIZE_IN_BYTE}
+        maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
         projectsWithDates={projectsWithDates}
         mode="edit"
         currentState={currentState}

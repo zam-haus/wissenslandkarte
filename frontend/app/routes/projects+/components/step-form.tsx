@@ -9,7 +9,7 @@ import style from "./step-form.module.css";
 
 type StepFormProps = {
   action: string | undefined;
-  maxPhotoSize: number;
+  maxImageSize: number;
   projectsWithDates: ProjectListEntry[];
   mode: "create" | "edit";
 };
@@ -28,7 +28,7 @@ type EditableStepProps = Pick<ProjectStep, "description" | "id"> & {
 };
 
 export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
-  const { action, maxPhotoSize, projectsWithDates } = props;
+  const { action, maxImageSize, projectsWithDates } = props;
   const { t } = useTranslation("projects");
 
   const currentState: EditableStepProps | null = props.mode === "edit" ? props.currentState : null;
@@ -68,8 +68,8 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
       <ImageSelect
         name="imageAttachments"
         t={t}
-        label={`${t("select-photo")} ${t("optional")}`}
-        maxPhotoSize={maxPhotoSize}
+        label={`${t("select-image")} ${t("optional")}`}
+        maxImageSize={maxImageSize}
         multiple={true}
       />
 

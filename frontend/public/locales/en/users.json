@@ -7,7 +7,7 @@
   "projects-counter_one": "{{count}} project",
   "projects-counter_other": "{{count}} projects",
   "projects-headline": "Projects",
-  "project-photo-alt-text": "Main photo of project with title '{{title}}'",
+  "project-image-alt-text": "Main image of project with title '{{title}}'",
   "profile-picture": "Profile picture",
   "username": "Username",
   "username-taken": "This username is already taken",

@@ -64,7 +64,7 @@ export const action = async ({
 
   await assertAuthorization(request, project);
 
-  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainPhoto"]);
+  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainImage"]);
 
   const { title, description } = getTrimmedStringsDefaultEmpty(formData, "title", "description");
   if (title.length === 0 || description.length === 0) {
@@ -81,10 +81,10 @@ export const action = async ({
         description,
         owners: [user.username],
         ...getStringArray(formData, "coworkers", "tags"),
-        ...getStringsDefaultUndefined(formData, "mainPhoto"),
+        ...getStringsDefaultUndefined(formData, "mainImage"),
         ...getBooleanDefaultFalse(formData, "needProjectSpace"),
       },
-      { removePhotoIfNoNewValueGiven: Boolean(formData.get("removeMainPhoto")) },
+      { removeImageIfNoNewValueGiven: Boolean(formData.get("removeMainImage")) },
     );
 
     await upsertProjectToSearchIndex(result);
@@ -149,7 +149,7 @@ export default function EditProject() {
         mode="edit"
         users={users}
         tags={tags}
-        maxPhotoSize={MAX_UPLOAD_SIZE_IN_BYTE}
+        maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
         currentState={project}
       />
     </main>

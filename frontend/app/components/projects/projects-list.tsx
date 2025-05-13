@@ -11,7 +11,7 @@ type StyleableParts =
   | "projectEntry"
   | "projectTitle"
   | "projectModificationDate"
-  | "projectMainPhoto";
+  | "projectMainImage";
 
 export function ProjectsList({
   projects,
@@ -35,16 +35,16 @@ export function ProjectsList({
           <span className={styles?.projectModificationDate}>
             <LocalDate date={project.latestModificationDate}></LocalDate>
           </span>
-          {project.mainPhoto === null ? (
+          {project.mainImage === null ? (
             <div
-              className={localStyle.projectMainPhoto + " " + (styles?.projectMainPhoto ?? "")}
+              className={localStyle.projectMainImage + " " + (styles?.projectMainImage ?? "")}
             ></div>
           ) : (
             <img
               loading="lazy"
-              className={localStyle.projectMainPhoto + " " + (styles?.projectMainPhoto ?? "")}
-              alt={t("project-photo-alt-text", { title: project.title })}
-              src={project.mainPhoto}
+              className={localStyle.projectMainImage + " " + (styles?.projectMainImage ?? "")}
+              alt={t("project-image-alt-text", { title: project.title })}
+              src={project.mainImage}
             />
           )}
         </li>

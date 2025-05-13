@@ -85,13 +85,13 @@ function useFileUploadHelpers({
 export function ImageSelect({
   label,
   name,
-  maxPhotoSize,
+  maxImageSize,
   multiple,
   t,
 }: {
   label: string;
   name: string;
-  maxPhotoSize: number;
+  maxImageSize: number;
   multiple?: boolean;
   t: TFunction<"projects">;
 }) {
@@ -103,24 +103,24 @@ export function ImageSelect({
     addFilesToInput,
     removeFileFromInput,
   } = useFileUploadHelpers({
-    maxFileSize: maxPhotoSize,
+    maxFileSize: maxImageSize,
     clearInputWhenSizeExceeded: true,
   });
 
-  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const actualFileUploadRef = useRef<HTMLInputElement>(null);
 
-  const rebuildPhotoPreviews = (sourceInput: HTMLInputElement) => {
-    photoPreviews.forEach((url) => URL.revokeObjectURL(url));
+  const rebuildImagePreviews = (sourceInput: HTMLInputElement) => {
+    imagePreviews.forEach((url) => URL.revokeObjectURL(url));
     const newFileUrls = Array.from(sourceInput.files ?? []).map(
       (file) => URL.createObjectURL(file), // TODO: This file needs to be released to avoid memleak before navigating away
     );
 
-    setPhotoPreviews(newFileUrls);
+    setImagePreviews(newFileUrls);
   };
 
-  const newPhotoSelected = (event: ChangeEvent<HTMLInputElement>) => {
+  const newImageSelected = (event: ChangeEvent<HTMLInputElement>) => {
     checkFileSize(event);
 
     const selectInput = event.target;
@@ -134,18 +134,18 @@ export function ImageSelect({
     }
 
     addFilesToInput(uploadInput, selectInput.files);
-    rebuildPhotoPreviews(uploadInput);
+    rebuildImagePreviews(uploadInput);
 
     selectInput.value = "";
   };
 
-  const removePhotoByIndex = (index: number) => {
+  const removeImageByIndex = (index: number) => {
     const uploadInput = actualFileUploadRef.current;
     if (uploadInput === null) {
       return;
     }
     removeFileFromInput(uploadInput, index);
-    rebuildPhotoPreviews(uploadInput);
+    rebuildImagePreviews(uploadInput);
   };
 
   return (
@@ -159,7 +159,7 @@ export function ImageSelect({
           accept="image/*"
           multiple={multiple}
           onClick={resetSizeCheckWarning}
-          onChange={(event) => newPhotoSelected(event)}
+          onChange={(event) => newImageSelected(event)}
         />
       </label>
       {hasCamera ? (
@@ -170,17 +170,17 @@ export function ImageSelect({
             capture="environment"
             accept="image/*"
             onClick={resetSizeCheckWarning}
-            onChange={(event) => newPhotoSelected(event)}
+            onChange={(event) => newImageSelected(event)}
           />
         </label>
       ) : null}
-      {fileTooLarge ? t("photo-too-large") : ""}
-      {photoPreviews.map((url, index) => (
+      {fileTooLarge ? t("image-too-large") : ""}
+      {imagePreviews.map((url, index) => (
         <div key={url} className={style.deleteImageButtonContainer}>
-          <button className={style.deleteImageButton} onClick={() => removePhotoByIndex(index)}>
+          <button className={style.deleteImageButton} onClick={() => removeImageByIndex(index)}>
             ×
           </button>
-          <img src={url} alt={t("photo-preview")} className={style.imagePreview} />{" "}
+          <img src={url} alt={t("image-preview")} className={style.imagePreview} />{" "}
           {/*TODO: Add text input for alt text */}
         </div>
       ))}
