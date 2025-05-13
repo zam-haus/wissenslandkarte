@@ -18,7 +18,7 @@ FROM base as deps
 WORKDIR /app
 
 ADD package.json package-lock.json ./
-RUN npm install
+RUN npm ci
 
 
 #
