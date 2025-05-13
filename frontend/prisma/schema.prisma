@@ -100,3 +100,10 @@ model Role {
 
   users User[]
 }
+
+model KeyValue {
+  id String @id @default(nanoid())
+
+  key   String @unique
+  value String
+}

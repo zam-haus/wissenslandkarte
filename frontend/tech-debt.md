@@ -11,13 +11,15 @@
 
 ## S
 
+- http://localhost:5173/projects/OM1dzGzGt15cdbVVcZRxr 404 statt fehler
+
 ## M
 
 - https://pris.ly/cli/output-path
 - image file needs to be released to prevent memory leak in step image upload
-- wenn meilisearch nicht laeuft kein update/anlegen moeglich!
 - image file (by name) can be added twice in image upload
 - implement real logging and remove console.logs
+- site-admin role to rebuild search index
 
 ## L
 

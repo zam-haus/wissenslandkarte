@@ -61,6 +61,13 @@ CREATE TABLE "Role" (
 );
 
 -- CreateTable
+CREATE TABLE "KeyValue" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "key" TEXT NOT NULL,
+    "value" TEXT NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "_TagToUser" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL,
@@ -126,6 +133,9 @@ CREATE INDEX "ProjectStep_projectId_idx" ON "ProjectStep"("projectId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Role_title_key" ON "Role"("title");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "KeyValue_key_key" ON "KeyValue"("key");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_TagToUser_AB_unique" ON "_TagToUser"("A", "B");
