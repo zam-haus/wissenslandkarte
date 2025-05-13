@@ -2,10 +2,10 @@ import type { ActionFunctionArgs, LoaderFunctionArgs, TypedResponse } from "@rem
 import { redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
 
 import { UserImage } from "~/components/users/user-image";
 import { getLoggedInUser, isAnyUserLoggedIn } from "~/lib/authorization.server";
+import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { sendMail } from "~/lib/sendMail.server";
 import { getUserContactData } from "~/models/user.server";
 
@@ -23,10 +23,10 @@ export const action = async ({
   params,
   request,
 }: ActionFunctionArgs): Promise<TypedResponse<never> | ActionResponse> => {
-  invariant(params.username, `params.username is required`);
+  assertExistsOr400(params.username, "username is required");
 
   const receivingUser = await getUserContactData(params.username);
-  invariant(receivingUser, `User not found: ${params.username}`);
+  assertExistsOr404(receivingUser, `User not found: ${params.username}`);
 
   if (receivingUser.contactEmailAddress === null) {
     return {
@@ -78,10 +78,11 @@ export const action = async ({
 };
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.username, `params.username is required`);
+  assertExistsOr400(params.username, "username is required");
 
   const receivingUser = await getUserContactData(params.username);
-  invariant(receivingUser, `User not found: ${params.username}`);
+  assertExistsOr404(receivingUser, `User not found: ${params.username}`);
+
   return {
     isLoggedIn: await isAnyUserLoggedIn(request),
     receivingUserHasEmail: receivingUser.contactEmailAddress !== null,

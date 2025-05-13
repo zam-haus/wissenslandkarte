@@ -2,10 +2,10 @@ import { Prisma } from "@prisma/client";
 import { ActionFunctionArgs, TypedResponse, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
 
 import { Page } from "~/components/page/page";
 import { prisma } from "~/db.server";
+import { assertExistsOr500 } from "~/lib/dataValidation";
 import { getStringsDefaultUndefined } from "~/lib/formDataParser";
 import { getSession, tempUserSessionKey, userSessionKey } from "~/lib/session.server";
 
@@ -23,7 +23,7 @@ export const action = async ({
     return redirect("/");
   }
   const user = session.get(tempUserSessionKey);
-  invariant(user, "user should have been in session, but was not");
+  assertExistsOr500(user, "user should have been in session, but was not");
 
   const { username } = getStringsDefaultUndefined(await request.formData(), "username");
   if (username === undefined) {
@@ -71,7 +71,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return redirect("/");
   }
   const user = session.get(tempUserSessionKey);
-  invariant(user, "user should have been in session, but was not");
+  assertExistsOr500(user, "user should have been in session, but was not");
 
   return { user };
 };

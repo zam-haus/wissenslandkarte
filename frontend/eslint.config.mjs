@@ -61,7 +61,7 @@ export default tseslint.config([
       "@typescript-eslint/only-throw-error": [
         "error",
         {
-          allow: ["TypedResponse"],
+          allow: ["TypedResponse", "Response"],
         },
       ],
       "@typescript-eslint/restrict-template-expressions": [

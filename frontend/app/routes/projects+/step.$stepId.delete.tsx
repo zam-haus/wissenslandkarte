@@ -1,8 +1,8 @@
 import { type LoaderFunctionArgs, redirect } from "@remix-run/node";
-import invariant from "tiny-invariant";
 import { serverOnly$ } from "vite-env-only/macros";
 
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
+import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/dataValidation";
 import {
   deleteProjectStep,
   getProjectStepWithProjectOwnersAndMembers,
@@ -29,11 +29,11 @@ const assertAuthorization = serverOnly$(
 )!;
 
 export const action = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.stepId, `params.stepId is required`);
+  assertExistsOr400(params.stepId, `Missing step id`);
 
   const step = await getProjectStepWithProjectOwnersAndMembers(params.stepId);
-  invariant(step, `Step not found: ${params.stepId}`);
-  invariant(step.project, `Step without project: ${params.stepId}`);
+  assertExistsOr404(step, `Step not found: ${params.stepId}`);
+  assertExistsOr500(step.project, `Step without project: ${params.stepId}`);
 
   await assertAuthorization(request, step.project);
 

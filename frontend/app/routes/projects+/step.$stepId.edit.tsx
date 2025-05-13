@@ -2,7 +2,6 @@ import type { ActionFunctionArgs, LoaderFunctionArgs, TypedResponse } from "@rem
 import { redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
 import { serverOnly$ } from "vite-env-only/macros";
 
 import {
@@ -12,6 +11,7 @@ import {
   Roles,
 } from "~/lib/authorization.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
+import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/dataValidation";
 import { upsertProjectStepToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
@@ -48,7 +48,7 @@ export const action = async ({
   request,
   params,
 }: ActionFunctionArgs): Promise<TypedResponse<never> | { error: string; exception?: string }> => {
-  invariant(params.stepId, `params.stepId is required`);
+  assertExistsOr400(params.stepId, `Missing step id`);
 
   const formData = await parseMultipartFormDataUploadFilesToS3(request, ["imageAttachments"]);
 
@@ -122,14 +122,14 @@ export const action = async ({
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  invariant(params.stepId, `params.stepId is required`);
+  assertExistsOr400(params.stepId, `Missing step id`);
   const user = await getLoggedInUser(request, { ifNotLoggedInRedirectTo: "/" });
 
   const projects = await getProjectsByUser(user.username);
   const currentState = await getEditableProjectStepDetails(params.stepId);
 
-  invariant(currentState, "Could not load project step");
-  invariant(currentState.project, "Could not load step's project");
+  assertExistsOr404(currentState, "No such step");
+  assertExistsOr500(currentState.project, "Could not load step's project");
 
   await assertAuthorization(
     request,

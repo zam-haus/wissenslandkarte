@@ -5,12 +5,12 @@ import { data, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { UNSAFE_DataWithResponseInit as DataWithResponseInit } from "@remix-run/router";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
 import { serverOnly$ } from "vite-env-only/macros";
 
 import { ImageSelect } from "~/components/form-input/image-select";
 import { UserImage } from "~/components/users/user-image";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
+import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { getSession } from "~/lib/session.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
@@ -45,10 +45,10 @@ export const action = async ({
 }: ActionFunctionArgs): Promise<
   TypedResponse<never> | ActionResponse | DataWithResponseInit<ActionResponse>
 > => {
-  invariant(params.username, `params.username is required`);
+  assertExistsOr400(params.username, "username is required");
 
   const user = await getUserOverview(params.username);
-  invariant(user, `User not found: ${params.username}`);
+  assertExistsOr404(user, `User not found: ${params.username}`);
 
   await assertAuthorization(request, user);
 
@@ -98,10 +98,10 @@ export const action = async ({
 };
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.username, `params.username is required`);
+  assertExistsOr400(params.username, "username is required");
 
   const user = await getUserOverview(params.username);
-  invariant(user, `User not found: ${params.username}`);
+  assertExistsOr404(user, `User not found: ${params.username}`);
 
   await assertAuthorization(request, user);
 

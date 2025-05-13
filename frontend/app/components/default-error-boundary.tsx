@@ -10,10 +10,8 @@ export function DefaultErrorBoundary() {
   if (isRouteErrorResponse(error)) {
     return (
       <Page isLoggedIn={false} title={t("error-header")}>
-        <h2>
-          `${error.status} ${error.statusText}`
-        </h2>
-        <p>{error.data}</p>
+        <h2>{error.status}</h2>
+        <p>{error.statusText}</p>
       </Page>
     );
   } else if (error instanceof Error) {

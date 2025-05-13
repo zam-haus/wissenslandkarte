@@ -11,8 +11,6 @@
 
 ## S
 
-- http://localhost:5173/projects/OM1dzGzGt15cdbVVcZRxr 404 statt fehler
-
 ## M
 
 - https://pris.ly/cli/output-path

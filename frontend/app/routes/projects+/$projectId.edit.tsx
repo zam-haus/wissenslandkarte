@@ -2,7 +2,6 @@ import type { ActionFunctionArgs, TypedResponse, LoaderFunctionArgs } from "@rem
 import { redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
 import { serverOnly$ } from "vite-env-only/macros";
 
 import {
@@ -11,6 +10,7 @@ import {
   loggedInUserHasRole,
   Roles,
 } from "~/lib/authorization.server";
+import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
@@ -54,12 +54,12 @@ export const action = async ({
   params,
   request,
 }: ActionFunctionArgs): Promise<TypedResponse<never> | { error: string; exception?: string }> => {
-  invariant(params.projectId, `params.projectId is required`);
+  assertExistsOr400(params.projectId, `Missing project id`);
 
   const user = await getLoggedInUser(request, { ifNotLoggedInRedirectTo: "/" });
 
   const project = await getProjectDetails(params.projectId);
-  invariant(project, `Project not found: ${params.projectId}`);
+  assertExistsOr404(project, `Project not found: ${params.projectId}`);
 
   await assertAuthorization(request, project);
 
@@ -101,10 +101,10 @@ export const action = async ({
 };
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.projectId, `params.slug is required`);
+  assertExistsOr400(params.projectId, `Missing project id`);
 
   const project = await getProjectDetails(params.projectId);
-  invariant(project, `Project not found: ${params.projectId}`);
+  assertExistsOr404(project, `Project not found: ${params.projectId}`);
 
   await assertAuthorization(request, project);
 

@@ -1,7 +1,6 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
 
 import { renderDate } from "~/components/date-rendering";
 import { CommonMarkdown } from "~/components/markdown";
@@ -10,16 +9,17 @@ import { ProjectsList } from "~/components/projects/projects-list";
 import { PeopleTagList } from "~/components/tags";
 import { UserImage } from "~/components/users/user-image";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
+import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import type { UserOverview } from "~/models/user.server";
 import { getUserOverview } from "~/models/user.server";
 
 import styles from "./$username._index.module.css";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.username, `params.username is required`);
+  assertExistsOr400(params.username, "username is required");
 
   const user = await getUserOverview(params.username);
-  invariant(user, `User not found: ${params.username}`);
+  assertExistsOr404(user, `User not found: ${params.username}`);
 
   const ownerLoggedIn = await isThisUserLoggedIn(request, user);
   const adminLoggedIn = await loggedInUserHasRole(request, Roles.UserEditor);

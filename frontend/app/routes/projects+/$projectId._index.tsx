@@ -3,7 +3,6 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
 
 import { isAttachmentType } from "prisma/initialization/data/fake-data-generators";
 import { renderDate } from "~/components/date-rendering";
@@ -12,15 +11,16 @@ import { ModalDialog } from "~/components/modal";
 import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectTagList } from "~/components/tags";
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
+import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { getProjectDetails } from "~/models/projects.server";
 
 import style from "./$projectId._index.module.css";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.projectId, `params.projectId is required`);
+  assertExistsOr400(params.projectId, `Missing project id`);
 
   const project = await getProjectDetails(params.projectId);
-  invariant(project, `Project not found: ${params.projectId}`);
+  assertExistsOr404(project, `Project not found: ${params.projectId}`);
 
   const isOwnerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners);
   const isMemberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
