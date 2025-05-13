@@ -11,6 +11,7 @@ import {
   renderDate,
   withDeserializedDates,
 } from "~/components/date-rendering";
+import { CommonMarkdown } from "~/components/markdown";
 import { ModalDialog } from "~/components/modal";
 import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectTagList } from "~/components/tags";
@@ -71,7 +72,7 @@ export default function Project() {
         ) : null}
       </header>
 
-      <p>{project.description}</p>
+      <CommonMarkdown>{project.description}</CommonMarkdown>
 
       <ProjectTagList className="tags" tags={project.tags} />
 
@@ -95,7 +96,7 @@ export default function Project() {
                 </h4>
                 {isLoggedInUserAuthorizedToEdit ? DeleteAndEditButton(step.id) : null}
               </header>
-              {step.description}
+              <CommonMarkdown>{step.description}</CommonMarkdown>
 
               <ul className={style.attachments}>
                 {step.attachments.map(mapDeserializedDates("creationDate")).map((attachment) => (

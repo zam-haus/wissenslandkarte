@@ -8,6 +8,7 @@ import {
   renderDate,
   withDeserializedDates,
 } from "~/components/date-rendering";
+import { CommonMarkdown } from "~/components/markdown";
 import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectsList } from "~/components/projects/projects-list";
 import { PeopleTagList } from "~/components/tags";
@@ -89,7 +90,9 @@ export function UserMain({ user }: { user: UserOverview }) {
       </header>
 
       <section>
-        <p className={styles.fullWidth}>{user.description}</p>
+        <div className={styles.fullWidth}>
+          <CommonMarkdown>{user.description}</CommonMarkdown>
+        </div>
 
         <Link to="./contact" className="send-message">
           {t("send-message")}

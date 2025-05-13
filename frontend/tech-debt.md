@@ -20,9 +20,9 @@
 - https://pris.ly/cli/output-path
 - Nodejs im Dockercontainer auf 22 upgraden
 - infinite scroll
-- delete step
 - action bar is not translated
 - sind dates schon rehydrated?!
 - wenn meilisearch nicht laeuft kein update/anlegen moeglich!
 - params.slug rumkopiert
 - csrf (delete step?)
+- clean up handles

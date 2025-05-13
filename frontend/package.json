@@ -37,6 +37,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^15.5.1",
     "react-infinite-scroll-component": "^6.1.0",
+    "react-markdown": "^10.1.0",
     "remix-auth": "^4.2.0",
     "remix-auth-form": "^3.0.0",
     "remix-auth-oauth2": "^3.4.0",
