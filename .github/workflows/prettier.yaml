@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./remix-frontend
+        working-directory: ./frontend
     permissions:
       contents: read
     steps:
