@@ -14,7 +14,7 @@ import {
 import { ModalDialog } from "~/components/modal";
 import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectTagList } from "~/components/tags";
-import { isAnyUserFromListLoggedIn } from "~/lib/authorization.server";
+import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { getProjectDetails } from "~/models/projects.server";
 
 import style from "./$projectId._index.module.css";
@@ -25,14 +25,17 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const project = await getProjectDetails(params.projectId);
   invariant(project, `Project not found: ${params.projectId}`);
 
-  const ownerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners);
-  const memberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
+  const isOwnerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners);
+  const isMemberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
+  const isProjectAdminLoggedIn = await loggedInUserHasRole(request, Roles.ProjectEditor);
+
+  const isLoggedInUserAuthorizedToEdit =
+    isOwnerLoggedIn || isMemberLoggedIn || isProjectAdminLoggedIn;
 
   return {
     project,
-    ...conditionalShowEditButton(ownerLoggedIn || memberLoggedIn),
-    ownerLoggedIn,
-    memberLoggedIn,
+    ...conditionalShowEditButton(isLoggedInUserAuthorizedToEdit),
+    isLoggedInUserAuthorizedToEdit,
   };
 };
 
@@ -42,7 +45,7 @@ export const handle = {
 
 export default function Project() {
   const { t, i18n } = useTranslation("projects");
-  const { project, ownerLoggedIn, memberLoggedIn } = useLoaderData<typeof loader>();
+  const { project, isLoggedInUserAuthorizedToEdit } = useLoaderData<typeof loader>();
 
   const allUsers = [...project.owners, ...project.members];
 
@@ -90,7 +93,7 @@ export default function Project() {
                     date: renderDate(step.creationDate, i18n.language),
                   })}
                 </h4>
-                {ownerLoggedIn || memberLoggedIn ? DeleteAndEditButton(step.id) : null}
+                {isLoggedInUserAuthorizedToEdit ? DeleteAndEditButton(step.id) : null}
               </header>
               {step.description}
 

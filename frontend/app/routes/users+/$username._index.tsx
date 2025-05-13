@@ -12,7 +12,7 @@ import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectsList } from "~/components/projects/projects-list";
 import { PeopleTagList } from "~/components/tags";
 import { UserImage } from "~/components/users/user-image";
-import { isThisUserLoggedIn } from "~/lib/authorization.server";
+import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import type { UserOverview } from "~/models/user.server";
 import { getUserOverview } from "~/models/user.server";
 
@@ -24,7 +24,12 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUserOverview(params.username);
   invariant(user, `User not found: ${params.username}`);
 
-  return { user, ...conditionalShowEditButton(await isThisUserLoggedIn(request, user)) };
+  const ownerLoggedIn = await isThisUserLoggedIn(request, user);
+  const adminLoggedIn = await loggedInUserHasRole(request, Roles.UserEditor);
+  return {
+    user,
+    ...conditionalShowEditButton(ownerLoggedIn || adminLoggedIn),
+  };
 };
 
 export const handle = {

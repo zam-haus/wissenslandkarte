@@ -3,9 +3,15 @@ import { redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
+import { serverOnly$ } from "vite-env-only/macros";
 
 import { mapDeserializedDates, withDeserializedDates } from "~/components/date-rendering";
-import { getLoggedInUser, isUserAuthorizedForProject } from "~/lib/authorization.server";
+import {
+  getLoggedInUser,
+  isAnyUserFromListLoggedIn,
+  loggedInUserHasRole,
+  Roles,
+} from "~/lib/authorization.server";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
@@ -27,6 +33,24 @@ import { ProjectForm } from "./components/project-form";
 const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";
 
+// Only use in server functions!
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const assertAuthorization = serverOnly$(
+  async (
+    request: Request,
+    project: { id: string; owners: { id: string }[]; members: { id: string }[] },
+  ) => {
+    const isOwnerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners);
+    const isMemberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
+    const isProjectAdminLoggedIn = await loggedInUserHasRole(request, Roles.ProjectEditor);
+
+    if (!(isOwnerLoggedIn || isMemberLoggedIn || isProjectAdminLoggedIn)) {
+      console.warn(`Someone tried editing project ${project.id} but was not authorized to do so`);
+      throw redirect("/");
+    }
+  },
+)!;
+
 export const action = async ({
   params,
   request,
@@ -37,9 +61,8 @@ export const action = async ({
 
   const project = await getProjectDetails(params.projectId);
   invariant(project, `Project not found: ${params.projectId}`);
-  if (!(await isUserAuthorizedForProject(request, project))) {
-    return redirect("/");
-  }
+
+  await assertAuthorization(request, project);
 
   const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainPhoto"]);
 
@@ -84,9 +107,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const project = await getProjectDetails(params.projectId);
   invariant(project, `Project not found: ${params.projectId}`);
 
-  if (!(await isUserAuthorizedForProject(request, project))) {
-    return redirect("/");
-  }
+  await assertAuthorization(request, project);
 
   const searchParams = new URL(request.url).searchParams;
   const [{ tags }, { users }] = await Promise.all([

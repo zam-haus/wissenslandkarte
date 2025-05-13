@@ -25,3 +25,4 @@
 - sind dates schon rehydrated?!
 - wenn meilisearch nicht laeuft kein update/anlegen moeglich!
 - params.slug rumkopiert
+- csrf (delete step?)

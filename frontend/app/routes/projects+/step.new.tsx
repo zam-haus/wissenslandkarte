@@ -2,9 +2,15 @@ import type { ActionFunctionArgs, LoaderFunctionArgs, TypedResponse } from "@rem
 import { redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import { serverOnly$ } from "vite-env-only/macros";
 
 import { mapDeserializedDates } from "~/components/date-rendering";
-import { getLoggedInUser, isUserAuthorizedForProject } from "~/lib/authorization.server";
+import {
+  getLoggedInUser,
+  isAnyUserFromListLoggedIn,
+  loggedInUserHasRole,
+  Roles,
+} from "~/lib/authorization.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { upsertProjectStepToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
@@ -18,6 +24,26 @@ import { StepForm } from "./components/step-form";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const CREATE_FAILED = "CREATE_FAILED";
+
+// Only use in server functions!
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const assertAuthorization = serverOnly$(
+  async (
+    request: Request,
+    project: { id: string; owners: { id: string }[]; members: { id: string }[] },
+  ) => {
+    const isOwnerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners);
+    const isMemberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
+    const isProjectAdminLoggedIn = await loggedInUserHasRole(request, Roles.ProjectEditor);
+
+    if (!(isOwnerLoggedIn || isMemberLoggedIn || isProjectAdminLoggedIn)) {
+      console.warn(
+        `Someone tried creating a new step for project ${project.id} but was not authorized to do so`,
+      );
+      throw redirect("/");
+    }
+  },
+)!;
 
 export const action = async ({
   request,
@@ -45,13 +71,7 @@ export const action = async ({
     };
   }
 
-  if (!(await isUserAuthorizedForProject(request, project))) {
-    // TODO: at this point the file is already uploaded. we have to authorize the user earlier.
-    console.warn(
-      `Someone tried creating a new step for project ${projectId} but was not authorized to do so!`,
-    );
-    return redirect("/");
-  }
+  await assertAuthorization(request, project);
 
   try {
     const result = await createProjectStep({

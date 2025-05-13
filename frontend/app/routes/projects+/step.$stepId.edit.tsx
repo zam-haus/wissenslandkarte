@@ -3,9 +3,15 @@ import { redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
+import { serverOnly$ } from "vite-env-only/macros";
 
 import { mapDeserializedDates } from "~/components/date-rendering";
-import { getLoggedInUser, isUserAuthorizedForProject } from "~/lib/authorization.server";
+import {
+  getLoggedInUser,
+  isAnyUserFromListLoggedIn,
+  loggedInUserHasRole,
+  Roles,
+} from "~/lib/authorization.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { upsertProjectStepToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
@@ -19,6 +25,25 @@ import { StepForm } from "./components/step-form";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";
+
+// Only use in server functions!
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const assertAuthorization = serverOnly$(
+  async (
+    request: Request,
+    project: { owners: { id: string }[]; members: { id: string }[] },
+    warning: string,
+  ) => {
+    const isOwnerLoggedIn = await isAnyUserFromListLoggedIn(request, project.owners);
+    const isMemberLoggedIn = await isAnyUserFromListLoggedIn(request, project.members);
+    const isProjectAdminLoggedIn = await loggedInUserHasRole(request, Roles.ProjectEditor);
+
+    if (!(isOwnerLoggedIn || isMemberLoggedIn || isProjectAdminLoggedIn)) {
+      console.warn(warning);
+      throw redirect("/");
+    }
+  },
+)!;
 
 export const action = async ({
   request,
@@ -50,14 +75,14 @@ export const action = async ({
     return {
       error: UPDATE_FAILED,
       exception: "No such step or no such project",
-    }; //
+    };
   }
   const project = step.project;
-  if (!(await isUserAuthorizedForProject(request, project))) {
-    // TODO: at this point the image files are already uploaded. we have to authorize the user earlier.
-    console.warn(`Someone tried editing step ${params.stepId} but was not authorized to do so!`);
-    return redirect("/");
-  }
+  await assertAuthorization(
+    request,
+    project,
+    `Someone tried editing step ${params.stepId} but was not authorized to do so!`,
+  );
 
   if (project.id !== newProjectId) {
     const newProject = await getProjectDetails(newProjectId);
@@ -67,12 +92,12 @@ export const action = async ({
         exception: "No such new project",
       };
     }
-    if (!(await isUserAuthorizedForProject(request, newProject))) {
-      console.warn(
-        `Someone tried assigning step ${params.stepId} to project ${newProjectId} but was not authorized to do so!`,
-      );
-      return redirect("/");
-    }
+
+    await assertAuthorization(
+      request,
+      newProject,
+      `Someone tried assigning step ${params.stepId} to project ${newProjectId} but was not authorized to do so!`,
+    );
   }
 
   try {
@@ -107,12 +132,13 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   invariant(currentState, "Could not load project step");
   invariant(currentState.project, "Could not load step's project");
 
-  if (!(await isUserAuthorizedForProject(request, currentState.project))) {
-    console.warn(`Someone tried editing step ${params.stepId} but was not authorized to do so!`);
-    return redirect("/");
-  }
+  await assertAuthorization(
+    request,
+    currentState.project,
+    `Someone tried editing step ${params.stepId} but was not authorized to do so!`,
+  );
 
-  return { projects, currentState, maxPhotoSize: MAX_UPLOAD_SIZE_IN_BYTE };
+  return { projects, currentState };
 };
 
 export const handle = {
@@ -121,7 +147,7 @@ export const handle = {
 
 export default function EditStep() {
   const currentPath = ".";
-  const { projects, maxPhotoSize, currentState } = useLoaderData<typeof loader>();
+  const { projects, currentState } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const { t } = useTranslation("projects");
 
@@ -143,7 +169,7 @@ export default function EditStep() {
 
       <StepForm
         action={currentPath}
-        maxPhotoSize={maxPhotoSize}
+        maxPhotoSize={MAX_UPLOAD_SIZE_IN_BYTE}
         projectsWithDates={projectsWithDates}
         mode="edit"
         currentState={currentState}

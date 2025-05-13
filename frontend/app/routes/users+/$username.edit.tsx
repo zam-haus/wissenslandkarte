@@ -6,14 +6,15 @@ import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { UNSAFE_DataWithResponseInit as DataWithResponseInit } from "@remix-run/router";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
+import { serverOnly$ } from "vite-env-only/macros";
 
 import { ImageSelect } from "~/components/form-input/image-select";
 import { UserImage } from "~/components/users/user-image";
-import { isThisUserLoggedIn } from "~/lib/authorization.server";
+import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { getSession } from "~/lib/session.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
-import { getUserOverview, updateUser } from "~/models/user.server";
+import { getUserOverview, updateUser, UserOverview } from "~/models/user.server";
 
 import { getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
 
@@ -23,6 +24,20 @@ const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";
 const USERNAME_TAKEN = "USERNAME_TAKEN";
 
+// Only use in server functions!
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const assertAuthorization = serverOnly$(async (request: Request, userToEdit: UserOverview) => {
+  const isCurrentUserLoggedIn = await isThisUserLoggedIn(request, userToEdit);
+  const isUserAdminLoggedIn = await loggedInUserHasRole(request, Roles.UserEditor);
+
+  if (!(isCurrentUserLoggedIn || isUserAdminLoggedIn)) {
+    console.warn(
+      `Someone tried editing user ${userToEdit.username} but was not authorized to do so`,
+    );
+    throw redirect("/");
+  }
+})!;
+
 type ActionResponse = { success: true; user: User } | { success: false; error: string };
 export const action = async ({
   params,
@@ -30,14 +45,12 @@ export const action = async ({
 }: ActionFunctionArgs): Promise<
   TypedResponse<never> | ActionResponse | DataWithResponseInit<ActionResponse>
 > => {
-  invariant(params.username, `params.slug is required`);
+  invariant(params.username, `params.username is required`);
 
   const user = await getUserOverview(params.username);
   invariant(user, `User not found: ${params.username}`);
 
-  if (!(await isThisUserLoggedIn(request, user))) {
-    return redirect("/");
-  }
+  await assertAuthorization(request, user);
 
   const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainPhoto"]);
 
@@ -85,14 +98,12 @@ export const action = async ({
 };
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.username, `params.slug is required`);
+  invariant(params.username, `params.username is required`);
 
   const user = await getUserOverview(params.username);
   invariant(user, `User not found: ${params.username}`);
 
-  if (!(await isThisUserLoggedIn(request, user))) {
-    return redirect("/");
-  }
+  await assertAuthorization(request, user);
 
   return { user };
 };
