@@ -29,5 +29,5 @@
 
     // Vite takes care of building everything, not tsc.
     "noEmit": true
-  },
+  }
 }
