@@ -6,11 +6,7 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
 import { isAttachmentType } from "prisma/initialization/data/fake-data-generators";
-import {
-  mapDeserializedDates,
-  renderDate,
-  withDeserializedDates,
-} from "~/components/date-rendering";
+import { renderDate } from "~/components/date-rendering";
 import { CommonMarkdown } from "~/components/markdown";
 import { ModalDialog } from "~/components/modal";
 import { conditionalShowEditButton } from "~/components/page/page";
@@ -50,11 +46,6 @@ export default function Project() {
 
   const allUsers = [...project.owners, ...project.members];
 
-  const attachments = project.attachments.map((project) =>
-    withDeserializedDates(project, "creationDate"),
-  );
-  const steps = project.steps.map((step) => withDeserializedDates(step, "creationDate"));
-
   return (
     <main>
       <header>
@@ -77,7 +68,7 @@ export default function Project() {
       <ProjectTagList className="tags" tags={project.tags} />
 
       <ul className={style.attachments}>
-        {attachments.map((attachment) => (
+        {project.attachments.map((attachment) => (
           <li key={attachment.id}>
             <AttachmentEntry {...attachment} />
           </li>
@@ -85,7 +76,7 @@ export default function Project() {
       </ul>
 
       <ul className={style.stepList}>
-        {steps.map((step) => (
+        {project.steps.map((step) => (
           <li key={step.creationDate.valueOf()}>
             <article className={style.step}>
               <header>
@@ -99,7 +90,7 @@ export default function Project() {
               <CommonMarkdown>{step.description}</CommonMarkdown>
 
               <ul className={style.attachments}>
-                {step.attachments.map(mapDeserializedDates("creationDate")).map((attachment) => (
+                {step.attachments.map((attachment) => (
                   <li key={attachment.id}>
                     <AttachmentEntry {...attachment} />
                   </li>

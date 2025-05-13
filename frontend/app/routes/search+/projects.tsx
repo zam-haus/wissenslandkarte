@@ -1,7 +1,6 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { mapDeserializedDates } from "~/components/date-rendering";
 import { ProjectsList } from "~/components/projects/projects-list";
 import { searchProjectInSearchIndex } from "~/lib/search.server";
 import type { ProjectListEntry } from "~/models/projects.server";
@@ -58,9 +57,7 @@ export default function Search() {
     <main>
       <SearchForm />
       <SearchProjectPeopleSwitch />
-      <ProjectsList
-        projects={projects.map(mapDeserializedDates("latestModificationDate"))}
-      ></ProjectsList>
+      <ProjectsList projects={projects}></ProjectsList>
     </main>
   );
 }

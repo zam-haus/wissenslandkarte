@@ -3,11 +3,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
-import {
-  mapDeserializedDates,
-  renderDate,
-  withDeserializedDates,
-} from "~/components/date-rendering";
+import { renderDate } from "~/components/date-rendering";
 import { CommonMarkdown } from "~/components/markdown";
 import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectsList } from "~/components/projects/projects-list";
@@ -41,19 +37,13 @@ export default function User() {
   const { t } = useTranslation("users");
   const { user } = useLoaderData<typeof loader>();
 
-  const deserializedUser = {
-    ...withDeserializedDates(user, "registrationDate"),
-    memberProjects: user.memberProjects.map(mapDeserializedDates("latestModificationDate")),
-    ownedProjects: user.ownedProjects.map(mapDeserializedDates("latestModificationDate")),
-  };
-
   return (
     <>
       <header>
         <h1>{t("my-profile")}</h1>
       </header>
 
-      <UserMain user={deserializedUser} />
+      <UserMain user={user} />
     </>
   );
 }

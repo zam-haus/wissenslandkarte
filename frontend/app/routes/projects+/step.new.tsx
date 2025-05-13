@@ -4,7 +4,6 @@ import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
-import { mapDeserializedDates } from "~/components/date-rendering";
 import {
   getLoggedInUser,
   isAnyUserFromListLoggedIn,
@@ -116,7 +115,7 @@ export default function CreateStep() {
     return <main>{t("no-projects")}</main>;
   }
 
-  const projectsWithDates = projects.map(mapDeserializedDates("latestModificationDate"));
+  const projectsWithDates = projects;
   projectsWithDates.sort(descendingByDatePropertyComparator("latestModificationDate"));
 
   return (

@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { serverOnly$ } from "vite-env-only/macros";
 
-import { mapDeserializedDates, withDeserializedDates } from "~/components/date-rendering";
 import {
   getLoggedInUser,
   isAnyUserFromListLoggedIn,
@@ -123,18 +122,10 @@ export const handle = {
 };
 
 export default function EditProject() {
-  const { project: serializedProject, tags, users } = useLoaderData<typeof loader>();
+  const { project, tags, users } = useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
   const actionData = useActionData<typeof action>();
-
-  const project = withDeserializedDates(
-    {
-      ...serializedProject,
-      attachments: serializedProject.attachments.map(mapDeserializedDates(["creationDate"])),
-    },
-    ["creationDate", "latestModificationDate"],
-  );
 
   return (
     <main>

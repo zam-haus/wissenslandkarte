@@ -4,7 +4,6 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { mapDeserializedDates } from "~/components/date-rendering";
 import { Pager, usePagedInfinitScroll } from "~/components/infinite-scroll-pager";
 import { ProjectsList } from "~/components/projects/projects-list";
 import type { ProjectListEntry } from "~/models/projects.server";
@@ -38,7 +37,7 @@ export default function Projects() {
     useCallback(
       (loadedData) => ({
         ...loadedData,
-        pageData: loadedData.pageData.map(mapDeserializedDates("latestModificationDate")),
+        pageData: loadedData.pageData,
       }),
       [],
     ),

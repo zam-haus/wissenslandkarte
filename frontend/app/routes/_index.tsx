@@ -2,7 +2,6 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import { mapDeserializedDates } from "~/components/date-rendering";
 import { Page } from "~/components/page/page";
 import { ProjectsList } from "~/components/projects/projects-list";
 import { loaderLoginCheck } from "~/lib/authorization.server";
@@ -35,9 +34,7 @@ export default function Index() {
         <Link to="search/projects">{t("search-button")}</Link>
 
         <h2>{t("newest-steps-headline")}</h2>
-        <ProjectsList
-          projects={projects.map(mapDeserializedDates("latestModificationDate"))}
-        ></ProjectsList>
+        <ProjectsList projects={projects}></ProjectsList>
       </main>
     </Page>
   );

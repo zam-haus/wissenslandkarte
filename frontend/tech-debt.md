@@ -11,8 +11,6 @@
 
 ## S
 
-- sind dates schon rehydrated?!
-
 ## M
 
 - https://pris.ly/cli/output-path
