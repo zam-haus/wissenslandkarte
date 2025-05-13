@@ -12,8 +12,13 @@ import reactHooks from "eslint-plugin-react-hooks";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import importPlugin from "eslint-plugin-import";
 import tsParser from "@typescript-eslint/parser";
+import { includeIgnoreFile } from "@eslint/compat";
+import { fileURLToPath } from "node:url";
+
+const gitignorePath = fileURLToPath(new URL(".gitignore", import.meta.url));
 
 export default tseslint.config([
+  includeIgnoreFile(gitignorePath),
   eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylistic,
