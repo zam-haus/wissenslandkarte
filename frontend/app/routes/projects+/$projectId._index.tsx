@@ -21,7 +21,7 @@ import { getProjectDetails } from "~/models/projects.server";
 import style from "./$projectId._index.module.css";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.projectId, `params.slug is required`);
+  invariant(params.projectId, `params.projectId is required`);
 
   const project = await getProjectDetails(params.projectId);
   invariant(project, `Project not found: ${params.projectId}`);

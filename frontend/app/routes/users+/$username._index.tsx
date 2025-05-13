@@ -20,7 +20,7 @@ import { getUserOverview } from "~/models/user.server";
 import styles from "./$username._index.module.css";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  invariant(params.username, `params.slug is required`);
+  invariant(params.username, `params.username is required`);
 
   const user = await getUserOverview(params.username);
   invariant(user, `User not found: ${params.username}`);

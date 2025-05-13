@@ -55,7 +55,7 @@ export const action = async ({
   params,
   request,
 }: ActionFunctionArgs): Promise<TypedResponse<never> | { error: string; exception?: string }> => {
-  invariant(params.projectId, `params.slug is required`);
+  invariant(params.projectId, `params.projectId is required`);
 
   const user = await getLoggedInUser(request, { ifNotLoggedInRedirectTo: "/" });
 
