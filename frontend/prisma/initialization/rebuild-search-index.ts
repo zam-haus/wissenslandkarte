@@ -1,12 +1,12 @@
 import type { PrismaClient } from "@prisma/client";
 import { MeiliSearch } from "meilisearch";
 
-import { environment } from "~/lib/environment.server";
+import { environment } from "../../app/lib/environment.server";
 import type {
   SearchableProjectProperties,
   SearchableProjectStepProperties,
-} from "~/lib/search.server";
-import { projectIndexId, projectStepsIndexId } from "~/lib/search.server";
+} from "../../app/lib/search.server";
+import { projectIndexId, projectStepsIndexId } from "../../app/lib/search.server";
 
 const client = new MeiliSearch({
   host: environment.search.HOST,

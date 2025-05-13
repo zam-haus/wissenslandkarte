@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
-import { isAttachmentType } from "prisma/fake-data-generators";
+import { isAttachmentType } from "prisma/initialization/data/fake-data-generators";
 import {
   mapDeserializedDates,
   renderDate,
