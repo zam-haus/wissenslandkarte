@@ -2,6 +2,7 @@ import type { User } from "@prisma/client";
 import type { TypedResponse } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
+import { UserWithRoles } from "~/lib/authorization.server";
 import type { SessionData } from "~/lib/session.server";
 import { getSession } from "~/lib/session.server";
 import { authenticator } from "~/routes/_auth+/lib/strategiesSetup.server";
@@ -16,8 +17,8 @@ export async function authenticate(
   strategy: string,
   request: Request,
   options: DynamicAuthenticateOptions<User>,
-): Promise<null | User | TypedResponse<never>> {
-  let data: User;
+): Promise<null | UserWithRoles | TypedResponse<never>> {
+  let data: UserWithRoles;
   try {
     data = await authenticator.authenticate(strategy, request);
   } catch (e) {

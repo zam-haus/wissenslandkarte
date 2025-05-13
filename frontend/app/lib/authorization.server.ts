@@ -1,21 +1,27 @@
-import { User } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
+
+import type { roles as bootstrappedRoles } from "prisma/production-data-generators";
 
 import { getSession } from "./session.server";
 
 type AuthorizationOptions = { ifNotLoggedInRedirectTo?: string };
 
-export async function getLoggedInUser(request: Request): Promise<User | null>;
+export type UserWithRoles = Prisma.UserGetPayload<{
+  include: { roles: { select: { title: true } } };
+}>;
+
+export async function getLoggedInUser(request: Request): Promise<UserWithRoles | null>;
 export async function getLoggedInUser(
   request: Request,
   options: NonNullable<AuthorizationOptions>,
-): Promise<User>;
+): Promise<UserWithRoles>;
 export async function getLoggedInUser(
   request: Request,
   options: AuthorizationOptions = {},
-): Promise<User | null> {
+): Promise<UserWithRoles | null> {
   const user = (await getSession(request)).get("user") ?? null;
 
   if (user === null && options.ifNotLoggedInRedirectTo !== undefined) {
@@ -57,4 +63,20 @@ export async function isUserAuthorizedForProject(
     (await isAnyUserFromListLoggedIn(request, project.owners)) ||
     (await isAnyUserFromListLoggedIn(request, project.members))
   );
+}
+
+type Role = (typeof bootstrappedRoles)[number];
+type PascalCase<KebabCase extends string> = KebabCase extends `${infer First}-${infer Rest}`
+  ? `${PascalCase<First>}${PascalCase<Rest>}`
+  : KebabCase extends `${infer InnerFirst}${infer InnerRest}`
+    ? `${Uppercase<InnerFirst>}${InnerRest}`
+    : KebabCase;
+
+export const Roles = {
+  UserEditor: "user-editor",
+  ProjectEditor: "project-editor",
+} as const satisfies { [key in PascalCase<Role>]: Role };
+
+export async function loggedInUserHasRole(request: Request, role: Role) {
+  return (await getLoggedInUser(request))?.roles.map(({ title }) => title).includes(role) ?? false;
 }

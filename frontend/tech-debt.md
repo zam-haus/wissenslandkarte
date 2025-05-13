@@ -24,3 +24,4 @@
 - action bar is not translated
 - sind dates schon rehydrated?!
 - wenn meilisearch nicht laeuft kein update/anlegen moeglich!
+- params.slug rumkopiert

@@ -35,11 +35,12 @@ export const action = async ({
 
   try {
     const newUser = await prisma.user.create({
-      data: { ...user, username, id: undefined, setupCompleted: true },
+      data: { ...user, username, id: undefined, setupCompleted: true, roles: undefined },
+      include: { roles: true },
     });
 
     session.unset(tempUserSessionKey);
-    session.set(userSessionKey, newUser); // TODO: When the auth library has been updated, this should be in a "setLoggedInUser" function
+    session.set(userSessionKey, newUser);
 
     const headers = await session.commit();
 

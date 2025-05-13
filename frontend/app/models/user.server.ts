@@ -1,6 +1,7 @@
 import type { Tag, User } from "@prisma/client";
 
 import { prisma } from "~/db.server";
+import { UserWithRoles } from "~/lib/authorization.server";
 
 import type { ProjectListEntry } from "./projects.server";
 
@@ -102,9 +103,13 @@ export async function searchUsers(tags?: string[]): Promise<UserSearchResult[]> 
 }
 
 type UpdateUserRequest = Pick<User, "id" | "username" | "description" | "image">;
-export async function updateUser(updateRequest: UpdateUserRequest) {
+export async function updateUser(updateRequest: UpdateUserRequest): Promise<UserWithRoles> {
   const { id, ...data } = updateRequest;
-  return prisma.user.update({ where: { id }, data });
+  return prisma.user.update({
+    where: { id },
+    data,
+    include: { roles: { select: { title: true } } },
+  });
 }
 
 export type ContactData = Pick<User, "id" | "username" | "contactEmailAddress" | "image">;

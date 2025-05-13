@@ -3,6 +3,7 @@ import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 
 import { prisma } from "~/db.server";
+import { UserWithRoles } from "~/lib/authorization.server";
 import { environment } from "~/lib/environment.server";
 
 import type { KeycloakProfile, KeycloakVerifyFunction } from "./keycloakStrategy.server";
@@ -12,7 +13,7 @@ export const zamKeycloakStrategyName = "zam-keycloak";
 export const devKeycloakStrategyName = "dev-keycloak";
 export const fakeLoginOnDevStrategyName = "fake-login";
 
-export const authenticator = new Authenticator<User>();
+export const authenticator = new Authenticator<UserWithRoles>();
 
 setupFakeLoginStrategy();
 setupZamKeycloakLogin();
@@ -31,8 +32,10 @@ function setupFakeLoginStrategy() {
         if (password !== requiredPassword) {
           throw Error("Could not login and/or register");
         }
-        const user = await prisma.user.findFirst();
-        console.log(user);
+        const user = await prisma.user.findFirst({
+          include: { roles: { select: { title: true } } },
+        });
+        console.log("Fake logging in:", user);
         if (user === null) {
           console.error("No user found in database. Fake login failed");
           throw Error("No user found.");
@@ -78,10 +81,11 @@ function setupDevKeycloakLogin() {
   }
 }
 
-function handleKeycloakLogin(keycloakInstanceName: string): KeycloakVerifyFunction<User> {
+function handleKeycloakLogin(keycloakInstanceName: string): KeycloakVerifyFunction<UserWithRoles> {
   return async ({ profile }) => {
     const user = await prisma.user.findFirst({
       where: { keycloakId: keycloakInstanceName + ":" + profile.id },
+      include: { roles: { select: { title: true } } },
     });
 
     if (user !== null) {
@@ -95,7 +99,10 @@ function handleKeycloakLogin(keycloakInstanceName: string): KeycloakVerifyFuncti
   };
 }
 
-async function createTemporaryUser(profile: KeycloakProfile, idScope: string): Promise<User> {
+async function createTemporaryUser(
+  profile: KeycloakProfile,
+  idScope: string,
+): Promise<UserWithRoles> {
   const isUsernameAvailable = async (username: string) =>
     (await prisma.user.findFirst({ where: { username } })) === null;
 
@@ -119,6 +126,7 @@ async function createTemporaryUser(profile: KeycloakProfile, idScope: string): P
     description: null,
     phoneNumber: null,
     setupCompleted: false,
+    roles: [],
   };
 }
 

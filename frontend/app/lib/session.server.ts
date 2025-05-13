@@ -1,14 +1,17 @@
-import type { User } from "@prisma/client";
 import type { CookieParseOptions, Session } from "@remix-run/node";
 import { createCookieSessionStorage } from "@remix-run/node";
 
+import { UserWithRoles } from "./authorization.server";
 import { environment } from "./environment.server";
 
 export const userSessionKey = "user";
 export const tempUserSessionKey = "tempUser";
 export const authErrorSessionKey = "auth:error";
 
-export type SessionData = { [userSessionKey]?: User; [tempUserSessionKey]?: User };
+export type SessionData = {
+  [userSessionKey]?: UserWithRoles;
+  [tempUserSessionKey]?: UserWithRoles;
+};
 export type FlashData = { [authErrorSessionKey]: DOMException };
 type WlkSession = Session<SessionData, FlashData>;
 
