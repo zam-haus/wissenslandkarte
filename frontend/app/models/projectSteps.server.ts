@@ -6,7 +6,7 @@ import { prisma } from "~/db.server";
 type ProjectStepCreateRequest = {
   projectId: string;
   description: string;
-  photoAttachmentUrls: string[];
+  imageAttachmentUrls: string[];
 };
 export async function createProjectStep(request: ProjectStepCreateRequest) {
   return prisma.projectStep.create({
@@ -16,7 +16,7 @@ export async function createProjectStep(request: ProjectStepCreateRequest) {
       latestModificationDate: new Date(),
       description: request.description,
       attachments: {
-        create: request.photoAttachmentUrls.map((url) => ({
+        create: request.imageAttachmentUrls.map((url) => ({
           type: "image" as AttachmentType,
           url,
           text: "",
@@ -85,7 +85,7 @@ export async function updateProjectStep(
       description: request.description,
       projectId: request.projectId,
       attachments: {
-        create: request.photoAttachmentUrls.map((url) => ({
+        create: request.imageAttachmentUrls.map((url) => ({
           type: "image" satisfies AttachmentType,
           url,
           text: "",

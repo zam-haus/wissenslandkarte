@@ -51,16 +51,16 @@ export const action = async ({
 }: ActionFunctionArgs): Promise<TypedResponse<never> | { error: string; exception?: string }> => {
   invariant(params.stepId, `params.stepId is required`);
 
-  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["photoAttachments"]);
+  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["imageAttachments"]);
 
   const { projectId: newProjectId, description } = getTrimmedStringsDefaultEmpty(
     formData,
     "projectId",
     "description",
   );
-  const { photoAttachments, attachmentsToRemove } = getStringArray(
+  const { imageAttachments, attachmentsToRemove } = getStringArray(
     formData,
-    "photoAttachments",
+    "imageAttachments",
     "attachmentsToRemove",
   );
 
@@ -104,7 +104,7 @@ export const action = async ({
     const result = await updateProjectStep(params.stepId, {
       description,
       projectId: newProjectId,
-      photoAttachmentUrls: photoAttachments,
+      imageAttachmentUrls: imageAttachments,
       attachmentsToRemove,
     });
 

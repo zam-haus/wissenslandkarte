@@ -66,7 +66,7 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
       })}
 
       <ImageSelect
-        name="photoAttachments"
+        name="imageAttachments"
         t={t}
         label={`${t("select-photo")} ${t("optional")}`}
         maxPhotoSize={maxPhotoSize}

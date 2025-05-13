@@ -48,14 +48,14 @@ const assertAuthorization = serverOnly$(
 export const action = async ({
   request,
 }: ActionFunctionArgs): Promise<TypedResponse<never> | { error: string; exception?: string }> => {
-  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["photoAttachments"]);
+  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["imageAttachments"]);
 
   const { projectId, description } = getTrimmedStringsDefaultEmpty(
     formData,
     "projectId",
     "description",
   );
-  const { photoAttachments } = getStringArray(formData, "photoAttachments");
+  const { imageAttachments } = getStringArray(formData, "imageAttachments");
 
   if (description.length === 0) {
     return {
@@ -77,7 +77,7 @@ export const action = async ({
     const result = await createProjectStep({
       description,
       projectId,
-      photoAttachmentUrls: photoAttachments,
+      imageAttachmentUrls: imageAttachments,
     });
 
     await upsertProjectStepToSearchIndex(result);
