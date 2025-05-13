@@ -1,3 +1,5 @@
+import { parseArgs } from "node:util";
+
 import { Faker, fakerDE as faker } from "@faker-js/faker";
 import type { Tag, User } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
@@ -9,14 +11,54 @@ import {
   makeRandomTag,
   makeRandomUser,
 } from "./fake-data-generators.ts";
+import { roles as builtInRoles } from "./production-data-generators.ts";
 import { rebuildSearchIndex } from "./rebuild-search-index.ts";
+
+type SeedingOptions = {
+  seedFakeData: boolean;
+};
+
+function parseCliArguments(): Promise<SeedingOptions> {
+  const {
+    values: { environment },
+  } = parseArgs({
+    options: {
+      environment: { type: "string" },
+    },
+  });
+
+  if (!environment || !["development", "production"].includes(environment)) {
+    throw Error(
+      "environment must be either 'development' or 'production' (e.g. --environment development)",
+    );
+  }
+
+  return Promise.resolve({
+    seedFakeData: environment === "development",
+  });
+}
 
 const prisma = new PrismaClient();
 
 const onlyIdsFromModels = ({ id }: { id: string }) => ({ id });
 const randomInt = (...args: Parameters<typeof faker.number.int>) => faker.number.int(...args);
 
-async function seed() {
+async function seed(options: SeedingOptions) {
+  console.log("🚜 Seeding production data");
+  await seedProductionData();
+
+  if (options.seedFakeData) {
+    console.log("🚜 Seeding fake data");
+    await seedFakeData();
+  }
+}
+
+async function seedProductionData() {
+  console.log("🌱 Seeding roles");
+  await seedRoles();
+}
+
+async function seedFakeData() {
   console.log("Purging existing data");
 
   await prisma.user.deleteMany().catch(() => {
@@ -51,6 +93,16 @@ async function seed() {
   console.log(`🌱🌱🌱🌱 Database has been seeded.`);
 }
 
+async function seedRoles() {
+  for (const title of builtInRoles) {
+    await prisma.role.upsert({
+      where: { title },
+      update: { title },
+      create: { title },
+    });
+  }
+}
+
 async function seedTags(count: number) {
   while (count-- > 0) {
     const data = makeRandomTag(faker);
@@ -63,6 +115,7 @@ async function seedTags(count: number) {
 }
 
 async function seedUsers(count: number, faker: Faker, allTags: Tag[]) {
+  let first = true;
   while (count-- > 0) {
     const data = makeRandomUser(faker);
     const tags = faker.helpers.arrayElements(allTags, randomInt({ min: 0, max: 8 }));
@@ -73,8 +126,12 @@ async function seedUsers(count: number, faker: Faker, allTags: Tag[]) {
         tags: {
           connect: tags.map(onlyIdsFromModels),
         },
+        roles: {
+          connect: first ? builtInRoles.map((title) => ({ title })) : [],
+        },
       },
     });
+    first = false;
   }
 }
 
@@ -128,7 +185,8 @@ async function seedProjects(count: number, faker: Faker, allTags: Tag[], allUser
   }
 }
 
-void seed()
+void parseCliArguments()
+  .then(seed)
   .then(() => rebuildSearchIndex(prisma))
   .catch((e: unknown) => {
     console.error(e);

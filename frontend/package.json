@@ -11,9 +11,9 @@
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint . --max-warnings 0",
     "lint-fix": "eslint --cache --cache-location ./node_modules/.cache/eslint --max-warnings 0 --fix .",
     "db:remove": "rm -f prisma/data.db",
-    "db:setup": "prisma generate && prisma migrate deploy && prisma db push",
+    "db:setup": "prisma generate && prisma migrate deploy && prisma db push && prisma db seed -- --environment production",
     "db:clean": "run-s db:remove db:setup",
-    "db:seed": "npm run db:clean && prisma db seed",
+    "db:seed-dev": "npm run db:clean && prisma db seed -- --environment development",
     "db:generate-migration": "prisma migrate dev",
     "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc"
