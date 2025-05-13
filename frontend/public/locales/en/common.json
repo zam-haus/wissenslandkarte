@@ -17,5 +17,10 @@
   "prev-page": "Previous page",
   "next-page": "Next page",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "action-bar-new": "New",
+  "action-bar-projects": "Projects",
+  "action-bar-add": "Add",
+  "action-bar-search": "Search",
+  "action-bar-profile": "Profile"
 }

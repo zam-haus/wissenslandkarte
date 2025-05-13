@@ -17,5 +17,10 @@
   "prev-page": "Vorherige Seite",
   "next-page": "Nächste Seite",
   "yes": "Ja",
-  "no": "Nein"
+  "no": "Nein",
+  "action-bar-new": "Neu",
+  "action-bar-projects": "Projekte",
+  "action-bar-add": "Erstellen",
+  "action-bar-search": "Suche",
+  "action-bar-profile": "Profil"
 }
