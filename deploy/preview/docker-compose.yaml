@@ -39,6 +39,18 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.scope=watchtowerwlkscope"
 
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    expose:
+      - 7700
+    environment:
+      MEILI_ENV: "production"
+      MEILI_MASTER_KEY: "${MEILISEARCH_MASTER_KEY}"
+      MEILI_NO_ANALYTICS: "true"
+      MEILI_LOG_LEVEL: "INFO"
+    volumes:
+      - ./meili-data:/meili_data
+
   wlk:
     image: ghcr.io/zam-haus/wissenslandkarte/wlk:edge
     expose:
@@ -61,6 +73,14 @@ services:
       - S3_STORAGE_ACCESS_KEY=${S3_STORAGE_ACCESS_KEY:?error}
       - S3_STORAGE_SECRET_KEY=${S3_STORAGE_SECRET_KEY:?error}
       - S3_STORAGE_OVERRIDE_DOWNLOAD_HOST_AND_PATH=storage.${DOMAIN:?error}
+      - MEILISEARCH_HOST=http://meilisearch:7700
+      - MEILISEARCH_MASTER_KEY=${MEILISEARCH_MASTER_KEY:?error}
+      - EMAIL_SMTP_HOST=${EMAIL_SMTP_HOST:?error}
+      - EMAIL_SMTP_PORT=${EMAIL_SMTP_PORT:?error}
+      - EMAIL_SMTP_USER=${EMAIL_SMTP_USER:?error}
+      - EMAIL_SMTP_PASSWORD=${EMAIL_SMTP_PASSWORD:?error}
+      - EMAIL_USE_STARTTLS=${EMAIL_USE_STARTTLS:?error}
+      - EMAIL_FROM_ADDRESS=${EMAIL_FROM_ADDRESS:-wissenslandkarte@zam.haus}
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
       - "com.centurylinklabs.watchtower.scope=watchtowerwlkscope"
