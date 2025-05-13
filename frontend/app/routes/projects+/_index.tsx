@@ -47,7 +47,7 @@ export default function Projects() {
   const loadMore = () => {
     // without this ?index fetcher loads from the loader located at _layout.tsx
     // see also https://github.com/kiliman/remix-flat-routes/issues/116
-    fetcher.load(`${location.pathname}?index&page=${page + 1}`);
+    fetcher.load(`/projects/?index&page=${page + 1}`);
   };
 
   return (

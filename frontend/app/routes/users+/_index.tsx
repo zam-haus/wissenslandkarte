@@ -22,6 +22,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Users() {
   const { t } = useTranslation("common");
+  const { t: tUsers } = useTranslation("users");
   const loaderData = useLoaderData<typeof loader>();
 
   const {
@@ -37,7 +38,7 @@ export default function Users() {
   const loadMore = () => {
     // without this ?index fetcher loads from the loader located at _layout.tsx
     // see also https://github.com/kiliman/remix-flat-routes/issues/116
-    fetcher.load(`${location.pathname}?index&page=${page + 1}`);
+    fetcher.load(`/users/?index&page=${page + 1}`);
   };
 
   return (
@@ -55,7 +56,7 @@ export default function Users() {
             <li key={user.id}>
               <Link to={encodeURIComponent(user.username)}>
                 {user.image === undefined ? null : (
-                  <UserImage image={user.image} username={user.username} t={t} />
+                  <UserImage image={user.image} username={user.username} t={tUsers} />
                 )}
                 {user.username}
               </Link>
