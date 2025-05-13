@@ -43,6 +43,7 @@ export default tseslint.config([
       },
     },
     rules: {
+      "@typescript-eslint/no-unnecessary-type-arguments": "off",
       "@typescript-eslint/no-confusing-void-expression": [
         "error",
         {
