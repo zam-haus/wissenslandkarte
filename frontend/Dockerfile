@@ -1,10 +1,10 @@
 #
 # base node image
 #
-FROM node:22-bullseye-slim as base
+FROM node:22-bullseye-slim AS base
 
 # set for base and all layer that inherit from it
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Install openssl for Prisma
 RUN apt-get update && apt-get install -y openssl sqlite3
@@ -13,18 +13,18 @@ RUN apt-get update && apt-get install -y openssl sqlite3
 #
 # Install all node_modules, including dev dependencies
 #
-FROM base as deps
+FROM base AS deps
 
 WORKDIR /app
 
 ADD package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --include=dev
 
 
 #
 # Setup production node_modules
 #
-FROM base as production-deps
+FROM base AS production-deps
 
 WORKDIR /app
 
@@ -36,7 +36,7 @@ RUN npm prune --omit=dev
 #
 # Build the app
 #
-FROM base as build
+FROM base AS build
 
 WORKDIR /app
 
