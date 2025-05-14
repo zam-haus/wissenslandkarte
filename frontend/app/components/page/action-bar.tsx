@@ -1,9 +1,11 @@
 import { Link } from "@remix-run/react";
-import { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 
 import style from "./action-bar.module.css";
 
-export function ActionBar({ t }: { t: TFunction<"common"> }) {
+export function ActionBar() {
+  const { t } = useTranslation("common");
+
   return (
     <nav className={style.actionBarNav}>
       <Link to="/projects/new">{t("action-bar-new")}</Link>

@@ -22,5 +22,17 @@
   "action-bar-projects": "Projects",
   "action-bar-add": "Add",
   "action-bar-search": "Search",
-  "action-bar-profile": "Profile"
+  "action-bar-profile": "Profile",
+  "project-image-alt-text": "Main image of project with title '{{title}}'",
+  "profile-picture-alt-text": "Profile picture of user '{{username}}'",
+  "file-system-suffix": "(gallery)",
+  "camera-suffix": "(camera)",
+  "image-too-large": "Image may be at most 10MB",
+  "image-preview": "Image preview",
+  "noscript-warning": "Image upload requires javascript to be enabled.",
+  "typeahead-tags": "Type to add tag...",
+  "select-tags": "Tags",
+  "typeahead-users": "Type to add co-worker...",
+  "select-other-users": "Co-Workers",
+  "optional": "(optional)"
 }

@@ -3,7 +3,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Page } from "~/components/page/page";
-import { ProjectsList } from "~/components/projects/projects-list";
+import { ProjectsList } from "~/components/project-list/projects-list";
 import { loaderLoginCheck } from "~/lib/authorization.server";
 import { getProjectList } from "~/models/projects.server";
 

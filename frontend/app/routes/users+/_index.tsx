@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { Pager, usePagedInfinitScroll } from "~/components/infinite-scroll-pager";
-import { UserImage } from "~/components/users/user-image";
+import { UserImage } from "~/components/user-image/user-image";
 import type { UserListEntry } from "~/models/user.server";
 import { getUserList } from "~/models/user.server";
 
@@ -22,7 +22,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Users() {
   const { t } = useTranslation("common");
-  const { t: tUsers } = useTranslation("users");
   const loaderData = useLoaderData<typeof loader>();
 
   const {
@@ -56,7 +55,7 @@ export default function Users() {
             <li key={user.id}>
               <Link to={encodeURIComponent(user.username)}>
                 {user.image === undefined ? null : (
-                  <UserImage image={user.image} username={user.username} t={tUsers} />
+                  <UserImage image={user.image} username={user.username} />
                 )}
                 {user.username}
               </Link>
@@ -64,7 +63,7 @@ export default function Users() {
           ))}
         </ul>
       </main>
-      <Pager page={page} hasMore={hasMore} t={t}></Pager>
+      <Pager page={page} hasMore={hasMore}></Pager>
     </InfiniteScroll>
   );
 }

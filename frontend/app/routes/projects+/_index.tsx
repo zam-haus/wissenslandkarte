@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { Pager, usePagedInfinitScroll } from "~/components/infinite-scroll-pager";
-import { ProjectsList } from "~/components/projects/projects-list";
+import { ProjectsList } from "~/components/project-list/projects-list";
 import type { ProjectListEntry } from "~/models/projects.server";
 import { getProjectList } from "~/models/projects.server";
 
@@ -54,7 +54,7 @@ export default function Projects() {
       hasMore={hasMore}
     >
       <ProjectsList projects={projects}></ProjectsList>
-      <Pager page={page} hasMore={hasMore} t={t}></Pager>
+      <Pager page={page} hasMore={hasMore}></Pager>
     </InfiniteScroll>
   );
 }

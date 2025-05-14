@@ -6,7 +6,6 @@
 ## After update
 
 - csrf (delete step?)
-- clean up handles
 - paged search results, then replace loaders in {users+,projects+}/index
 
 ## S

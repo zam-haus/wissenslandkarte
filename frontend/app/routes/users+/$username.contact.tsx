@@ -3,7 +3,7 @@ import { redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import { UserImage } from "~/components/users/user-image";
+import { UserImage } from "~/components/user-image/user-image";
 import { getLoggedInUser, isAnyUserLoggedIn } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { sendMail } from "~/lib/sendMail.server";
@@ -96,45 +96,44 @@ export default function UserEdit() {
   const { isLoggedIn, receivingUserHasEmail, receivingUser } = useLoaderData<typeof loader>();
 
   if (!isLoggedIn) {
-    return <main className={styles.main}>To send messages you need to be logged in!</main>;
+    return <main className={styles.main}>{t("contact-needs-login")}</main>;
   }
   if (!receivingUserHasEmail) {
-    return <main className={styles.main}>This user cannot be contacted via email.</main>;
+    return <main className={styles.main}>{t("contact-impossible-no-email")}</main>;
   }
 
   return (
     <main className={styles.main}>
       <Form action="." method="POST" encType="multipart/form-data">
-        <UserImage {...receivingUser} t={t} className={styles.atRight} />
+        <UserImage {...receivingUser} className={styles.atRight} />
         <label>
-          Message:
+          {t("contact-message")}
           <textarea name="message"></textarea>
         </label>
         <label>
-          Include my email address:
-          <input type="checkbox" name="setReplyTo" /> (Otherwise, please put contact information in
-          your message)
+          {t("contact-include-my-email")}
+          <input type="checkbox" name="setReplyTo" /> {t("contact-email-hint")}
         </label>
 
         {actionData?.success === false && actionData.error === FIELD_EMPTY
-          ? "No message sent: You must provide a message"
+          ? t("contact-field-empty")
           : null}
 
         {actionData?.success === false && actionData.error === NO_RECEIVING_CONTACT_ADDRESS
-          ? "No message sent: This user cannot be contacted via mail."
+          ? t("contact-no-receiving-contact-address")
           : null}
 
         {actionData?.success === false && actionData.error === NO_SENDING_CONTACT_ADDRESS
-          ? "No message sent: You wanted your contact address included but don't have one in your profile."
+          ? t("contact-no-sending-contact-address")
           : null}
 
         {actionData?.success === false && actionData.error === SENDING_FAILED
-          ? "No message sent: An unknown error occurred."
+          ? t("contact-sending-failed")
           : null}
 
-        {actionData?.success === true ? "Message sent." : null}
+        {actionData?.success === true ? t("contact-confirmation") : null}
 
-        <button type="submit"> Send </button>
+        <button type="submit"> {t("contact-send")} </button>
       </Form>
     </main>
   );

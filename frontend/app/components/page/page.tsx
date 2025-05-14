@@ -98,7 +98,7 @@ export function Page({
       <div id="globalScrollContainer" className={style.innerContainer}>
         {children}
       </div>
-      <footer>{isLoggedIn ? <ActionBar t={t} /> : <></>}</footer>
+      <footer>{isLoggedIn ? <ActionBar /> : <></>}</footer>
     </div>
   );
 }

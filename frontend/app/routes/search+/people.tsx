@@ -1,9 +1,8 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
 
 import { LocalDate } from "~/components/date-rendering";
-import { UserImage } from "~/components/users/user-image";
+import { UserImage } from "~/components/user-image/user-image";
 import { searchUsers } from "~/models/user.server";
 
 import { getSearchQuery, SearchForm } from "./components/search-form";
@@ -27,7 +26,6 @@ export const handle = {
 
 export default function Search() {
   const { users } = useLoaderData<typeof loader>();
-  const { t } = useTranslation("users");
 
   return (
     <main>
@@ -40,7 +38,7 @@ export default function Search() {
             <span>
               <LocalDate date={user.registrationDate}></LocalDate>
             </span>
-            <UserImage {...user} t={t} />
+            <UserImage {...user} />
           </li>
         ))}
       </ul>

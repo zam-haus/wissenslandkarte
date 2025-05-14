@@ -67,8 +67,7 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
 
       <ImageSelect
         name="imageAttachments"
-        t={t}
-        label={`${t("select-image")} ${t("optional")}`}
+        label={`${t("select-image")} ${t("common", "optional")}`}
         maxImageSize={maxImageSize}
         multiple={true}
       />

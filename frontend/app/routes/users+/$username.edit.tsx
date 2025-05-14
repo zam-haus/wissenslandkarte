@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
 import { ImageSelect } from "~/components/form-input/image-select";
-import { UserImage } from "~/components/users/user-image";
+import { UserImage } from "~/components/user-image/user-image";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { getSession } from "~/lib/session.server";
@@ -120,11 +120,10 @@ export default function UserEdit() {
   return (
     <main className={styles.main}>
       <Form action="." method="POST" encType="multipart/form-data">
-        <UserImage {...user} t={t} className={styles.atRight} />
+        <UserImage {...user} className={styles.atRight} />
         <ImageSelect
           maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
           multiple={false}
-          t={useTranslation("projects").t}
           label={t("profile-picture")}
           name="image"
         ></ImageSelect>

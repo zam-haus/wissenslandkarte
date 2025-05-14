@@ -1,17 +1,11 @@
 import type { useLoaderData } from "@remix-run/react";
 import { Link, useFetcher } from "@remix-run/react";
-import type { TFunction } from "i18next";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-export function Pager({
-  page,
-  hasMore,
-  t,
-}: {
-  page: number;
-  hasMore: boolean;
-  t: TFunction<"common">;
-}) {
+export function Pager({ page, hasMore }: { page: number; hasMore: boolean }) {
+  const { t } = useTranslation("common");
+
   return (
     <>
       {page === 0 ? null : <Link to={`?page=${page - 1}`}>{t("prev-page")}</Link>}

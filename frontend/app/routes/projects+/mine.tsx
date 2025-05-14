@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { ProjectsList } from "~/components/projects/projects-list";
+import { ProjectsList } from "~/components/project-list/projects-list";
 import { getLoggedInUser } from "~/lib/authorization.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { getProjectsByUser } from "~/models/projects.server";

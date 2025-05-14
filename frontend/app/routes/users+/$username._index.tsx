@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import { renderDate } from "~/components/date-rendering";
 import { CommonMarkdown } from "~/components/markdown";
 import { conditionalShowEditButton } from "~/components/page/page";
-import { ProjectsList } from "~/components/projects/projects-list";
-import { PeopleTagList } from "~/components/tags";
-import { UserImage } from "~/components/users/user-image";
+import { ProjectsList } from "~/components/project-list/projects-list";
+import { PeopleTagList } from "~/components/tags/tags";
+import { UserImage } from "~/components/user-image/user-image";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import type { UserOverview } from "~/models/user.server";
@@ -59,7 +59,7 @@ export function UserMain({ user }: { user: UserOverview }) {
   return (
     <main>
       <header>
-        <UserImage {...user} t={t} className={styles.atRight} />
+        <UserImage {...user} className={styles.atRight} />
         <h2>{user.username}</h2>
 
         <p>

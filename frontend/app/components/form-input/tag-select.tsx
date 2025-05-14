@@ -1,6 +1,6 @@
 import { useFetcher } from "@remix-run/react";
-import type { TFunction } from "i18next";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { loader as globalTagLoader } from "~/routes/global_loaders+/tags";
 
@@ -16,13 +16,13 @@ export function TagSelect({
   initiallyAvailableTags,
   defaultValue,
   allowAddingNew,
-  t,
 }: {
   initiallyAvailableTags: Tag[];
-  t: TFunction<"projects">;
   defaultValue?: Tag[];
   allowAddingNew: boolean;
 }) {
+  const { t } = useTranslation("common");
+
   const [availableTags, setAvailableTags] = useState(initiallyAvailableTags);
   const [chosenTags, setChosenTags] = useState<string[]>(
     defaultValue?.map(({ name }) => name) ?? [],

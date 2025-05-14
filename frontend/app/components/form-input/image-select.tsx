@@ -1,6 +1,6 @@
-import type { TFunction } from "i18next";
 import type { ChangeEvent } from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHydrated } from "remix-utils/use-hydrated";
 
 import style from "./image-select.module.css";
@@ -87,13 +87,11 @@ export function ImageSelect({
   name,
   maxImageSize,
   multiple,
-  t,
 }: {
   label: string;
   name: string;
   maxImageSize: number;
   multiple?: boolean;
-  t: TFunction<"projects">;
 }) {
   const {
     fileTooLarge,
@@ -106,6 +104,8 @@ export function ImageSelect({
     maxFileSize: maxImageSize,
     clearInputWhenSizeExceeded: true,
   });
+
+  const { t } = useTranslation("common");
 
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 

@@ -7,7 +7,7 @@ export function renderDate(date: Date, language: string): string {
 }
 
 export function LocalDate({ date }: { date: Date }): React.JSX.Element {
-  const { i18n } = useTranslation("users");
+  const { i18n } = useTranslation();
 
   return <>{renderDate(date, i18n.language)} </>;
 }

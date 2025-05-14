@@ -9,7 +9,7 @@ import { renderDate } from "~/components/date-rendering";
 import { CommonMarkdown } from "~/components/markdown";
 import { ModalDialog } from "~/components/modal";
 import { conditionalShowEditButton } from "~/components/page/page";
-import { ProjectTagList } from "~/components/tags";
+import { ProjectTagList } from "~/components/tags/tags";
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { getProjectDetails } from "~/models/projects.server";

@@ -14,7 +14,6 @@ export function getSearchQuery(searchParams: URLSearchParams) {
 
 export function SearchForm() {
   const { t } = useTranslation("search");
-  const { t: tProjects } = useTranslation("projects");
 
   const [searchParams] = useSearchParams();
   const { query, tagFilter } = getSearchQuery(searchParams);
@@ -35,7 +34,6 @@ export function SearchForm() {
       <TagSelect
         defaultValue={tagFilter.map((it) => ({ id: "", name: it }))}
         initiallyAvailableTags={[]}
-        t={tProjects}
         allowAddingNew={false}
       />
 

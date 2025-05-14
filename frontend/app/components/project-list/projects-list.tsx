@@ -20,7 +20,7 @@ export function ProjectsList({
   projects: ProjectListEntry[];
   styles?: { [key in StyleableParts]?: string };
 }) {
-  const { t } = useTranslation("users");
+  const { t } = useTranslation("common");
 
   return (
     <ul className={localStyle.projectList}>

@@ -1,6 +1,6 @@
 import { useFetcher } from "@remix-run/react";
-import type { TFunction } from "i18next";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { globalUserLoader } from "~/routes/global_loaders+/users";
 
@@ -10,13 +10,13 @@ export type User = { id: string; username: string };
 
 export function UserSelect({
   initiallyAvailableUsers,
-  t,
   defaultValue,
 }: {
   initiallyAvailableUsers: User[];
-  t: TFunction<"projects">;
   defaultValue?: User[];
 }) {
+  const { t } = useTranslation("common");
+
   const [availableUsers, setAvailableUsers] = useState(initiallyAvailableUsers);
   const [chosenUsers, setChosenUsers] = useState<string[]>(
     defaultValue?.map(({ username }) => username) ?? [],

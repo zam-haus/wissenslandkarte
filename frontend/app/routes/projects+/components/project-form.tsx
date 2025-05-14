@@ -63,15 +63,13 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
 
       <ImageSelect
         name="mainImage"
-        t={t}
-        label={`${t("select-main-image")} ${t("optional")}`}
+        label={`${t("select-main-image")} ${t("common", "optional")}`}
         maxImageSize={maxImageSize}
       />
 
       <UserSelect
         initiallyAvailableUsers={[...(currentState?.members ?? []), ...users]}
         defaultValue={currentState?.members}
-        t={t}
       />
 
       <TagSelect
@@ -81,7 +79,6 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
         ]}
         defaultValue={currentState?.tags}
         allowAddingNew={true}
-        t={t}
       />
 
       <label>
