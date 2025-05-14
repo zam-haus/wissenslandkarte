@@ -36,10 +36,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   };
 };
 
-export const handle = {
-  i18n: ["projects"],
-};
-
 export default function Project() {
   const { t, i18n } = useTranslation("projects");
   const { project, isLoggedInUserAuthorizedToEdit } = useLoaderData<typeof loader>();

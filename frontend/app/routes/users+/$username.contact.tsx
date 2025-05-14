@@ -90,10 +90,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   };
 };
 
-export const handle = {
-  i18n: ["users"],
-};
-
 export default function UserEdit() {
   const { t } = useTranslation("users");
   const actionData = useActionData<typeof action>();

@@ -13,10 +13,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return { projects };
 };
 
-export const handle = {
-  i18n: ["projects"],
-};
-
 export default function Projects() {
   const { projects } = useLoaderData<typeof loader>();
 

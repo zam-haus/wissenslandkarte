@@ -47,7 +47,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const handle = {
-  i18n: ["search", "projects", "users"],
+  i18n: ["projects", "users"],
 };
 
 export default function Search() {

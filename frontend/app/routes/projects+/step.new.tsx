@@ -101,10 +101,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return { projects };
 };
 
-export const handle = {
-  i18n: ["projects"],
-};
-
 export default function CreateStep() {
   const currentPath = "/projects/step/new";
   const { projects } = useLoaderData<typeof loader>();

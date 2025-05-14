@@ -22,7 +22,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const handle = {
-  i18n: ["search", "users"],
+  i18n: ["users"],
 };
 
 export default function Search() {

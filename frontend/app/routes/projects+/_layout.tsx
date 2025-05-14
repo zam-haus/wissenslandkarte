@@ -8,6 +8,10 @@ export { DefaultErrorBoundary as ErrorBoundary } from "~/components/default-erro
 
 export const loader = isLoggedInLoader;
 
+export const handle = {
+  i18n: ["projects"],
+};
+
 export default function Projects() {
   const { t } = useTranslation("projects");
   const { isLoggedIn } = useLoaderData<typeof loader>();

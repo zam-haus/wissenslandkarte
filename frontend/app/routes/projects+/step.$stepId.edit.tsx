@@ -140,10 +140,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return { projects, currentState };
 };
 
-export const handle = {
-  i18n: ["projects"],
-};
-
 export default function EditStep() {
   const currentPath = ".";
   const { projects, currentState } = useLoaderData<typeof loader>();
