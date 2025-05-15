@@ -1,6 +1,8 @@
 import type { PrismaClient } from "@prisma/client";
 import { MeiliSearch } from "meilisearch";
 
+import { setSearchIndexOutdated } from "~/lib/appStatus.server";
+
 import { environment } from "../../app/lib/environment.server";
 import type {
   SearchableProjectProperties,
@@ -19,6 +21,7 @@ export async function rebuildSearchIndex(prisma: PrismaClient) {
   try {
     await client.getVersion();
   } catch {
+    await setSearchIndexOutdated(true);
     console.warn("🚨 Could not connect to meilisearch.");
     console.warn("🚨 Cleaning and rebuilding search index impossible.");
     console.warn("🚨 Search index might be out of sync!");
