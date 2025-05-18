@@ -1,5 +1,6 @@
-import type { User } from "@prisma/client";
 import { useTranslation } from "react-i18next";
+
+import type { User } from "prisma/generated";
 
 import placeHolderImage from "./user-image-placeholder.png";
 import styles from "./user-image.module.css";

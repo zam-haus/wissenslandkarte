@@ -1,12 +1,12 @@
-import type { Tag } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
+import type { Tag } from "prisma/generated";
 import { ImageSelect } from "~/components/form-input/image-select";
 import { TagSelect } from "~/components/form-input/tag-select";
 import type { User } from "~/components/form-input/user-select";
 import { UserSelect } from "~/components/form-input/user-select";
-import type { getProjectDetails } from "~/models/projects.server";
+import type { getProjectDetails } from "~/database/repositories/projects.server";
 
 import style from "../new.module.css";
 

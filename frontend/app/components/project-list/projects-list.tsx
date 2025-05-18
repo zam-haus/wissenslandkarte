@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import type { ProjectListEntry } from "~/models/projects.server";
+import type { ProjectListEntry } from "~/database/repositories/projects.server";
 
 import { LocalDate } from "../date-rendering";
 

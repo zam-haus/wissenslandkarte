@@ -1,4 +1,3 @@
-import type { PrismaClient } from "@prisma/client";
 import { MeiliSearch } from "meilisearch";
 
 import { setSearchIndexOutdated } from "~/lib/appStatus.server";
@@ -9,6 +8,7 @@ import type {
   SearchableProjectStepProperties,
 } from "../../app/lib/search.server";
 import { projectIndexId, projectStepsIndexId } from "../../app/lib/search.server";
+import type { PrismaClient } from "../generated";
 
 const client = new MeiliSearch({
   host: environment.search.HOST,

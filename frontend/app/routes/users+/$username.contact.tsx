@@ -4,10 +4,10 @@ import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { UserImage } from "~/components/user-image/user-image";
+import { getUserContactData } from "~/database/repositories/user.server";
 import { getLoggedInUser, isAnyUserLoggedIn } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { sendMail } from "~/lib/sendMail.server";
-import { getUserContactData } from "~/models/user.server";
 
 import { getBooleanDefaultFalse, getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
 

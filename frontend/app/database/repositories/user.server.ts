@@ -1,6 +1,5 @@
-import type { Tag, User } from "@prisma/client";
-
-import { prisma } from "~/db.server";
+import type { Tag, User } from "prisma/generated";
+import { prisma } from "~/database/db.server";
 import { UserWithRoles } from "~/lib/authorization.server";
 
 import type { ProjectListEntry } from "./projects.server";

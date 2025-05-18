@@ -1,5 +1,6 @@
-import type { Project, ProjectStep } from "@prisma/client";
 import { MeiliSearch } from "meilisearch";
+
+import type { Project, ProjectStep } from "prisma/generated";
 
 import { setSearchIndexOutdated } from "./appStatus.server";
 import { environment } from "./environment.server";

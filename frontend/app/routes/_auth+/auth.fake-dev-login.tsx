@@ -1,7 +1,7 @@
-import { User } from "@prisma/client";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
+import { User } from "prisma/generated";
 import { tempUserSessionKey, userSessionKey } from "~/lib/session.server";
 import { fakeLoginOnDevStrategyName } from "~/routes/_auth+/lib/strategiesSetup.server";
 

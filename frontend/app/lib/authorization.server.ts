@@ -1,7 +1,7 @@
-import { Prisma } from "@prisma/client";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
+import { Prisma } from "prisma/generated";
 import type { roles as bootstrappedRoles } from "prisma/initialization/data/production-data-generators";
 
 import { getSession } from "./session.server";

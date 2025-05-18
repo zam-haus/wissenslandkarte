@@ -1,5 +1,5 @@
-import { getTagList } from "~/models/tags.server";
-import { getUserListFiltered } from "~/models/user.server";
+import { getTagList } from "~/database/repositories/tags.server";
+import { getUserListFiltered } from "~/database/repositories/user.server";
 
 export async function lowLevelUserLoader(filter: string | null) {
   return { users: await getUserListFiltered(filter ?? "") };

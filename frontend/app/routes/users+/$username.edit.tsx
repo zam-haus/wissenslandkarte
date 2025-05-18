@@ -1,5 +1,3 @@
-import type { User } from "@prisma/client";
-import { Prisma } from "@prisma/client";
 import type { ActionFunctionArgs, LoaderFunctionArgs, TypedResponse } from "@remix-run/node";
 import { data, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
@@ -7,14 +5,16 @@ import { UNSAFE_DataWithResponseInit as DataWithResponseInit } from "@remix-run/
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
+import { Prisma } from "prisma/generated";
+import type { User } from "prisma/generated";
 import { ImageSelect } from "~/components/form-input/image-select";
 import { UserImage } from "~/components/user-image/user-image";
+import { getUserOverview, updateUser, UserOverview } from "~/database/repositories/user.server";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { getSession } from "~/lib/session.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
-import { getUserOverview, updateUser, UserOverview } from "~/models/user.server";
 
 import { getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
 

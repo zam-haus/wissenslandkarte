@@ -3,11 +3,11 @@ import { redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
+import { createProject } from "~/database/repositories/projects.server";
 import { getLoggedInUser, isAnyUserLoggedIn } from "~/lib/authorization.server";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
-import { createProject } from "~/models/projects.server";
 import {
   lowLevelTagLoader,
   lowLevelUserLoader,

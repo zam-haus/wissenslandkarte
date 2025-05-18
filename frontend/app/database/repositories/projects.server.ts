@@ -1,6 +1,5 @@
-import type { Project } from "@prisma/client";
-
-import { prisma } from "~/db.server";
+import { Project } from "prisma/generated";
+import { prisma } from "~/database/db.server";
 
 export type ProjectListEntry = Awaited<ReturnType<typeof getProjectList>>[number];
 

@@ -1,18 +1,18 @@
-import type { Attachment } from "@prisma/client";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import type { Attachment } from "prisma/generated";
 import { isAttachmentType } from "prisma/initialization/data/fake-data-generators";
 import { renderDate } from "~/components/date-rendering";
 import { CommonMarkdown } from "~/components/markdown";
 import { ModalDialog } from "~/components/modal";
 import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectTagList } from "~/components/tags/tags";
+import { getProjectDetails } from "~/database/repositories/projects.server";
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
-import { getProjectDetails } from "~/models/projects.server";
 
 import style from "./$projectId._index.module.css";
 

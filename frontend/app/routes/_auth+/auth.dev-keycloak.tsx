@@ -1,6 +1,6 @@
-import { User } from "@prisma/client";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 
+import { User } from "prisma/generated";
 import { tempUserSessionKey, userSessionKey } from "~/lib/session.server";
 
 import { authenticate } from "./lib/authentication.server";

@@ -1,6 +1,6 @@
 import { parseArgs } from "node:util";
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../generated";
 
 import { seedProductionData } from "./seed-production.ts";
 

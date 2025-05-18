@@ -1,7 +1,6 @@
-import type { ProjectStep } from "@prisma/client";
-
+import { ProjectStep } from "prisma/generated";
 import type { AttachmentType } from "prisma/initialization/data/fake-data-generators";
-import { prisma } from "~/db.server";
+import { prisma } from "~/database/db.server";
 
 type ProjectStepCreateRequest = {
   projectId: string;

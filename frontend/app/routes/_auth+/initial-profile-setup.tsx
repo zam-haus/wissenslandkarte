@@ -1,10 +1,10 @@
-import { Prisma } from "@prisma/client";
 import { ActionFunctionArgs, TypedResponse, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
+import { Prisma } from "prisma/generated";
 import { Page } from "~/components/page/page";
-import { prisma } from "~/db.server";
+import { prisma } from "~/database/db.server";
 import { assertExistsOr500 } from "~/lib/dataValidation";
 import { getStringsDefaultUndefined } from "~/lib/formDataParser";
 import { getSession, tempUserSessionKey, userSessionKey } from "~/lib/session.server";

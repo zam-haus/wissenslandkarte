@@ -1,4 +1,4 @@
-import { prisma } from "~/db.server";
+import { prisma } from "~/database/db.server";
 
 const Keys = {
   searchIndexOutdated: "search-index-outdated",

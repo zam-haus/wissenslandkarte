@@ -3,7 +3,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 
 import { LocalDate } from "~/components/date-rendering";
 import { UserImage } from "~/components/user-image/user-image";
-import { searchUsers } from "~/models/user.server";
+import { searchUsers } from "~/database/repositories/user.server";
 
 import { getSearchQuery, SearchForm } from "./components/search-form";
 import { SearchProjectPeopleSwitch } from "./components/search-header";

@@ -1,12 +1,12 @@
 import { type LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { serverOnly$ } from "vite-env-only/macros";
 
-import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
-import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/dataValidation";
 import {
   deleteProjectStep,
   getProjectStepWithProjectOwnersAndMembers,
-} from "~/models/projectSteps.server";
+} from "~/database/repositories/projectSteps.server";
+import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
+import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/dataValidation";
 
 // Only use in server functions!
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

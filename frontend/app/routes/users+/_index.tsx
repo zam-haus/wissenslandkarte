@@ -6,8 +6,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import { Pager, usePagedInfinitScroll } from "~/components/infinite-scroll-pager";
 import { UserImage } from "~/components/user-image/user-image";
-import type { UserListEntry } from "~/models/user.server";
-import { getUserList } from "~/models/user.server";
+import type { UserListEntry } from "~/database/repositories/user.server";
+import { getUserList } from "~/database/repositories/user.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);

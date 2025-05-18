@@ -8,10 +8,10 @@ import { conditionalShowEditButton } from "~/components/page/page";
 import { ProjectsList } from "~/components/project-list/projects-list";
 import { PeopleTagList } from "~/components/tags/tags";
 import { UserImage } from "~/components/user-image/user-image";
+import type { UserOverview } from "~/database/repositories/user.server";
+import { getUserOverview } from "~/database/repositories/user.server";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
-import type { UserOverview } from "~/models/user.server";
-import { getUserOverview } from "~/models/user.server";
 
 import styles from "./$username._index.module.css";
 

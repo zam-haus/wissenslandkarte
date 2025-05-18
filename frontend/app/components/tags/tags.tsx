@@ -1,5 +1,6 @@
-import type { Tag } from "@prisma/client";
 import { Link } from "@remix-run/react";
+
+import type { Tag } from "prisma/generated";
 
 import localStyles from "./tags.module.css";
 

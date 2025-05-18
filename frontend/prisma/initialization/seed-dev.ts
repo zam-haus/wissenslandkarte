@@ -1,6 +1,7 @@
 import { Faker, fakerDE as faker } from "@faker-js/faker";
-import type { Tag, User } from "@prisma/client";
-import { PrismaClient } from "@prisma/client";
+
+import type { Tag, User } from "../generated";
+import { PrismaClient } from "../generated";
 
 import {
   makeRandomFakeAttachmentDto,

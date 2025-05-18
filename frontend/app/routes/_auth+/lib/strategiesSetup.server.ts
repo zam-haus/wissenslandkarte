@@ -1,8 +1,8 @@
-import type { User } from "@prisma/client";
 import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 
-import { prisma } from "~/db.server";
+import type { User } from "prisma/generated";
+import { prisma } from "~/database/db.server";
 import { UserWithRoles } from "~/lib/authorization.server";
 import { environment } from "~/lib/environment.server";
 

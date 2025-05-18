@@ -6,8 +6,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import { Pager, usePagedInfinitScroll } from "~/components/infinite-scroll-pager";
 import { ProjectsList } from "~/components/project-list/projects-list";
-import type { ProjectListEntry } from "~/models/projects.server";
-import { getProjectList } from "~/models/projects.server";
+import type { ProjectListEntry } from "~/database/repositories/projects.server";
+import { getProjectList } from "~/database/repositories/projects.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);

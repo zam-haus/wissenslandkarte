@@ -1,7 +1,7 @@
-import type { User } from "@prisma/client";
 import type { TypedResponse } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
+import type { User } from "prisma/generated";
 import { UserWithRoles } from "~/lib/authorization.server";
 import type { SessionData } from "~/lib/session.server";
 import { getSession } from "~/lib/session.server";

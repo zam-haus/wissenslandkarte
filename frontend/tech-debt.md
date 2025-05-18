@@ -12,7 +12,6 @@
 
 ## M
 
-- https://pris.ly/cli/output-path
 - image file needs to be released to prevent memory leak in step image upload
 - image file (by name) can be added twice in image upload
 - implement real logging and remove console.logs

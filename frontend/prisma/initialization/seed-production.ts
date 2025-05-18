@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../generated";
 
 import { roles as builtInRoles } from "./data/production-data-generators.ts";
 

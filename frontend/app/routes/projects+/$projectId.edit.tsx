@@ -4,6 +4,7 @@ import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
+import { getProjectDetails, updateProject } from "~/database/repositories/projects.server";
 import {
   getLoggedInUser,
   isAnyUserFromListLoggedIn,
@@ -14,7 +15,6 @@ import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
-import { getProjectDetails, updateProject } from "~/models/projects.server";
 import {
   lowLevelTagLoader,
   lowLevelUserLoader,

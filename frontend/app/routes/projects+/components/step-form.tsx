@@ -1,9 +1,9 @@
-import type { Attachment, Project, ProjectStep } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
+import type { Attachment, Project, ProjectStep } from "prisma/generated";
 import { ImageSelect } from "~/components/form-input/image-select";
-import type { ProjectListEntry } from "~/models/projects.server";
+import type { ProjectListEntry } from "~/database/repositories/projects.server";
 
 import style from "./step-form.module.css";
 

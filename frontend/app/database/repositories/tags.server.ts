@@ -1,4 +1,4 @@
-import { prisma } from "~/db.server";
+import { prisma } from "~/database/db.server";
 
 export async function getTagList<Count extends "projects" | "users">({
   count,

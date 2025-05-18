@@ -4,6 +4,8 @@ import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
+import { getProjectDetails, getProjectsByUser } from "~/database/repositories/projects.server";
+import { createProjectStep } from "~/database/repositories/projectSteps.server";
 import {
   getLoggedInUser,
   isAnyUserFromListLoggedIn,
@@ -14,8 +16,6 @@ import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { upsertProjectStepToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
-import { getProjectDetails, getProjectsByUser } from "~/models/projects.server";
-import { createProjectStep } from "~/models/projectSteps.server";
 
 import { getStringArray, getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
 
