@@ -42,7 +42,7 @@ WORKDIR /app
 
 COPY --from=deps /app/node_modules /app/node_modules
 
-ADD prisma .
+ADD prisma prisma
 RUN npx prisma generate
 
 ADD . .
