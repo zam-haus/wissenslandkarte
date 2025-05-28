@@ -16,7 +16,8 @@
     "db:seed-dev": "npm run db:clean && prisma db seed -- --environment development",
     "db:generate-migration": "prisma migrate dev",
     "start": "remix-serve ./build/server/index.js",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1",
@@ -26,6 +27,7 @@
     "@remix-run/serve": "^2.16.5",
     "aws-sdk": "^2.1692.0",
     "downshift": "^9.0.9",
+    "file-type": "^21.0.0",
     "i18next": "^23.16.8",
     "i18next-browser-languagedetector": "^8.0.5",
     "i18next-fetch-backend": "^6.0.0",
@@ -73,6 +75,7 @@
     "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^16.1.0",
     "npm-run-all2": "^7.0.2",
+    "patch-package": "^8.0.0",
     "postcss": "^8.4.38",
     "prettier": "^3.5.3",
     "prisma": "^6.7.0",

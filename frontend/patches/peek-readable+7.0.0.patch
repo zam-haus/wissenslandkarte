@@ -1,0 +1,13 @@
+diff --git a/node_modules/peek-readable/lib/WebStreamDefaultReader.js b/node_modules/peek-readable/lib/WebStreamDefaultReader.js
+index c8e1b47..e1c53f3 100644
+--- a/node_modules/peek-readable/lib/WebStreamDefaultReader.js
++++ b/node_modules/peek-readable/lib/WebStreamDefaultReader.js
+@@ -53,7 +53,7 @@ export class WebStreamDefaultReader extends AbstractStreamReader {
+     }
+     abort() {
+         this.interrupted = true;
+-        return this.reader.cancel();
++        // return this.reader.cancel();
+     }
+     async close() {
+         await this.abort();
