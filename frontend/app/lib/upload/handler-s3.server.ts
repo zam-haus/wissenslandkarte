@@ -1,9 +1,11 @@
 import { randomUUID } from "crypto";
 import { PassThrough } from "stream";
+import { ReadableStream } from "stream/web";
 
 import type { UploadHandler } from "@remix-run/node";
-import { writeAsyncIterableToWritable } from "@remix-run/node";
+import { writeReadableStreamToWritable } from "@remix-run/node";
 import AWS from "aws-sdk";
+import { fileTypeFromStream } from "file-type";
 
 import { environment } from "../environment.server";
 
@@ -53,14 +55,34 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
     }
     if (!contentType.startsWith("image/") && !contentType.startsWith("application/octet-stream")) {
       console.log("doesn't match type", contentType, "image/");
-      //TODO: check if file is really an image
+      return undefined;
+    }
+
+    const stream = ReadableStream.from(data);
+    const [streamForDetection, streamForUpload] = stream.tee();
+    console.log("got two streams");
+    const { ext: detectedSuffix, mime: detectedMime } =
+      (await fileTypeFromStream(streamForDetection)) ?? {};
+    console.log("got ", detectedMime, detectedSuffix);
+
+    if (!detectedMime || !detectedMime.startsWith("image/")) {
+      console.log("detected mime doesn't match type", detectedMime, "image/");
+      return undefined;
+    }
+
+    if (!detectedSuffix || !allowedSuffixes.includes(detectedSuffix)) {
+      console.log("doesn't match detected suffix", detectedSuffix);
       return undefined;
     }
 
     const newFilename = createValidFilename(filename);
     console.log("uploading to", newFilename);
     try {
-      const uploadedFileLocation = await uploadStreamToS3(data, newFilename, contentType);
+      const uploadedFileLocation = await uploadStreamToS3(
+        streamForUpload,
+        newFilename,
+        contentType,
+      );
       if (!uploadedFileLocation.success || uploadedFileLocation.data === undefined) {
         console.error("Uploading of a file to S3 failed!");
         return undefined;
@@ -81,7 +103,7 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
 }
 
 async function uploadStreamToS3(
-  data: AsyncIterable<Uint8Array>,
+  data: ReadableStream<Uint8Array>,
   filename: string,
   contentType: string,
 ) {
@@ -123,7 +145,7 @@ async function uploadStreamToS3(
     );
   });
 
-  await writeAsyncIterableToWritable(data, passThroughWithSizeLimit);
+  await writeReadableStreamToWritable(data as globalThis.ReadableStream, passThroughWithSizeLimit);
   return uploadDone;
 }
 
