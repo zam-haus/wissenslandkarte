@@ -1,5 +1,7 @@
 import winston, { createLogger, format, transports } from "winston";
 
+import "winston-daily-rotate-file";
+
 const levelsWithFatal = { ...winston.config.npm.levels, fatal: -1 };
 winston.addColors({ fatal: "bold red" });
 
@@ -20,6 +22,12 @@ declare module "logform" {
   }
 }
 
+const commonLogRotateOptions = {
+  dirname: "logs",
+  frequency: `${7 * 24}h`,
+  zippedArchive: true,
+  createSymlink: true,
+};
 export const baseLogger = createLogger({
   level: "info",
   levels: levelsWithFatal,
@@ -33,9 +41,19 @@ export const baseLogger = createLogger({
   ),
   defaultMeta: { tag: "wlk" },
   transports: [
-    new transports.File({ filename: "logs/errors.log", level: "error" }),
-    new transports.File({ filename: "logs/errors-and-warnings.log", level: "warn" }),
-    new transports.File({ filename: "logs/complete.log" }),
+    new transports.DailyRotateFile({
+      ...commonLogRotateOptions,
+      level: "warn",
+      filename: "errors-and-warnings-%DATE%.log",
+      maxFiles: "365d",
+      symlinkName: "logs/errors-and-warnings.log",
+    }),
+    new transports.DailyRotateFile({
+      ...commonLogRotateOptions,
+      filename: "complete-%DATE%.log",
+      maxFiles: "900d",
+      symlinkName: "complete.log",
+    }),
   ],
   exitOnError: false,
   handleExceptions: true,
