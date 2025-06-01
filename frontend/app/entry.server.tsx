@@ -11,6 +11,7 @@ import { I18nextProvider, initReactI18next } from "react-i18next";
 
 import i18nConfig from "./i18n";
 import i18next from "./i18next.server";
+import { baseLogger } from "./lib/logging.server";
 
 const ABORT_DELAY = 5000;
 
@@ -64,13 +65,14 @@ export default async function handleRequest(
           pipe(body);
         },
         onShellError(error: unknown) {
+          baseLogger.error(error);
           // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
           reject(error);
         },
         onError(error: unknown) {
           didError = true;
 
-          console.error(error);
+          baseLogger.error(error);
         },
       },
     );

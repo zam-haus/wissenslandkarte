@@ -5,6 +5,10 @@ import {
   type UploadHandlerPart,
 } from "@remix-run/node";
 
+import { baseLogger } from "../logging.server";
+
+const logger = baseLogger.withTag("upload-memory");
+
 export type FieldIgnoringMemoryUploadHandlerOptions = MemoryUploadHandlerOptions & {
   ignoreFields: string[];
 };
@@ -17,7 +21,7 @@ export function createFieldIgnoringMemoryUploadHandler(
 
   return async (part: UploadHandlerPart) => {
     if (ignoreFields.includes(part.name)) {
-      console.log(`Ignoring field ${part.name} in memory upload handler`);
+      logger.debug(`Ignoring field ${part.name} in memory upload handler`);
       return undefined;
     }
     return await wrappedUploadHandler(part);

@@ -2,6 +2,9 @@ import nodemailer from "nodemailer";
 import type { MailOptions } from "nodemailer/lib/smtp-transport";
 
 import { environment } from "./environment.server";
+import { baseLogger } from "./logging.server";
+
+const logger = baseLogger.withTag("send-mail");
 
 export async function sendMail(
   senderUsername: string,
@@ -63,7 +66,7 @@ End of message.`,
     }
     return true;
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     return false;
   }
 }

@@ -14,8 +14,8 @@
 
 - image file needs to be released to prevent memory leak in step image upload
 - image file (by name) can be added twice in image upload
-- implement real logging and remove console.logs
 - site-admin role to rebuild search index
+- files that are aborted due to size don't get deleted
 
 ## L
 
@@ -23,6 +23,5 @@
 
 - aws upload stuff upgraden
 - can the url rewrite in upload s3 be done by the s3 lib?
-- check if upload is actually an image
 - user uploads are handled before user is authorized
 - renovate pipeline

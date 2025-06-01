@@ -5,9 +5,12 @@ import type { User } from "prisma/generated";
 import { prisma } from "~/database/db.server";
 import { UserWithRoles } from "~/lib/authorization.server";
 import { environment } from "~/lib/environment.server";
+import { baseLogger } from "~/lib/logging.server";
 
 import type { KeycloakProfile, KeycloakVerifyFunction } from "./keycloakStrategy.server";
 import { KeycloakStrategy } from "./keycloakStrategy.server";
+
+const logger = baseLogger.withTag("login");
 
 export const zamKeycloakStrategyName = "zam-keycloak";
 export const devKeycloakStrategyName = "dev-keycloak";
@@ -22,7 +25,7 @@ setupDevKeycloakLogin();
 function setupFakeLoginStrategy() {
   if (environment.auth.DANGER_ENABLE_FAKE_LOGIN_ON_DEV) {
     if (!environment.IS_DEV_MODE) {
-      console.warn(
+      logger.warn(
         "WARNING: DANGER_ENABLE_FAKE_LOGIN_ON_DEV should not be set in non-dev mode. Ignoring.",
       );
     } else {
@@ -35,11 +38,11 @@ function setupFakeLoginStrategy() {
         const user = await prisma.user.findFirst({
           include: { roles: { select: { title: true } } },
         });
-        console.log("Fake logging in:", user);
         if (user === null) {
-          console.error("No user found in database. Fake login failed");
+          logger.error("No user found in database. Fake login failed");
           throw Error("No user found.");
         }
+        logger.info("Fake logging in: %s ", user.username, { user });
         return user;
       });
       authenticator.use(fakeLoginStrategy, fakeLoginOnDevStrategyName);

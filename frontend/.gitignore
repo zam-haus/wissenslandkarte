@@ -3,6 +3,7 @@ node_modules
 /.cache
 /build
 .env
+logs/
 
 /prisma/data.db
 /prisma/data.db-journal

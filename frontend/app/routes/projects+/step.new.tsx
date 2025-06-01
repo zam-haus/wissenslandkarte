@@ -13,6 +13,7 @@ import {
   Roles,
 } from "~/lib/authorization.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
+import { logger } from "~/lib/logging.server";
 import { upsertProjectStepToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
@@ -36,7 +37,7 @@ const assertAuthorization = serverOnly$(
     const isProjectAdminLoggedIn = await loggedInUserHasRole(request, Roles.ProjectEditor);
 
     if (!(isOwnerLoggedIn || isMemberLoggedIn || isProjectAdminLoggedIn)) {
-      console.warn(
+      logger("step-new").warn(
         `Someone tried creating a new step for project ${project.id} but was not authorized to do so`,
       );
       throw redirect("/");

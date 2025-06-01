@@ -12,6 +12,7 @@ import { UserImage } from "~/components/user-image/user-image";
 import { getUserOverview, updateUser, UserOverview } from "~/database/repositories/user.server";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
+import { logger } from "~/lib/logging.server";
 import { getSession } from "~/lib/session.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
@@ -31,7 +32,7 @@ const assertAuthorization = serverOnly$(async (request: Request, userToEdit: Use
   const isUserAdminLoggedIn = await loggedInUserHasRole(request, Roles.UserEditor);
 
   if (!(isCurrentUserLoggedIn || isUserAdminLoggedIn)) {
-    console.warn(
+    logger("username-edit").warn(
       `Someone tried editing user ${userToEdit.username} but was not authorized to do so`,
     );
     throw redirect("/");

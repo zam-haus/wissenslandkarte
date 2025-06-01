@@ -1,5 +1,7 @@
 import invariant from "tiny-invariant";
 
+import { baseLogger } from "./logging.server";
+
 export const environment = {
   get IS_DEV_MODE() {
     return process.env.NODE_ENV === "development";
@@ -103,6 +105,9 @@ function getFromEnvOrThrow(key: string): string;
 function getFromEnvOrThrow<T>(key: string, mapper: Mapper<T>): T;
 function getFromEnvOrThrow<T>(key: string, mapper?: Mapper<T>): string | T {
   const value = process.env[key];
+  if (!value) {
+    baseLogger.withTag("env").fatal("Missing config environment variable %s", key);
+  }
   invariant(value, `Missing config environment variable ${key}`);
   if (mapper === undefined) {
     return value;

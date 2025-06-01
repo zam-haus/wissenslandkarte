@@ -2,6 +2,8 @@
 import { OAuth2Tokens } from "arctic";
 import { OAuth2Strategy } from "remix-auth-oauth2";
 
+import { logger } from "~/lib/logging.server";
+
 export interface KeycloakStrategyOptions {
   useSSL?: boolean; // Whether to use SSL for Keycloak server communication.
   domain: string; // Keycloak server domain.
@@ -94,7 +96,7 @@ export class KeycloakStrategy<T> extends OAuth2Strategy<T> {
         email: data.email,
       };
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      logger("login-keycloak").error("Error fetching user profile:", error);
       throw error;
     }
   }

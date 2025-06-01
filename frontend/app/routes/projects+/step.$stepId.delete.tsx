@@ -7,6 +7,7 @@ import {
 } from "~/database/repositories/projectSteps.server";
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/dataValidation";
+import { logger } from "~/lib/logging.server";
 
 // Only use in server functions!
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -20,7 +21,7 @@ const assertAuthorization = serverOnly$(
     const isProjectAdminLoggedIn = await loggedInUserHasRole(request, Roles.ProjectEditor);
 
     if (!(isOwnerLoggedIn || isMemberLoggedIn || isProjectAdminLoggedIn)) {
-      console.warn(
+      logger("step-delete").warn(
         `Someone tried deleting step from project ${project.id} but was not authorized to do so`,
       );
       throw redirect("/");

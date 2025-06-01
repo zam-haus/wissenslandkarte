@@ -8,8 +8,11 @@ import AWS from "aws-sdk";
 import { fileTypeFromStream } from "file-type";
 
 import { environment } from "../environment.server";
+import { baseLogger as baseLogger } from "../logging.server";
 
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "./constants";
+
+const logger = baseLogger.withTag("upload-s3");
 
 const bucket = environment.s3.BUCKET;
 const s3 = new AWS.S3({
@@ -44,39 +47,41 @@ const allowedSuffixes = [
 
 export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandler {
   return async ({ name, data, contentType, filename }) => {
-    console.log("checking ", name);
+    logger.debug("checking name %s", name);
     if (!formFieldsToUpload.includes(name)) {
-      console.log("doesn't match name", formFieldsToUpload, name);
+      logger.debug("name %s doesn't match name %s", formFieldsToUpload, name);
       return undefined;
     }
     if (!allowedSuffixes.some((suffix) => filename?.toLowerCase().endsWith(suffix))) {
-      console.log("doesn't match suffix");
+      logger.warn("%s doesn't match suffix list", filename ?? "no-filename");
       return undefined;
     }
     if (!contentType.startsWith("image/") && !contentType.startsWith("application/octet-stream")) {
-      console.log("doesn't match type", contentType, "image/");
+      logger.warn("%s doesn't match content type starting with image/", contentType);
       return undefined;
     }
 
     const stream = ReadableStream.from(data);
     const [streamForDetection, streamForUpload] = stream.tee();
-    console.log("got two streams");
     const { ext: detectedSuffix, mime: detectedMime } =
       (await fileTypeFromStream(streamForDetection)) ?? {};
-    console.log("got ", detectedMime, detectedSuffix);
+    logger.debug("detected mime is: %s %s", detectedMime, detectedSuffix);
 
     if (!detectedMime || !detectedMime.startsWith("image/")) {
-      console.log("detected mime doesn't match type", detectedMime, "image/");
+      logger.warn(
+        "detected mime %s doesn't match content type starting with image/ ",
+        detectedMime,
+      );
       return undefined;
     }
 
     if (!detectedSuffix || !allowedSuffixes.includes(detectedSuffix)) {
-      console.log("doesn't match detected suffix", detectedSuffix);
+      logger.log("detected suffix %s doesn't match suffix list", detectedSuffix);
       return undefined;
     }
 
     const newFilename = createValidFilename(filename);
-    console.log("uploading to", newFilename);
+    logger.debug("uploading to %s", newFilename);
     try {
       const uploadedFileLocation = await uploadStreamToS3(
         streamForUpload,
@@ -84,7 +89,7 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
         contentType,
       );
       if (!uploadedFileLocation.success || uploadedFileLocation.data === undefined) {
-        console.error("Uploading of a file to S3 failed!");
+        logger.error("Uploading of a file to S3 as %s failed!", newFilename);
         return undefined;
       }
 
@@ -96,7 +101,7 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
 
       return uploadedFileUrl.toString().replace(/https?:/, "");
     } catch (e) {
-      console.error("Uploading of a file to S3 failed!", e);
+      logger.error("Uploading of a file to S3 failed!", e);
       return undefined;
     }
   };
