@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import { PassThrough } from "stream";
 import { ReadableStream } from "stream/web";
 
@@ -11,6 +10,13 @@ import { environment } from "../environment.server";
 import { baseLogger as baseLogger } from "../logging.server";
 
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "./constants";
+import {
+  createValidFilename,
+  validateContentType,
+  validateFilename,
+  validateSuffix,
+  ValidationResult,
+} from "./validation.server";
 
 const logger = baseLogger.withTag("upload-s3");
 
@@ -31,20 +37,6 @@ const s3 = new AWS.S3({
     : {}),
 });
 
-const allowedSuffixes = [
-  "apng",
-  "avif",
-  "gif",
-  "jpg",
-  "jpeg",
-  "jfif",
-  "pjpeg",
-  "pjp",
-  "png",
-  "svg",
-  "webp",
-];
-
 export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandler {
   return async ({ name, data, contentType, filename }) => {
     logger.debug("checking name %s", name);
@@ -52,12 +44,12 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
       logger.debug("name %s doesn't match name %s", formFieldsToUpload, name);
       return undefined;
     }
-    if (!allowedSuffixes.some((suffix) => filename?.toLowerCase().endsWith(suffix))) {
-      logger.warn("%s doesn't match suffix list", filename ?? "no-filename");
-      return undefined;
-    }
-    if (!contentType.startsWith("image/") && !contentType.startsWith("application/octet-stream")) {
-      logger.warn("%s doesn't match content type starting with image/", contentType);
+
+    logger.debug("validating user-provided data");
+    if (
+      validateFilename(filename) === ValidationResult.Invalid ||
+      validateContentType(contentType) === ValidationResult.Invalid
+    ) {
       return undefined;
     }
 
@@ -67,16 +59,11 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
       (await fileTypeFromStream(streamForDetection)) ?? {};
     logger.debug("detected mime is: %s %s", detectedMime, detectedSuffix);
 
-    if (!detectedMime || !detectedMime.startsWith("image/")) {
-      logger.warn(
-        "detected mime %s doesn't match content type starting with image/ ",
-        detectedMime,
-      );
-      return undefined;
-    }
-
-    if (!detectedSuffix || !allowedSuffixes.includes(detectedSuffix)) {
-      logger.log("detected suffix %s doesn't match suffix list", detectedSuffix);
+    logger.debug("validating detected data");
+    if (
+      validateSuffix(detectedSuffix) === ValidationResult.Invalid ||
+      validateContentType(detectedMime) === ValidationResult.Invalid
+    ) {
       return undefined;
     }
 
@@ -152,18 +139,4 @@ async function uploadStreamToS3(
 
   await writeReadableStreamToWritable(data as globalThis.ReadableStream, passThroughWithSizeLimit);
   return uploadDone;
-}
-
-function createValidFilename(filename: string | undefined) {
-  const uuid = randomUUID();
-  if (filename === undefined) {
-    return uuid;
-  }
-
-  const elements = filename.toLowerCase().split(".");
-  const [suffix, ...__] = elements.reverse();
-  if (!allowedSuffixes.includes(suffix)) {
-    return uuid;
-  }
-  return `${uuid}.${suffix}`;
 }
