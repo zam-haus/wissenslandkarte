@@ -20,12 +20,13 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.825.0",
+    "@aws-sdk/lib-storage": "^3.826.0",
     "@js-temporal/polyfill": "^0.5.1",
     "@prisma/client": "^6.7.0",
     "@remix-run/node": "^2.16.5",
     "@remix-run/react": "^2.16.5",
     "@remix-run/serve": "^2.16.5",
-    "aws-sdk": "^2.1692.0",
     "downshift": "^9.0.9",
     "file-type": "^21.0.0",
     "i18next": "^23.16.8",

@@ -15,13 +15,9 @@
 - image file needs to be released to prevent memory leak in step image upload
 - image file (by name) can be added twice in image upload
 - site-admin role to rebuild search index
-- files that are aborted due to size don't get deleted
 
 ## L
 
-- s3 files don't get deleted
-
-- aws upload stuff upgraden
-- can the url rewrite in upload s3 be done by the s3 lib?
+- s3 files don't get deleted when no longer referenced (e.g. image deleted)
 - user uploads are handled before user is authorized
 - renovate pipeline

@@ -1,13 +1,13 @@
-import { PassThrough } from "stream";
-import { ReadableStream } from "stream/web";
+import { ReadableStream, TransformStream } from "stream/web";
 
+import { CompleteMultipartUploadCommandOutput, S3Client } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 import type { UploadHandler } from "@remix-run/node";
-import { writeReadableStreamToWritable } from "@remix-run/node";
-import AWS from "aws-sdk";
+import { StreamingBlobPayloadInputTypes } from "@smithy/types";
 import { fileTypeFromStream } from "file-type";
 
 import { environment } from "../environment.server";
-import { baseLogger as baseLogger } from "../logging.server";
+import { baseLogger } from "../logging.server";
 
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "./constants";
 import {
@@ -21,7 +21,7 @@ import {
 const logger = baseLogger.withTag("upload-s3");
 
 const bucket = environment.s3.BUCKET;
-const s3 = new AWS.S3({
+const s3 = new S3Client({
   credentials: {
     accessKeyId: environment.s3.ACCESS_KEY,
     secretAccessKey: environment.s3.SECRET_KEY,
@@ -29,11 +29,11 @@ const s3 = new AWS.S3({
   region: environment.s3.REGION,
 
   ...(environment.s3.IS_MINIO
-    ? {
+    ? ({
         endpoint: environment.s3.ENDPOINT,
-        s3ForcePathStyle: true,
-        sslEnabled: false,
-      }
+        forcePathStyle: true,
+        tls: false,
+      } satisfies ConstructorParameters<typeof S3Client>[0])
     : {}),
 });
 
@@ -70,17 +70,9 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
     const newFilename = createValidFilename(filename);
     logger.debug("uploading to %s", newFilename);
     try {
-      const uploadedFileLocation = await uploadStreamToS3(
-        streamForUpload,
-        newFilename,
-        contentType,
-      );
-      if (!uploadedFileLocation.success || uploadedFileLocation.data === undefined) {
-        logger.error("Uploading of a file to S3 as %s failed!", newFilename);
-        return undefined;
-      }
+      const uploadResult = await uploadStreamToS3(streamForUpload, newFilename, contentType);
 
-      const uploadedFileUrl = new URL(uploadedFileLocation.data.Location);
+      const uploadedFileUrl = new URL(uploadResult.Location);
 
       if (environment.s3.OVERRIDE_HOST !== undefined) {
         uploadedFileUrl.host = environment.s3.OVERRIDE_HOST;
@@ -88,55 +80,52 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
 
       return uploadedFileUrl.toString().replace(/https?:/, "");
     } catch (e) {
-      logger.error("Uploading of a file to S3 failed!", e);
+      logger.error("Uploading of a file to S3 as %s has failed!", newFilename, e);
       return undefined;
     }
   };
 }
 
 async function uploadStreamToS3(
-  data: ReadableStream<Uint8Array>,
+  inputData: ReadableStream<Uint8Array>,
   filename: string,
   contentType: string,
 ) {
   let uploadedFileSize = 0;
-  const passThroughWithSizeLimit = new PassThrough({
-    transform: function (this: PassThrough, chunk, encoding, callback) {
-      if (chunk instanceof Uint8Array) {
-        uploadedFileSize += chunk.length;
-        if (uploadedFileSize > MAX_UPLOAD_SIZE_IN_BYTE) {
-          this.emit("error", "Size limit exceeded");
-          return;
-        }
+  const passThroughWithSizeLimit = new TransformStream<Uint8Array, Uint8Array>({
+    transform: function (chunk, controller) {
+      uploadedFileSize += chunk.length;
+
+      if (uploadedFileSize > MAX_UPLOAD_SIZE_IN_BYTE) {
+        controller.error("Size limit exceeded");
+        return;
       }
-      callback(null, chunk);
+
+      controller.enqueue(chunk);
     },
   });
 
-  type DataOrError<T> = { success: boolean; data?: T; error?: unknown };
-  const uploadDone = new Promise<DataOrError<AWS.S3.ManagedUpload.SendData>>((resolve) => {
-    s3.upload(
-      {
-        Bucket: bucket,
-        Key: filename,
-        Body: passThroughWithSizeLimit,
-        ContentType: contentType,
-      },
-      {},
-      (error, data) => {
-        // types seem incorrect?!
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (error)
-          resolve({
-            success: false,
-            error,
-          });
-        // if we reject here, things break in weird ways, even if we catch the exception
-        else resolve({ success: true, data });
-      },
-    );
+  const pipedStream = inputData.pipeThrough(passThroughWithSizeLimit);
+
+  const minSupportedPartSize = 1024 * 1024 * 5;
+  const upload = new Upload({
+    client: s3,
+    params: {
+      Bucket: bucket,
+      Key: filename,
+      ContentType: contentType,
+      // Somehow the transform types don't fully match
+      Body: pipedStream as StreamingBlobPayloadInputTypes,
+    },
+    queueSize: 4,
+    partSize: minSupportedPartSize,
+    leavePartsOnError: false,
   });
 
-  await writeReadableStreamToWritable(data as globalThis.ReadableStream, passThroughWithSizeLimit);
-  return uploadDone;
+  const uploadResult = await upload.done();
+  if (uploadResult.Location === undefined) {
+    throw Error("No Location returned by s3 lib. File may still have been uploaded.");
+  }
+  return uploadResult as CompleteMultipartUploadCommandOutput &
+    Required<Pick<CompleteMultipartUploadCommandOutput, "Location">>;
 }
