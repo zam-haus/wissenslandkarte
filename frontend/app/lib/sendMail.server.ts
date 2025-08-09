@@ -21,6 +21,9 @@ export async function sendMail(
       user: environment.email.SMTP_USER,
       pass: environment.email.SMTP_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: !environment.email.EMAIL_ACCEPT_SELFSIGNED_TSL_CERT,
+    },
   });
 
   const mailOptions: MailOptions = {

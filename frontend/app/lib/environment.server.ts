@@ -97,6 +97,9 @@ export const environment = {
     get FROM_ADDRESS() {
       return getFromEnvOrThrow("EMAIL_FROM_ADDRESS");
     },
+    get EMAIL_ACCEPT_SELFSIGNED_TSL_CERT() {
+      return getFromEnv("EMAIL_ACCEPT_SELFSIGNED_TSL_CERT", Boolean);
+    },
   },
 };
 
