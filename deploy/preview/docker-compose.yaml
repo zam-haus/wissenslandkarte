@@ -30,7 +30,7 @@ services:
         restart: false
     entrypoint: >
       /bin/sh -c '
-        /usr/bin/mc config host add myminio http://minio:9000 "${MINIO_ROOT_USER:-preview-minio-root}" "${MINIO_ROOT_PASSWORD:?error}";
+        /usr/bin/mc alias set myminio http://minio:9000 "${MINIO_ROOT_USER:-preview-minio-root}" "${MINIO_ROOT_PASSWORD:?error}";
         /usr/bin/mc mb "myminio/${S3_STORAGE_BUCKET:-wissenslandkarte-user-fileupload}";
         /usr/bin/mc admin user svcacct add --access-key "${S3_STORAGE_ACCESS_KEY:?error}" --secret-key "${S3_STORAGE_SECRET_KEY:?error}"  myminio "${MINIO_ROOT_USER:-preview-minio-root}"
         echo "{\"Statement\":[{\"Action\":[\"s3:GetObject\"],\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Resource\":[\"arn:aws:s3:::${S3_STORAGE_BUCKET:-wissenslandkarte-user-fileupload}/*\"]}],\"Version\":\"2012-10-17\"}" > policy.json;
@@ -101,6 +101,8 @@ services:
     image: traefik:v2.11
     expose:
       - 80
+    ports:
+      - "80:80"
     command: 
       - "--providers.docker"
     labels:
