@@ -29,7 +29,7 @@ services:
         restart: false
     entrypoint: >
       /bin/sh -c '
-        /usr/bin/mc config host add myminio http://minio:9000 "${MINIO_ROOT_USER}" "${MINIO_ROOT_PASSWORD}";
+        /usr/bin/mc alias set myminio http://minio:9000 "${MINIO_ROOT_USER}" "${MINIO_ROOT_PASSWORD}";
         /usr/bin/mc mb "myminio/${S3_STORAGE_BUCKET}";
         /usr/bin/mc admin user svcacct add --access-key "${S3_STORAGE_ACCESS_KEY}" --secret-key "${S3_STORAGE_SECRET_KEY}"  myminio "${MINIO_ROOT_USER}"
         echo "{\"Statement\":[{\"Action\":[\"s3:GetObject\"],\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Resource\":[\"arn:aws:s3:::${S3_STORAGE_BUCKET}/*\"]}],\"Version\":\"2012-10-17\"}" > policy.json;
