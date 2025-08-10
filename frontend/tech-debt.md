@@ -19,5 +19,4 @@
 ## L
 
 - s3 files don't get deleted when no longer referenced (e.g. image deleted)
-- user uploads are handled before user is authorized
 - renovate pipeline

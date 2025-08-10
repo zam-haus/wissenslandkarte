@@ -1,7 +1,7 @@
-import { Form } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import type { Attachment, Project, ProjectStep } from "prisma/generated";
+import type { Attachment, ProjectStep } from "prisma/generated";
 import { ImageSelect } from "~/components/form-input/image-select";
 import type { ProjectListEntry } from "~/database/repositories/projects.server";
 
@@ -10,6 +10,7 @@ import style from "./step-form.module.css";
 type StepFormProps = {
   action: string | undefined;
   maxImageSize: number;
+  projectId: string;
   projectsWithDates: ProjectListEntry[];
   mode: "create" | "edit";
 };
@@ -24,25 +25,28 @@ export type EditStepFormProps = StepFormProps & {
 };
 type EditableStepProps = Pick<ProjectStep, "description" | "id"> & {
   attachments: Pick<Attachment, "id" | "text" | "type" | "url">[];
-  project: Pick<Project, "id"> | null;
 };
 
 export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
-  const { action, maxImageSize, projectsWithDates } = props;
+  const { maxImageSize, projectsWithDates } = props;
   const { t } = useTranslation("projects");
+
+  const navigate = useNavigate();
 
   const currentState: EditableStepProps | null = props.mode === "edit" ? props.currentState : null;
 
   return (
-    <Form
-      method="post"
-      action={action}
-      encType="multipart/form-data"
-      className={style.verticalForm}
-    >
+    <Form method="post" encType="multipart/form-data" className={style.verticalForm}>
       <label>
         {t("project-name")}
-        <select name="projectId" required defaultValue={currentState?.project?.id}>
+        <select
+          name="newProjectId"
+          required
+          onChange={(e) => {
+            if (props.mode === "create") navigate(`/projects/${e.target.value}/step/new`);
+          }}
+          defaultValue={props.projectId}
+        >
           {projectsWithDates.map((project) => (
             <option key={project.id} value={project.id}>
               {project.title}

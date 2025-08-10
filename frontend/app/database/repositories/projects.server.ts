@@ -1,4 +1,5 @@
 import { Project } from "prisma/generated";
+import { SortOrder } from "prisma/generated/internal/prismaNamespace";
 import { prisma } from "~/database/db.server";
 
 export type ProjectListEntry = Awaited<ReturnType<typeof getProjectList>>[number];
@@ -47,6 +48,59 @@ export async function getProjectsByUser(username: string): Promise<ProjectListEn
     },
   });
   return [...(result?.ownedProjects ?? []), ...(result?.memberProjects ?? [])];
+}
+
+export async function getLatestProjectId(username: string): Promise<string | null> {
+  const result = await prisma.user.findUnique({
+    where: { username },
+    select: {
+      ownedProjects: {
+        select: {
+          id: true,
+          title: true,
+          latestModificationDate: true,
+          mainImage: true,
+          tags: true,
+        },
+        take: 1,
+        orderBy: {
+          latestModificationDate: SortOrder.desc,
+        },
+      },
+      memberProjects: {
+        select: {
+          id: true,
+          title: true,
+          latestModificationDate: true,
+          mainImage: true,
+          tags: true,
+        },
+        take: 1,
+        orderBy: {
+          latestModificationDate: SortOrder.desc,
+        },
+      },
+    },
+  });
+  if (result === null) {
+    return null;
+  }
+  const { ownedProjects, memberProjects } = result;
+  if (ownedProjects.length === 0) {
+    return memberProjects[0]?.id ?? null;
+  }
+  if (memberProjects.length === 0) {
+    return ownedProjects[0]?.id ?? null;
+  }
+
+  if (
+    memberProjects[0].latestModificationDate.getTime() <
+    ownedProjects[0].latestModificationDate.getTime()
+  ) {
+    return memberProjects[0]?.id ?? null;
+  } else {
+    return ownedProjects[0]?.id ?? null;
+  }
 }
 
 export async function searchProjectsByTags(tags: string[]): Promise<ProjectListEntry[]> {

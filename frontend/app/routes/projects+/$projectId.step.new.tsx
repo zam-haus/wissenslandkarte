@@ -94,23 +94,19 @@ export const action = async ({
   }
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+  assertExistsOr400(params.projectId);
   const user = await getLoggedInUser(request, { ifNotLoggedInRedirectTo: "/" });
 
   const projects = await getProjectsByUser(user.username);
 
-  return { projects };
+  return { projects, projectId: params.projectId };
 };
 
 export default function CreateStep() {
-  const currentPath = "/projects/step/new";
-  const { projects } = useLoaderData<typeof loader>();
+  const { projects, projectId } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const { t } = useTranslation("projects");
-
-  if (projects.length === 0) {
-    return <main>{t("no-projects")}</main>;
-  }
 
   const projectsWithDates = projects;
   projectsWithDates.sort(descendingByDatePropertyComparator("latestModificationDate"));
@@ -125,9 +121,10 @@ export default function CreateStep() {
       ) : null}
 
       <StepForm
-        action={currentPath}
+        action=""
         maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
         projectsWithDates={projectsWithDates}
+        projectId={projectId}
         mode="create"
       ></StepForm>
     </main>

@@ -70,9 +70,9 @@ export const action = async ({
 
   const formData = await parseMultipartFormDataUploadFilesToS3(request, ["imageAttachments"]);
 
-  const { projectId: newProjectId, description } = getTrimmedStringsDefaultEmpty(
+  const { newProjectId, description } = getTrimmedStringsDefaultEmpty(
     formData,
-    "projectId",
+    "newProjectId",
     "description",
   );
   const { imageAttachments, attachmentsToRemove } = getStringArray(
@@ -140,12 +140,11 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     `Someone tried editing step ${params.stepId} but was not authorized to do so!`,
   );
 
-  return { projects, currentState };
+  return { projects, currentState, projectId: currentState.project.id };
 };
 
 export default function EditStep() {
-  const currentPath = ".";
-  const { projects, currentState } = useLoaderData<typeof loader>();
+  const { projects, currentState, projectId } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const { t } = useTranslation("projects");
 
@@ -166,9 +165,10 @@ export default function EditStep() {
       ) : null}
 
       <StepForm
-        action={currentPath}
+        action=""
         maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
         projectsWithDates={projectsWithDates}
+        projectId={projectId}
         mode="edit"
         currentState={currentState}
       ></StepForm>
