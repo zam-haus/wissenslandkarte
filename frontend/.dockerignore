@@ -1,0 +1,5 @@
+logs
+node_modules
+.env
+prisma/generated
+prisma/data.db
