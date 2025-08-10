@@ -18,7 +18,8 @@ FROM base AS deps
 WORKDIR /app
 
 ADD package.json package-lock.json ./
-RUN npm ci --include=dev
+ADD patches ./patches
+RUN npm ci --include=dev && npx patch-package
 
 
 #
