@@ -2,7 +2,8 @@ import { MeiliSearch } from "meilisearch";
 
 import type { Project, ProjectStep } from "prisma/generated";
 
-import { setSearchIndexOutdated } from "./appStatus.server";
+import { setSearchIndexOutdated } from "../database/repositories/appStatus.server";
+
 import { environment } from "./environment.server";
 import { baseLogger } from "./logging.server";
 

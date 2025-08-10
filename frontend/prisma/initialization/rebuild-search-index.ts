@@ -1,6 +1,6 @@
 import { MeiliSearch } from "meilisearch";
 
-import { setSearchIndexOutdated } from "~/lib/appStatus.server";
+import { setSearchIndexOutdated } from "~/database/repositories/appStatus.server";
 
 import { environment } from "../../app/lib/environment.server";
 import type {
