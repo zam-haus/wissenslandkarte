@@ -54,6 +54,20 @@ export const action = async ({
 }: ActionFunctionArgs): Promise<TypedResponse<never> | { error: string; exception?: string }> => {
   assertExistsOr400(params.stepId, `Missing step id`);
 
+  const step = await getEditableProjectStepDetails(params.stepId);
+  if (step === null || step.project === null) {
+    return {
+      error: UPDATE_FAILED,
+      exception: "No such step or no such project",
+    };
+  }
+  const project = step.project;
+  await assertAuthorization(
+    request,
+    project,
+    `Someone tried editing step ${params.stepId} but was not authorized to do so!`,
+  );
+
   const formData = await parseMultipartFormDataUploadFilesToS3(request, ["imageAttachments"]);
 
   const { projectId: newProjectId, description } = getTrimmedStringsDefaultEmpty(
@@ -72,21 +86,6 @@ export const action = async ({
       error: FIELD_EMPTY,
     };
   }
-
-  const step = await getEditableProjectStepDetails(params.stepId);
-  if (step === null || step.project === null) {
-    return {
-      error: UPDATE_FAILED,
-      exception: "No such step or no such project",
-    };
-  }
-  const project = step.project;
-  await assertAuthorization(
-    request,
-    project,
-    `Someone tried editing step ${params.stepId} but was not authorized to do so!`,
-  );
-
   if (project.id !== newProjectId) {
     const newProject = await getProjectDetails(newProjectId);
     if (newProject === null) {
