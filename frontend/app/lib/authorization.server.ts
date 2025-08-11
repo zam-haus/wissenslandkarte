@@ -61,6 +61,7 @@ type PascalCase<KebabCase extends string> = KebabCase extends `${infer First}-${
 export const Roles = {
   UserEditor: "user-editor",
   ProjectEditor: "project-editor",
+  InfrastructureAdmin: "infrastructure-admin",
 } as const satisfies { [key in PascalCase<Role>]: Role };
 
 export async function loggedInUserHasRole(request: Request, role: Role) {
