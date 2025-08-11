@@ -84,6 +84,7 @@ services:
       - EMAIL_SMTP_PASSWORD=${EMAIL_SMTP_PASSWORD:?error}
       - EMAIL_USE_STARTTLS=${EMAIL_USE_STARTTLS:?error}
       - EMAIL_FROM_ADDRESS=${EMAIL_FROM_ADDRESS:-wissenslandkarte@zam.haus}
+      - DOCKER_IMAGE=ghcr.io/zam-haus/wissenslandkarte/wlk:edge
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
       - "com.centurylinklabs.watchtower.scope=watchtowerwlkscope"
