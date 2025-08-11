@@ -11,9 +11,12 @@ import { I18nextProvider, initReactI18next } from "react-i18next";
 
 import i18nConfig from "./i18n";
 import i18next from "./i18next.server";
-import { baseLogger } from "./lib/logging.server";
+import { collectApplicationInfo } from "./lib/applicationInfo.server";
+import { baseLogger, logger } from "./lib/logging.server";
 
 const ABORT_DELAY = 5000;
+
+logger("entry").info("Startup info", collectApplicationInfo());
 
 export default async function handleRequest(
   request: Request,
