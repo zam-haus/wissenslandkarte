@@ -1,5 +1,6 @@
 import "react-i18next";
 
+import type admin from "../public/locales/en/admin.json";
 import type common from "../public/locales/en/common.json";
 import type landing_page from "../public/locales/en/landing-page.json";
 import type login from "../public/locales/en/login.json";
@@ -11,6 +12,7 @@ declare module "i18next" {
   interface CustomTypeOptions {
     defaultNS: "common";
     resources: {
+      admin: typeof admin;
       common: typeof common;
       users: typeof users;
       projects: typeof projects;
