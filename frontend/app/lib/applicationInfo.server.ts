@@ -28,18 +28,14 @@ function getDockerInfo() {
     inDocker,
     containerId: inDocker ? hostname : null,
     dockerImage: process.env.DOCKER_IMAGE || null,
-    dockerImageDigest: process.env.DOCKER_IMAGE_DIGEST || null,
     buildTimestamp: process.env.CREATED_AT || null,
-    memLimit: readFileIfExists("/sys/fs/cgroup/memory/memory.limit_in_bytes"),
-    cpuQuota: readFileIfExists("/sys/fs/cgroup/cpu/cpu.cfs_quota_us"),
-    cpuPeriod: readFileIfExists("/sys/fs/cgroup/cpu/cpu.cfs_period_us"),
   };
 }
 
 function getAppInfo() {
   return {
     gitCommit: process.env.COMMIT_ID || safeExec("git rev-parse HEAD"),
-    gitBranch: process.env.COMMIT_REF || safeExec("git rev-parse --abbrev-ref HEAD"),
+    gitRef: process.env.COMMIT_REF || safeExec("git rev-parse --abbrev-ref HEAD"),
   };
 }
 
