@@ -12,6 +12,6 @@ Start dependency systems:
 npm ci
 cp .env.example .env
 # Adapt .env
-npm run db:seed
+npm run db:seed-dev
 npm run dev
 ```
