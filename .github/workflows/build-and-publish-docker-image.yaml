@@ -35,6 +35,13 @@ jobs:
           tags: |
             type=sha
             type=edge,branch=main
+          labels: |
+            org.opencontainers.image.title=Wissenslandkarte Frontend
+            org.opencontainers.image.url=https://zam.haus
+            org.opencontainers.image.source=https://github.com/zam-haus/wissenslandkarte
+            org.opencontainers.image.documentation=https://github.com/zam-haus/wissenslandkarte#readme
+            org.opencontainers.image.licenses=GPLv3
+            org.opencontainers.image.created={{commit_date 'YYYY-MM-DDTHH:mm:ss.SSS[Z]'}}
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -42,3 +49,11 @@ jobs:
           push: true
           tags: ${{ steps.extract-metadata.outputs.tags }}
           labels: ${{ steps.extract-metadata.outputs.labels }}
+          build-args: |
+            COMMIT_ID_ARG=${{ github.sha }}
+            COMMIT_REF_ARG=${{ github.ref }}
+            GITHUB_WORKFLOW_ARG=${{ github.workflow }}
+            GITHUB_RUN_ID_ARG=${{ github.run_id }}
+            GITHUB_RUN_ATTEMPT_ARG=${{ github.run_attempt }}
+            GITHUB_WORKFLOW_RUN_URL_ARG=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            CREATED_AT_ARG=${{ fromJSON(steps.extract-metadata.outputs.json).labels['org.opencontainers.image.created'] }}
