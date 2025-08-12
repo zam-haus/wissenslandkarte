@@ -1,3 +1,16 @@
 {
-  "main-headline": "Admin Bereich"
+  "main-headline": "Admin Bereich",
+  "user-roles": {
+    "title": "Benutzer-Rollenverwaltung",
+    "add-role": "Rolle zu Benutzer hinzufügen",
+    "remove-role": "Rolle von Benutzer entfernen",
+    "username": "Benutzername",
+    "role": "Rolle",
+    "select-role": "Rolle auswählen",
+    "add-button": "Rolle hinzufügen",
+    "remove-button": "Rolle entfernen",
+    "users-with-roles": "Benutzer mit speziellen Rollen",
+    "no-users": "Keine Benutzer mit speziellen Rollen gefunden.",
+    "username-placeholder": "Benutzername eingeben"
+  }
 }

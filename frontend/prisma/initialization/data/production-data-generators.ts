@@ -1,4 +1,4 @@
-export const roles = ["user-editor", "project-editor", "infrastructure-admin"] as const;
+export const roles = ["user-editor", "project-editor", "infrastructure-admin", "role-manager"] as const;
 
 export const metadataTypes = [
   {

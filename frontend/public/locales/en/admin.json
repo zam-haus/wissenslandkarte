@@ -1,3 +1,16 @@
 {
-  "main-headline": "Admin Area"
+  "main-headline": "Admin Area",
+  "user-roles": {
+    "title": "User Role Management",
+    "add-role": "Add Role to User",
+    "remove-role": "Remove Role from User",
+    "username": "Username",
+    "role": "Role",
+    "select-role": "Select a role",
+    "add-button": "Add Role",
+    "remove-button": "Remove Role",
+    "users-with-roles": "Users with Special Roles",
+    "no-users": "No users with special roles found.",
+    "username-placeholder": "Enter username"
+  }
 }

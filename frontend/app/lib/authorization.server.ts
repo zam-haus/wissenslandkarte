@@ -62,6 +62,7 @@ export const Roles = {
   UserEditor: "user-editor",
   ProjectEditor: "project-editor",
   InfrastructureAdmin: "infrastructure-admin",
+  RoleManager: "role-manager",
 } as const satisfies { [key in PascalCase<Role>]: Role };
 
 export async function loggedInUserHasRole(request: Request, role: Role) {

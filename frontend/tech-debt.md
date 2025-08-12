@@ -18,5 +18,12 @@
 
 ## L
 
-- s3 files don't get deleted when no longer referenced (e.g. image deleted)
+- s3 files don't get deleted when no longer referenced (e.g. image deleted, edit didn't go through but image already uploaded)
 - renovate pipeline
+
+Create Issues:
+
+- alerting wenn festplatte voll laeuft/generelle observability
+- limit amount of emails sendable per day
+- include link to user profile in email
+- site-admin role to remove unreferenced images
