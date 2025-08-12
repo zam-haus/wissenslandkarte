@@ -35,7 +35,7 @@ export function makeRandomFakeProject(faker: Faker): Omit<Project, "id"> {
   return {
     title: `${faker.company.buzzVerb()} ${faker.company.buzzNoun()}`,
     description: faker.lorem.paragraphs(2),
-    mainImage: faker.image.urlLoremFlickr({ category: "technics", width: 640, height: 480 }),
+    mainImage: faker.image.urlPicsumPhotos({ width: 640, height: 480 }),
     creationDate: faker.date.recent({ days: 5, refDate: latestModificationDate }),
     needsProjectArea: faker.datatype.boolean(),
     latestModificationDate,
@@ -75,7 +75,7 @@ export function makeRandomFakeAttachmentDto(
       type,
       creationDate,
       text,
-      url: faker.image.urlLoremFlickr({ category: "technics", width: 640, height: 480 }),
+      url: faker.image.urlPicsumPhotos({ width: 640, height: 480 }),
     };
   } else {
     return { type, creationDate, text, url: faker.internet.url() };
