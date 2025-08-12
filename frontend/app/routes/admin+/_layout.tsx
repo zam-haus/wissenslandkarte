@@ -1,12 +1,18 @@
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Page } from "~/components/page/page";
-import { isLoggedInLoader } from "~/lib/authorization.server";
+import { isAnyUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 
 export { DefaultErrorBoundary as ErrorBoundary } from "~/components/default-error-boundary";
 
-export const loader = isLoggedInLoader;
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  return {
+    isLoggedIn: await isAnyUserLoggedIn(request),
+    showApplicationInfo: await loggedInUserHasRole(request, Roles.InfrastructureAdmin),
+  };
+};
 
 export const handle = {
   i18n: ["admin"],
@@ -14,10 +20,20 @@ export const handle = {
 
 export default function Admin() {
   const { t } = useTranslation("admin");
-  const { isLoggedIn } = useLoaderData<typeof loader>();
+  const { isLoggedIn, showApplicationInfo } = useLoaderData<typeof loader>();
+
+  const adminSpecialNav = (
+    <>
+      {showApplicationInfo ? (
+        <li>
+          <Link to="/admin/applicationInfo">Admin: Application Info</Link>
+        </li>
+      ) : null}
+    </>
+  );
 
   return (
-    <Page isLoggedIn={isLoggedIn} title={t("main-headline")}>
+    <Page isLoggedIn={isLoggedIn} additionalNavItems={adminSpecialNav} title={t("main-headline")}>
       <Outlet />
     </Page>
   );

@@ -1,5 +1,5 @@
 import { Link, UIMatch, useMatches } from "@remix-run/react";
-import { type PropsWithChildren, useState } from "react";
+import React, { type PropsWithChildren, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ActionBar } from "./action-bar";
@@ -24,7 +24,12 @@ export function Page({
   title,
   isLoggedIn,
   children,
-}: PropsWithChildren<{ title: string; isLoggedIn: boolean }>) {
+  additionalNavItems,
+}: PropsWithChildren<{
+  title: string;
+  isLoggedIn: boolean;
+  additionalNavItems?: React.JSX.Element;
+}>) {
   const { t } = useTranslation("common");
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -92,6 +97,7 @@ export function Page({
           <li>
             <Link to="/">{t("nav-faq")}</Link>
           </li>
+          {additionalNavItems}
           {loginSection}
         </ul>
       </nav>
