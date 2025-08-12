@@ -5,6 +5,7 @@ import { PrismaClient } from "../generated";
 
 import {
   makeRandomFakeAttachmentDto,
+  makeRandomFakeMetadataValues,
   makeRandomFakeProject,
   makeRandomFakeProjectStep,
   makeRandomTag,
@@ -97,6 +98,9 @@ async function seedProjects(
   allTags: Tag[],
   allUsers: User[],
 ) {
+  // Get metadata types for adding metadata to projects
+  const availableMetadataTypes = await prisma.metadataType.findMany();
+
   while (count-- > 0) {
     const data = makeRandomFakeProject(faker);
 
@@ -111,6 +115,8 @@ async function seedProjects(
       members = faker.helpers.arrayElements(allUsers, randomInt(4));
       members = members.filter((member) => !owners.includes(member));
     }
+
+    const shouldAddMetadata = faker.datatype.boolean();
 
     await prisma.project.create({
       data: {
@@ -141,6 +147,13 @@ async function seedProjects(
             })),
           ],
         },
+        ...(shouldAddMetadata
+          ? {
+              metadata: {
+                create: makeRandomFakeMetadataValues(faker, availableMetadataTypes),
+              },
+            }
+          : {}),
       },
     });
   }

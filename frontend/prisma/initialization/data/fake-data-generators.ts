@@ -81,3 +81,25 @@ export function makeRandomFakeAttachmentDto(
     return { type, creationDate, text, url: faker.internet.url() };
   }
 }
+
+export function makeRandomFakeMetadataValues(
+  faker: Faker,
+  availableMetadataTypes: { id: string; name: string; dataType: string }[],
+) {
+  const metadata: { metadataTypeId: string; value: string }[] = [];
+
+  const selectedMetadataTypes = faker.helpers.arrayElements(
+    availableMetadataTypes,
+    faker.number.int({ min: 1, max: availableMetadataTypes.length }),
+  );
+
+  for (const metadataType of selectedMetadataTypes) {
+    const randomValue = faker.number.int({ min: 3, max: 120 });
+    metadata.push({
+      metadataTypeId: metadataType.id,
+      value: randomValue.toString(),
+    });
+  }
+
+  return metadata;
+}
