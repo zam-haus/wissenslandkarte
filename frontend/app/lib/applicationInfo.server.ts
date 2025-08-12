@@ -29,6 +29,7 @@ function getDockerInfo() {
     containerId: inDocker ? hostname : null,
     dockerImage: process.env.DOCKER_IMAGE || null,
     buildTimestamp: process.env.CREATED_AT || null,
+    buildPipeline: process.env.GITHUB_WORKFLOW_RUN_URL || null,
   };
 }
 
