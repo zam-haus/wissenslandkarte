@@ -15,6 +15,7 @@ import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/aut
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 
 import style from "./$projectId._index.module.css";
+import { MetadataDisplay } from "./components/metadata-display";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   assertExistsOr400(params.projectId, `Missing project id`);
@@ -62,6 +63,8 @@ export default function Project() {
       <CommonMarkdown>{project.description}</CommonMarkdown>
 
       <ProjectTagList className="tags" tags={project.tags} />
+
+      <MetadataDisplay metadata={project.metadata} />
 
       <ul className={style.attachments}>
         {project.attachments.map((attachment) => (

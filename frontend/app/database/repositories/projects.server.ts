@@ -131,6 +131,27 @@ export async function getProjectDetails(projectId: Project["id"]) {
       members: { select: { id: true, username: true } },
       tags: true,
       attachments: true,
+      metadata: {
+        select: {
+          id: true,
+          value: true,
+          metadataType: {
+            select: {
+              id: true,
+              name: true,
+              dataType: true,
+              translations: {
+                select: {
+                  language: true,
+                  displayName: true,
+                  description: true,
+                  unit: true,
+                },
+              },
+            },
+          },
+        },
+      },
       steps: {
         select: {
           id: true,
