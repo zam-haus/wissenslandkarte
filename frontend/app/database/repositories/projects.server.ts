@@ -2,6 +2,8 @@ import { Project } from "prisma/generated";
 import { SortOrder } from "prisma/generated/internal/prismaNamespace";
 import { prisma } from "~/database/db.server";
 
+import { ShallowMetadataValue } from "./projectMetadata.server";
+
 export type ProjectListEntry = Awaited<ReturnType<typeof getProjectList>>[number];
 
 export async function getProjectList(options?: {
@@ -173,6 +175,7 @@ type ProjectCreateRequest = {
   coworkers: string[];
   tags: string[];
   needProjectSpace: boolean;
+  metadata: ShallowMetadataValue[];
 };
 export async function createProject(request: ProjectCreateRequest) {
   return prisma.project.create({
@@ -188,6 +191,16 @@ export async function createProject(request: ProjectCreateRequest) {
       mainImage: request.mainImage ?? null,
       creationDate: new Date(),
       latestModificationDate: new Date(),
+      ...(request.metadata.length > 0
+        ? {
+            metadata: {
+              create: request.metadata.map((singleDataItem) => ({
+                metadataTypeId: singleDataItem.metadataTypeId,
+                value: singleDataItem.value,
+              })),
+            },
+          }
+        : {}),
     },
   });
 }
@@ -200,6 +213,7 @@ export async function updateProject(request: ProjectStepRequest, options: Projec
     if (options.removeImageIfNoNewValueGiven) return { mainImage: null };
     return {};
   }
+
   return prisma.project.update({
     where: { id: request.id },
     data: {
@@ -216,6 +230,13 @@ export async function updateProject(request: ProjectStepRequest, options: Projec
       tags: {
         set: [],
         connectOrCreate: request.tags.map((name) => ({ create: { name }, where: { name } })),
+      },
+      metadata: {
+        deleteMany: {}, // Delete all existing metadata
+        create: request.metadata.map((singleDataItem) => ({
+          metadataTypeId: singleDataItem.metadataTypeId,
+          value: singleDataItem.value,
+        })),
       },
       needsProjectArea: request.needProjectSpace,
       creationDate: new Date(),

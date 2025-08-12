@@ -3,6 +3,7 @@ import { redirect } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
+import { getAllMetadataTypes } from "~/database/repositories/projectMetadata.server";
 import { createProject } from "~/database/repositories/projects.server";
 import { getLoggedInUser, isAnyUserLoggedIn } from "~/lib/authorization.server";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
@@ -21,6 +22,7 @@ import {
 } from "../../lib/formDataParser";
 
 import { ProjectForm } from "./components/project-form";
+import { getMetadataArray, validateMetadataArray } from "./lib/getMetadataArray.server";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const CREATE_FAILED = "CREATE_FAILED";
@@ -40,6 +42,16 @@ export const action = async ({
   }
 
   try {
+    const metadata = getMetadataArray(formData);
+    const validationResult = await validateMetadataArray(metadata);
+
+    if (!validationResult.valid) {
+      return {
+        error: CREATE_FAILED,
+        exception: "Metadata validation failed",
+      };
+    }
+
     const result = await createProject({
       title,
       description,
@@ -47,6 +59,7 @@ export const action = async ({
       ...getStringArray(formData, "coworkers", "tags"),
       ...getStringsDefaultUndefined(formData, "mainImage"),
       ...getBooleanDefaultFalse(formData, "needProjectSpace"),
+      metadata,
     });
 
     await upsertProjectToSearchIndex(result);
@@ -69,16 +82,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
 
   const searchParams = new URL(request.url).searchParams;
-  const [{ tags }, { users }] = await Promise.all([
+  const [{ tags }, { users }, availableMetadataTypes] = await Promise.all([
     lowLevelTagLoader(searchParams.get("tagFilter")),
     lowLevelUserLoader(searchParams.get("userFilter")),
+    getAllMetadataTypes(),
   ]);
 
-  return { tags, users };
+  return { tags, users, availableMetadataTypes };
 };
 
 export default function NewProject() {
-  const { tags, users } = useLoaderData<typeof loader>();
+  const { tags, users, availableMetadataTypes } = useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
   const actionData = useActionData<typeof action>();
@@ -94,10 +108,12 @@ export default function NewProject() {
 
       <ProjectForm
         mode="create"
-        action={undefined} // undefined means current url
+        action={""}
         users={users}
         tags={tags}
         maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
+        availableMetadataTypes={availableMetadataTypes}
+        currentMetadata={[]}
       />
     </main>
   );

@@ -1,16 +1,16 @@
 import { useTranslation } from "react-i18next";
 
-import { type ProjectMetadata } from "~/database/repositories/projectMetadata.server";
+import { type MetadataValue } from "~/database/repositories/projectMetadata.server";
 
 import style from "./metadata-display.module.css";
 
 type MetadataDisplayProps = {
-  metadata: ProjectMetadata;
-  language: string;
+  metadata: MetadataValue[];
 };
 
-export function MetadataDisplay({ metadata, language }: MetadataDisplayProps) {
-  const { t } = useTranslation("projects");
+export function MetadataDisplay({ metadata }: MetadataDisplayProps) {
+  const { t, i18n } = useTranslation("projects");
+  const { language } = i18n;
 
   if (metadata.length === 0) {
     return null;

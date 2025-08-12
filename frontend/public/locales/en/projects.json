@@ -22,5 +22,6 @@
   "delete-image": "Delete this image:",
   "metadata": "Project Metadata",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "select-value": "Select a value"
 }

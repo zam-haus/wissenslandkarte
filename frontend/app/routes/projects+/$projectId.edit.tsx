@@ -4,6 +4,7 @@ import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
+import { getAllMetadataTypes } from "~/database/repositories/projectMetadata.server";
 import { getProjectDetails, updateProject } from "~/database/repositories/projects.server";
 import {
   getLoggedInUser,
@@ -29,6 +30,7 @@ import {
 } from "../../lib/formDataParser";
 
 import { ProjectForm } from "./components/project-form";
+import { getMetadataArray, validateMetadataArray } from "./lib/getMetadataArray.server";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";
@@ -76,6 +78,16 @@ export const action = async ({
   }
 
   try {
+    const metadata = getMetadataArray(formData);
+    const validationResult = await validateMetadataArray(metadata);
+
+    if (!validationResult.valid) {
+      return {
+        error: UPDATE_FAILED,
+        exception: "Metadata validation failed",
+      };
+    }
+
     const result = await updateProject(
       {
         id: params.projectId,
@@ -85,6 +97,7 @@ export const action = async ({
         ...getStringArray(formData, "coworkers", "tags"),
         ...getStringsDefaultUndefined(formData, "mainImage"),
         ...getBooleanDefaultFalse(formData, "needProjectSpace"),
+        metadata,
       },
       { removeImageIfNoNewValueGiven: Boolean(formData.get("removeMainImage")) },
     );
@@ -112,16 +125,17 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   await assertAuthorization(request, project);
 
   const searchParams = new URL(request.url).searchParams;
-  const [{ tags }, { users }] = await Promise.all([
+  const [{ tags }, { users }, availableMetadataTypes] = await Promise.all([
     lowLevelTagLoader(searchParams.get("tagFilter")),
     lowLevelUserLoader(searchParams.get("userFilter")),
+    getAllMetadataTypes(),
   ]);
 
-  return { tags, users, project };
+  return { tags, users, project, availableMetadataTypes };
 };
 
 export default function EditProject() {
-  const { project, tags, users } = useLoaderData<typeof loader>();
+  const { project, tags, users, availableMetadataTypes } = useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
   const actionData = useActionData<typeof action>();
@@ -141,6 +155,8 @@ export default function EditProject() {
         tags={tags}
         maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
         currentState={project}
+        availableMetadataTypes={availableMetadataTypes}
+        currentMetadata={project.metadata}
       />
     </main>
   );

@@ -6,9 +6,12 @@ import { ImageSelect } from "~/components/form-input/image-select";
 import { TagSelect } from "~/components/form-input/tag-select";
 import type { User } from "~/components/form-input/user-select";
 import { UserSelect } from "~/components/form-input/user-select";
+import type { MetadataType, MetadataValue } from "~/database/repositories/projectMetadata.server";
 import type { getProjectDetails } from "~/database/repositories/projects.server";
 
 import style from "../new.module.css";
+
+import { MetadataForm } from "./metadata-form";
 
 type ProjectFormProps = {
   action: string | undefined;
@@ -16,6 +19,8 @@ type ProjectFormProps = {
   users: User[];
   maxImageSize: number;
   mode: "create" | "edit";
+  availableMetadataTypes: MetadataType[];
+  currentMetadata: MetadataValue[];
 };
 
 export type CreateProjectFormProps = ProjectFormProps & {
@@ -30,7 +35,7 @@ export type EditProjectFormProps = ProjectFormProps & {
 type EditableProject = Omit<NonNullable<Awaited<ReturnType<typeof getProjectDetails>>>, "steps">;
 
 export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps) {
-  const { action, maxImageSize, tags, users } = props;
+  const { action, maxImageSize, tags, users, availableMetadataTypes, currentMetadata } = props;
   const { t } = useTranslation("projects");
 
   const currentState: EditableProject | null = props.mode === "edit" ? props.currentState : null;
@@ -84,6 +89,11 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
       <label>
         {t("select-need-space")} <input type="checkbox" name="needProjectSpace" />
       </label>
+
+      <MetadataForm
+        availableMetadataTypes={[...availableMetadataTypes]}
+        currentMetadata={currentMetadata}
+      />
 
       <button type="submit">{t("save")}</button>
     </Form>

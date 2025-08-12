@@ -22,5 +22,6 @@
   "delete-image": "Dieses Bild löschen:",
   "metadata": "Projekt-Metadaten",
   "yes": "Ja",
-  "no": "Nein"
+  "no": "Nein",
+  "select-value": "Wert auswählen"
 }
