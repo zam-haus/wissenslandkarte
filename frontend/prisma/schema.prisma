@@ -66,11 +66,12 @@ model Project {
   description String
   mainImage   String?
 
-  owners      User[]        @relation("projectOwners")
-  members     User[]        @relation("projectMembers")
+  owners      User[]            @relation("projectOwners")
+  members     User[]            @relation("projectMembers")
   tags        Tag[]
   attachments Attachment[]
   steps       ProjectStep[]
+  metadata    ProjectMetadata[]
 
   creationDate           DateTime
   latestModificationDate DateTime
@@ -108,4 +109,42 @@ model KeyValue {
 
   key   String @unique
   value String
+}
+
+model MetadataType {
+  id       String @id @default(nanoid())
+  name     String @unique // e.g., "cost", "materials", "time_invested"
+  dataType String // e.g., "float", "int", "boolean", "text"
+
+  values       ProjectMetadata[]
+  translations MetadataTypeTranslation[]
+
+  @@index(fields: [name])
+}
+
+model MetadataTypeTranslation {
+  id          String  @id @default(nanoid())
+  language    String // e.g., "en", "de"
+  displayName String // e.g., "Cost", "Kosten"
+  description String // e.g., "Cost of the project rounded to the nearest euro", "Kosten des Projekts auf die nächste Euro gerundet"
+  unit        String? // e.g., "hours", "Stunden"
+
+  metadataType   MetadataType @relation(fields: [metadataTypeId], references: [id], onDelete: Cascade)
+  metadataTypeId String
+
+  @@unique([metadataTypeId, language]) // One translation per language per metadata type
+  @@index(fields: [language, metadataTypeId])
+}
+
+model ProjectMetadata {
+  id             String       @id @default(nanoid())
+  value          String // The actual metadata value
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId      String
+  metadataType   MetadataType @relation(fields: [metadataTypeId], references: [id], onDelete: Cascade)
+  metadataTypeId String
+
+  @@unique([projectId, metadataTypeId]) // One value per metadata type per project
+  @@index(fields: [projectId])
+  @@index(fields: [metadataTypeId])
 }
