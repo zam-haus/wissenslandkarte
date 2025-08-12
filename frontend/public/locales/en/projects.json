@@ -19,5 +19,8 @@
   "delete-step": "Delete",
   "edit-step": "Edit",
   "delete-step-confirm": "Do you really want to delete this update?",
-  "delete-image": "Delete this image:"
+  "delete-image": "Delete this image:",
+  "metadata": "Project Metadata",
+  "yes": "Yes",
+  "no": "No"
 }

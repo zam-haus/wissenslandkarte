@@ -1,0 +1,17 @@
+.metadataSection {
+  margin: var(--margin-large) 0;
+  padding: var(--padding-large);
+  border: var(--secondary-border);
+  border-radius: var(--secondary-border-radius);
+  background-color: var(--secondary-background);
+}
+
+.metadataGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--secondary-gap);
+}
+
+.metadataDescription {
+  cursor: help;
+}
