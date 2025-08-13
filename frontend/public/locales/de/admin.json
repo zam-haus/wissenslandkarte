@@ -42,5 +42,19 @@
       "prefix": "Fehler:",
       "unknown": "Unbekannter Fehler aufgetreten"
     }
+  },
+  "user-roles": {
+    "title": "Benutzer-Rollenverwaltung",
+    "username": "Benutzername",
+    "users-with-roles": "Benutzer mit speziellen Rollen",
+    "no-users": "Keine Benutzer mit speziellen Rollen gefunden.",
+    "save-roles": "Rollen speichern",
+    "grant-role-to-user": "Rolle an Benutzer vergeben",
+    "username-required": "Benutzername ist erforderlich",
+    "invalid-roles": "Ungültige Rollen",
+    "user-not-found": "Benutzer nicht gefunden",
+    "update-failed": "Fehler beim Aktualisieren der Benutzerrollen",
+    "update-success": "Benutzerrollen erfolgreich aktualisiert",
+    "cannot-remove-role-manager": "Sie können die Rollenmanager-Rolle nicht von sich selbst entfernen"
   }
 }
