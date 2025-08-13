@@ -14,7 +14,9 @@ const assertAuthorization = serverOnly$(async (request: Request) => {
     Roles.InfrastructureAdmin,
   );
 
-  if (!isInfrastructureAdminLoggedIn) {
+  const isRoleManagerLoggedIn = await loggedInUserHasRole(request, Roles.RoleManager);
+
+  if (!isInfrastructureAdminLoggedIn && !isRoleManagerLoggedIn) {
     logger("admin-index").warn(`Someone tried accessing the admin panel without authorization`);
     throw redirect("/");
   }
