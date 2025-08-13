@@ -42,5 +42,19 @@
       "prefix": "Error:",
       "unknown": "Unknown error occurred"
     }
+  },
+  "user-roles": {
+    "title": "User Role Management",
+    "username": "Username",
+    "users-with-roles": "Users with Special Roles",
+    "no-users": "No users with special roles found.",
+    "save-roles": "Save Roles",
+    "grant-role-to-user": "Grant Role to User",
+    "username-required": "Username is required",
+    "invalid-roles": "Invalid roles",
+    "user-not-found": "User not found",
+    "update-failed": "Failed to update user roles",
+    "update-success": "User roles updated successfully",
+    "cannot-remove-role-manager": "You cannot remove the role manager role from yourself"
   }
 }

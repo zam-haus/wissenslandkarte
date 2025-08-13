@@ -123,3 +123,34 @@ export async function getUserContactData(username: User["username"]): Promise<Co
     },
   });
 }
+
+export async function getUserWithRoles(username: User["username"]): Promise<UserWithRoles | null> {
+  return prisma.user.findUnique({
+    where: { username },
+    include: { roles: { select: { title: true } } },
+  });
+}
+
+export async function setUserRoles(username: User["username"], roleTitles: string[]): Promise<UserWithRoles> {
+  return prisma.user.update({
+    where: { username },
+    data: {
+      roles: {
+        set: roleTitles.map((title) => ({ title })),
+      },
+    },
+    include: { roles: { select: { title: true } } },
+  });
+}
+
+export async function getUsersWithSpecialRoles(): Promise<UserWithRoles[]> {
+  return prisma.user.findMany({
+    where: {
+      roles: {
+        some: {},
+      },
+    },
+    include: { roles: { select: { title: true } } },
+    orderBy: { username: "asc" },
+  });
+}

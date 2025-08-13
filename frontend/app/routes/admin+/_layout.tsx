@@ -11,6 +11,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {
     isLoggedIn: await isAnyUserLoggedIn(request),
     showInfrastructureRoutes: await loggedInUserHasRole(request, Roles.InfrastructureAdmin),
+    showUserRoles: await loggedInUserHasRole(request, Roles.RoleManager),
   };
 };
 
@@ -20,7 +21,7 @@ export const handle = {
 
 export default function Admin() {
   const { t } = useTranslation("admin");
-  const { isLoggedIn, showInfrastructureRoutes } = useLoaderData<typeof loader>();
+  const { isLoggedIn, showInfrastructureRoutes, showUserRoles } = useLoaderData<typeof loader>();
 
   const adminSpecialNav = (
     <>
@@ -36,6 +37,11 @@ export default function Admin() {
             <Link to="/admin/searchIndex">Admin: Search Index</Link>
           </li>
         </>
+      ) : null}
+      {showUserRoles ? (
+        <li>
+          <Link to="/admin/user-roles">Admin: User Roles</Link>
+        </li>
       ) : null}
     </>
   );
