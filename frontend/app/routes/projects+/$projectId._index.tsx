@@ -8,7 +8,7 @@ import { isAttachmentType } from "prisma/initialization/data/fake-data-generator
 import { renderDate } from "~/components/date-rendering";
 import { CommonMarkdown } from "~/components/markdown";
 import { ModalDialog } from "~/components/modal";
-import { conditionalShowEditButton } from "~/components/page/page";
+import { conditionalShowGlobalButtons } from "~/components/page/page";
 import { ProjectTagList } from "~/components/tags/tags";
 import { getProjectDetails } from "~/database/repositories/projects.server";
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
@@ -29,10 +29,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const isLoggedInUserAuthorizedToEdit =
     isOwnerLoggedIn || isMemberLoggedIn || isProjectAdminLoggedIn;
+  const isLoggedInUserAuthorizedToDelete = isOwnerLoggedIn || isProjectAdminLoggedIn;
 
   return {
     project,
-    ...conditionalShowEditButton(isLoggedInUserAuthorizedToEdit),
+    ...conditionalShowGlobalButtons({
+      editButton: isLoggedInUserAuthorizedToEdit,
+      deleteButton: isLoggedInUserAuthorizedToDelete,
+    }),
     isLoggedInUserAuthorizedToEdit,
   };
 };

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { renderDate } from "~/components/date-rendering";
 import { CommonMarkdown } from "~/components/markdown";
-import { conditionalShowEditButton } from "~/components/page/page";
+import { conditionalShowGlobalButtons } from "~/components/page/page";
 import { ProjectsList } from "~/components/project-list/projects-list";
 import { PeopleTagList } from "~/components/tags/tags";
 import { UserImage } from "~/components/user-image/user-image";
@@ -25,7 +25,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const adminLoggedIn = await loggedInUserHasRole(request, Roles.UserEditor);
   return {
     user,
-    ...conditionalShowEditButton(ownerLoggedIn || adminLoggedIn),
+    ...conditionalShowGlobalButtons({ editButton: ownerLoggedIn || adminLoggedIn }),
   };
 };
 

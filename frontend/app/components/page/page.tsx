@@ -1,23 +1,44 @@
 import { Link, UIMatch, useMatches } from "@remix-run/react";
+import { ParseKeys } from "i18next";
 import React, { type PropsWithChildren, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ActionBar } from "./action-bar";
 import style from "./page.module.css";
 
-export const INCLUDE_EDIT_BUTTON = { showEditButtonInPageComponent: true };
+type GlobalButtonConfig = {
+  relativeRoute: string;
+  i18nLabelKey: ParseKeys<"common">;
+};
 
-export function conditionalShowEditButton(showButton: boolean) {
-  return showButton ? INCLUDE_EDIT_BUTTON : {};
+type GlobalButton = GlobalButtonConfig & {
+  route: string;
+};
+
+export function conditionalShowGlobalButtons(buttons: {
+  editButton?: boolean;
+  deleteButton?: boolean;
+}): { globalButtons: GlobalButtonConfig[] } {
+  const editButton = { relativeRoute: "edit", i18nLabelKey: "toplevel-edit" as const };
+  const deleteButton = { relativeRoute: "delete", i18nLabelKey: "toplevel-delete" as const };
+  return {
+    globalButtons: [
+      ...(buttons.editButton ? [editButton] : []),
+      ...(buttons.deleteButton ? [deleteButton] : []),
+    ],
+  };
 }
 
-function anyLoaderHasShowEditButton(route: UIMatch) {
-  return (
-    typeof route.data === "object" &&
-    route.data !== null &&
-    "showEditButtonInPageComponent" in route.data &&
-    route.data.showEditButtonInPageComponent
-  );
+function getGlobalButtonRequests(routes: UIMatch[]): GlobalButton[] {
+  return routes.flatMap((route) => {
+    if (typeof route.data === "object" && route.data !== null && "globalButtons" in route.data) {
+      return (route.data.globalButtons as GlobalButtonConfig[]).map((button) => ({
+        ...button,
+        route: route.pathname + "/" + button.relativeRoute,
+      }));
+    }
+    return [];
+  });
 }
 
 export function Page({
@@ -35,7 +56,7 @@ export function Page({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const matches = useMatches();
-  const editButtonRequest = matches.find(anyLoaderHasShowEditButton);
+  const globalButtonRequests = getGlobalButtonRequests(matches);
 
   if (
     !matches.some(
@@ -74,11 +95,11 @@ export function Page({
           ☰
         </button>
         <h1>{title}</h1>
-        {editButtonRequest !== undefined ? (
-          <Link to={editButtonRequest.pathname + "/edit"}>{t("toplevel-edit")}</Link>
-        ) : (
-          <></>
-        )}
+        {globalButtonRequests.map((button) => (
+          <Link key={button.route + button.i18nLabelKey} to={button.route}>
+            {t(button.i18nLabelKey)}
+          </Link>
+        ))}
       </header>
       <nav className={menuOpen ? style.open : style.closed}>
         <ul>
