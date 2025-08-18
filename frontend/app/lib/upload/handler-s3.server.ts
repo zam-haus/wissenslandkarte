@@ -63,8 +63,8 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
       }
 
       return uploadedFileUrl.toString().replace(/https?:/, "");
-    } catch (e) {
-      logger.error("Uploading of a file to S3 as %s has failed!", newFilename, e);
+    } catch (error) {
+      logger.error("Uploading of a file to S3 as %s has failed!", newFilename, { error });
       return undefined;
     }
   };
