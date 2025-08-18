@@ -1,6 +1,6 @@
 import { ReadableStream, TransformStream } from "stream/web";
 
-import { CompleteMultipartUploadCommandOutput, S3Client } from "@aws-sdk/client-s3";
+import { CompleteMultipartUploadCommandOutput } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import type { UploadHandler } from "@remix-run/node";
 import { StreamingBlobPayloadInputTypes } from "@smithy/types";
@@ -8,6 +8,7 @@ import { fileTypeFromStream } from "file-type";
 
 import { environment } from "../environment.server";
 import { baseLogger } from "../logging.server";
+import { s3Client, s3Bucket } from "../storage/s3-client.server";
 
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "./constants";
 import {
@@ -19,23 +20,6 @@ import {
 } from "./validation.server";
 
 const logger = baseLogger.withTag("upload-s3");
-
-const bucket = environment.s3.BUCKET;
-const s3 = new S3Client({
-  credentials: {
-    accessKeyId: environment.s3.ACCESS_KEY,
-    secretAccessKey: environment.s3.SECRET_KEY,
-  },
-  region: environment.s3.REGION,
-
-  ...(environment.s3.IS_MINIO
-    ? ({
-        endpoint: environment.s3.ENDPOINT,
-        forcePathStyle: true,
-        tls: false,
-      } satisfies ConstructorParameters<typeof S3Client>[0])
-    : {}),
-});
 
 export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandler {
   return async ({ name, data, contentType, filename }) => {
@@ -109,9 +93,9 @@ async function uploadStreamToS3(
 
   const minSupportedPartSize = 1024 * 1024 * 5;
   const upload = new Upload({
-    client: s3,
+    client: s3Client,
     params: {
-      Bucket: bucket,
+      Bucket: s3Bucket,
       Key: filename,
       ContentType: contentType,
       // Somehow the transform types don't fully match
