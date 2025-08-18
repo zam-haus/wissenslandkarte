@@ -15,6 +15,7 @@ import {
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
+import { deleteS3Files } from "~/lib/storage/s3Management.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import {
@@ -88,6 +89,12 @@ export const action = async ({
       };
     }
 
+    const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
+    const { removeMainImage } = getBooleanDefaultFalse(formData, "removeMainImage");
+    if (project.mainImage !== null && (mainImage !== undefined || removeMainImage)) {
+      await deleteS3Files([project.mainImage]);
+    }
+
     const result = await updateProject(
       {
         id: params.projectId,
@@ -95,11 +102,11 @@ export const action = async ({
         description,
         owners: [user.username],
         ...getStringArray(formData, "coworkers", "tags"),
-        ...getStringsDefaultUndefined(formData, "mainImage"),
+        mainImage,
         ...getBooleanDefaultFalse(formData, "needProjectSpace"),
         metadata,
       },
-      { removeImageIfNoNewValueGiven: Boolean(formData.get("removeMainImage")) },
+      { removeImageIfNoNewValueGiven: removeMainImage },
     );
 
     await upsertProjectToSearchIndex(result);
