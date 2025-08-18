@@ -1,6 +1,7 @@
 import winston, { createLogger, format, transports } from "winston";
 
 import "winston-daily-rotate-file";
+import { environment } from "./environment.server";
 
 const levelsWithFatal = { ...winston.config.npm.levels, fatal: -1 };
 winston.addColors({ fatal: "bold red" });
@@ -72,6 +73,10 @@ if (process.env.NODE_ENV === "development") {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return `${timestamp} [${childTag ?? tag}] ${level}: ${message}`;
   });
+
+  if (environment.DEBUG) {
+    baseLogger.level = "debug";
+  }
 
   baseLogger.add(
     new transports.Console({

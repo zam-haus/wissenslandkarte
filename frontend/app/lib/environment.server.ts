@@ -3,6 +3,9 @@ import invariant from "tiny-invariant";
 import { baseLogger } from "./logging.server";
 
 export const environment = {
+  get DEBUG() {
+    return getFromEnv("DEBUG", Boolean);
+  },
   get IS_DEV_MODE() {
     return process.env.NODE_ENV === "development";
   },
