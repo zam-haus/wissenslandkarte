@@ -25,6 +25,7 @@ import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.ser
 import { getStringArray, getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
 
 import { StepForm } from "./components/step-form";
+import { deleteAttachmentFilesByIds } from "./lib/deleteAttachments.server";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";
@@ -103,6 +104,8 @@ export const action = async ({
   }
 
   try {
+    await deleteAttachmentFilesByIds(attachmentsToRemove);
+
     const result = await updateProjectStep(params.stepId, {
       description,
       projectId: newProjectId,

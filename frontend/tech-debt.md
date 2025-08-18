@@ -22,5 +22,4 @@
 
 ## L
 
-- s3 files don't get deleted when no longer referenced (e.g. image deleted)
 - renovate pipeline

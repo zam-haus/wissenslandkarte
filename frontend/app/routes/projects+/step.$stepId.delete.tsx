@@ -9,6 +9,8 @@ import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/aut
 import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
 
+import { deleteAttachmentFiles } from "./lib/deleteAttachments.server";
+
 // Only use in server functions!
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const assertAuthorization = serverOnly$(
@@ -38,6 +40,7 @@ export const action = async ({ params, request }: LoaderFunctionArgs) => {
 
   await assertAuthorization(request, step.project);
 
+  await deleteAttachmentFiles(step.attachments);
   await deleteProjectStep(params.stepId);
 
   return redirect("/projects/" + step.project.id);

@@ -38,6 +38,13 @@ export async function getProjectStepWithProjectOwnersAndMembers(projectStepId: P
           members: { select: { id: true, username: true } },
         },
       },
+      attachments: {
+        select: {
+          id: true,
+          url: true,
+          type: true,
+        },
+      },
     },
   });
 }
