@@ -245,3 +245,7 @@ export async function updateProject(request: ProjectStepRequest, options: Projec
     },
   });
 }
+
+export async function deleteProject(projectId: Project["id"]) {
+  return prisma.project.delete({ where: { id: projectId } });
+}

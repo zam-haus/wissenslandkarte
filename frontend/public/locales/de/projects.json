@@ -23,5 +23,12 @@
   "metadata": "Projekt-Metadaten",
   "yes": "Ja",
   "no": "Nein",
-  "select-value": "Wert auswählen"
+  "select-value": "Wert auswählen",
+  "delete": {
+    "confirmation-prompt": "Willst du das Projekt \"{{title}}\" wirklich löschen?",
+    "confirmation-response-yes": "Ja, Projekt unwiederbringlich löschen",
+    "project-deleted": "Projekt gelöscht",
+    "project-deleted-message": "Projekt \"{{title}}\" wurde erfolgreich gelöscht.",
+    "back-to-projects": "Zurück zu Projekten"
+  }
 }
