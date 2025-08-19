@@ -41,6 +41,9 @@ model User {
   setupCompleted Boolean @default(false)
   roles          Role[]
 
+  s3ObjectImage     S3Object?  @relation("imageOfUser")
+  s3ObjectsUploaded S3Object[] @relation("uploadedBy")
+
   @@index(fields: [username, keycloakId])
 }
 
@@ -56,6 +59,7 @@ model Attachment {
   projectId     String?
   projectStep   ProjectStep? @relation(fields: [projectStepId], references: [id], onDelete: Cascade)
   projectStepId String?
+  s3Object      S3Object?
 
   @@index(fields: [projectId, projectStepId])
 }
@@ -78,6 +82,7 @@ model Project {
   latestModificationDate DateTime
 
   needsProjectArea Boolean
+  s3Object         S3Object?
 
   @@index(fields: [title, description])
 }
@@ -148,4 +153,29 @@ model ProjectMetadata {
   @@unique([projectId, metadataTypeId]) // One value per metadata type per project
   @@index(fields: [projectId])
   @@index(fields: [metadataTypeId])
+}
+
+model S3Object {
+  id        String  @id @default(nanoid())
+  key       String  @unique
+  bucket    String
+  status    String  @default("pending") // pending, uploading, uploaded, orphaned
+  url       String?
+  publicUrl String? @unique
+
+  uploadedAt   DateTime @default(now())
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull, name: "uploadedBy")
+  uploadedById String?
+
+  attachment   Attachment? @relation(fields: [attachmentId], references: [id], onDelete: SetNull)
+  attachmentId String?     @unique
+
+  mainImageIn          Project? @relation(fields: [mainImageInProjectId], references: [id], onDelete: SetNull)
+  mainImageInProjectId String?  @unique
+
+  imageOfUser   User?   @relation(fields: [imageOfUserId], references: [id], onDelete: SetNull, name: "imageOfUser")
+  imageOfUserId String? @unique
+
+  @@index(fields: [status])
+  @@index(fields: [publicUrl])
 }
