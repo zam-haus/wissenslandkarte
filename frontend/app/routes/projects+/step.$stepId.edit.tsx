@@ -19,7 +19,7 @@ import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
 import { upsertProjectStepToSearchIndex } from "~/lib/search.server";
-import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
+import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 
 import { getStringArray, getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";

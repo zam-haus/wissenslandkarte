@@ -1,8 +1,8 @@
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 
+import { environment } from "../environment.server";
 import { baseLogger } from "../logging.server";
-
-import { s3Client, s3Bucket } from "./s3-client.server";
+import { s3Client, s3Bucket } from "../storage/s3-client.server";
 
 const logger = baseLogger.withTag("s3-management");
 
@@ -136,4 +136,14 @@ function extractS3KeyFromUrl(url: string): string | null {
     logger.warn("Failed to parse URL for S3 key extraction: %s", url, error);
     return null;
   }
+}
+
+export function getPublicUrl(s3Url: string) {
+  const uploadedFileUrl = new URL(s3Url);
+
+  if (environment.s3.OVERRIDE_HOST !== undefined) {
+    uploadedFileUrl.host = environment.s3.OVERRIDE_HOST;
+  }
+
+  return uploadedFileUrl.toString().replace(/https?:/, "");
 }

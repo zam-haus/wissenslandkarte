@@ -7,7 +7,7 @@ import { getAllMetadataTypes } from "~/database/repositories/projectMetadata.ser
 import { createProject } from "~/database/repositories/projects.server";
 import { getLoggedInUser, isAnyUserLoggedIn } from "~/lib/authorization.server";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
-import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
+import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import {
   lowLevelTagLoader,

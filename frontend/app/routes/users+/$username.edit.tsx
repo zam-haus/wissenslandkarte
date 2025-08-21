@@ -14,7 +14,7 @@ import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorizat
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
 import { getSession } from "~/lib/session.server";
-import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/upload/constants";
+import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 
 import { getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
