@@ -67,3 +67,51 @@ export async function deleteS3Objects(s3ObjectIds: string[]) {
     where: { id: { in: s3ObjectIds } },
   });
 }
+
+export async function getProblematicS3Objects() {
+  const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+
+  return await prisma.s3Object.findMany({
+    where: {
+      OR: [
+        { status: "failed" },
+        { status: "orphaned" },
+        {
+          AND: [{ status: "pending" }, { uploadedAt: { lt: tenMinutesAgo } }],
+        },
+        { uploadedById: null },
+        {
+          AND: [{ attachmentId: null }, { mainImageInProjectId: null }, { imageOfUserId: null }],
+        },
+      ],
+    },
+    include: {
+      uploadedBy: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+      attachment: {
+        select: {
+          id: true,
+        },
+      },
+      mainImageIn: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+      imageOfUser: {
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+    },
+    orderBy: {
+      uploadedAt: "desc",
+    },
+  });
+}

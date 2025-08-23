@@ -10,7 +10,7 @@ export { DefaultErrorBoundary as ErrorBoundary } from "~/components/default-erro
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {
     isLoggedIn: await isAnyUserLoggedIn(request),
-    showApplicationInfo: await loggedInUserHasRole(request, Roles.InfrastructureAdmin),
+    showInfrastructureRoutes: await loggedInUserHasRole(request, Roles.InfrastructureAdmin),
   };
 };
 
@@ -20,14 +20,19 @@ export const handle = {
 
 export default function Admin() {
   const { t } = useTranslation("admin");
-  const { isLoggedIn, showApplicationInfo } = useLoaderData<typeof loader>();
+  const { isLoggedIn, showInfrastructureRoutes } = useLoaderData<typeof loader>();
 
   const adminSpecialNav = (
     <>
-      {showApplicationInfo ? (
-        <li>
-          <Link to="/admin/applicationInfo">Admin: Application Info</Link>
-        </li>
+      {showInfrastructureRoutes ? (
+        <>
+          <li>
+            <Link to="/admin/applicationInfo">Admin: Application Info</Link>
+          </li>
+          <li>
+            <Link to="/admin/s3Objects">Admin: S3 Objects</Link>
+          </li>
+        </>
       ) : null}
     </>
   );

@@ -1,3 +1,23 @@
 {
-  "main-headline": "Admin Area"
+  "main-headline": "Admin Area",
+  "s3objects": {
+    "title": "Problematic S3 Objects",
+    "description": "Objects that are failed, orphaned, or pending for more than 10 minutes",
+    "no-objects": "No problematic S3 objects found.",
+    "unknown": "Unknown",
+    "na": "N/A",
+    "none": "None",
+    "table": {
+      "id": "ID",
+      "key": "Key",
+      "bucket": "Bucket",
+      "status": "Status",
+      "uploaded-at": "Uploaded At",
+      "uploaded-by": "Uploaded By",
+      "url": "URL",
+      "attachment": "Attachment",
+      "main-image-in": "Main Image In",
+      "image-of-user": "Image Of User"
+    }
+  }
 }

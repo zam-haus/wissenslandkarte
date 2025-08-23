@@ -1,3 +1,23 @@
 {
-  "main-headline": "Admin Bereich"
+  "main-headline": "Admin Bereich",
+  "s3objects": {
+    "title": "Problematische S3-Objekte",
+    "description": "Objekte, die fehlgeschlagen, verwaist oder länger als 10 Minuten ausstehend sind",
+    "no-objects": "Keine problematischen S3-Objekte gefunden.",
+    "unknown": "Unbekannt",
+    "na": "N/V",
+    "none": "Keine",
+    "table": {
+      "id": "ID",
+      "key": "Schlüssel",
+      "bucket": "Bucket",
+      "status": "Status",
+      "uploaded-at": "Hochgeladen am",
+      "uploaded-by": "Hochgeladen von",
+      "url": "URL",
+      "attachment": "Anhang",
+      "main-image-in": "Hauptbild in",
+      "image-of-user": "Bild von Benutzer"
+    }
+  }
 }
