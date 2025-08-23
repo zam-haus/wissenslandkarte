@@ -44,8 +44,26 @@ export async function updateS3ObjectStatus(s3ObjectId: string, status: S3ObjectS
   });
 }
 
+export async function markS3ObjectsAsOrphanedAndUnlink(s3ObjectIds: string[]) {
+  return prisma.s3Object.updateMany({
+    where: { id: { in: s3ObjectIds } },
+    data: {
+      status: "orphaned",
+      attachmentId: null,
+      mainImageInProjectId: null,
+      imageOfUserId: null,
+    },
+  });
+}
+
 export async function getS3ObjectsByPublicUrls(publicUrls: string[]) {
   return prisma.s3Object.findMany({
     where: { publicUrl: { in: publicUrls } },
+  });
+}
+
+export async function deleteS3Objects(s3ObjectIds: string[]) {
+  return prisma.s3Object.deleteMany({
+    where: { id: { in: s3ObjectIds } },
   });
 }

@@ -1,58 +1,30 @@
-import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { _Error, DeletedObject, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 
-import { getS3ObjectsByPublicUrls } from "~/database/repositories/s3Objects.server";
+import { S3Object } from "prisma/generated";
+import {
+  deleteS3Objects,
+  getS3ObjectsByPublicUrls,
+  markS3ObjectsAsOrphanedAndUnlink,
+  updateS3ObjectStatus,
+} from "~/database/repositories/s3Objects.server";
 
 import { baseLogger } from "../logging.server";
 import { s3Bucket, s3Client } from "../storage/s3-client.server";
 
 const logger = baseLogger.withTag("s3-management");
 
-export async function deleteS3Files(urlsToDelete: string[]): Promise<{
-  success: boolean;
-  successfulDeletions: number;
-  failedUrls: string[];
-}> {
+export async function deleteS3FilesByPublicUrl(urlsToDelete: string[]): Promise<undefined> {
   if (urlsToDelete.length === 0) {
-    return {
-      success: true,
-      successfulDeletions: 0,
-      failedUrls: [],
-    };
+    return;
   }
 
   logger.debug("Attempting to delete %d S3 files", urlsToDelete.length);
   logger.debug("URLs to delete: %o", urlsToDelete);
 
-  const s3Objects = await getS3ObjectsByPublicUrls(urlsToDelete);
-  const failedUrls: string[] = [];
-
-  if (s3Objects.length !== urlsToDelete.length) {
-    const missingKeys = urlsToDelete.filter(
-      (it) => !s3Objects.some((s3Object) => s3Object.key === it),
-    );
-    logger.error("Could not find all S3 objects for the given URLs: %o", missingKeys);
-  }
+  const s3Objects = await loadS3Objects(urlsToDelete);
 
   try {
-    const deleteObjects = s3Objects.map((it) => {
-      if (it.bucket !== s3Bucket) {
-        if (it.url !== null) {
-          failedUrls.push(it.url);
-        }
-        logger.error("S3 object is not in the correct bucket: %s", it.bucket);
-      }
-      return { Key: it.key };
-    });
-    logger.debug("Delete objects request: %o", deleteObjects);
-    logger.debug("Using bucket: %s", s3Bucket);
-
-    const command = new DeleteObjectsCommand({
-      Bucket: s3Bucket,
-      Delete: {
-        Objects: deleteObjects,
-        Quiet: false,
-      },
-    });
+    const command = makeDeleteObjectsCommand(s3Objects);
 
     const result = await s3Client.send(command);
 
@@ -61,38 +33,70 @@ export async function deleteS3Files(urlsToDelete: string[]): Promise<{
       errors: result.Errors?.map((e) => ({ key: e.Key, code: e.Code, message: e.Message })),
     });
 
-    const successfulDeletions = result.Deleted?.length ?? 0;
-    const s3Errors = result.Errors ?? [];
-
-    if (s3Errors.length > 0) {
-      for (const error of s3Errors) {
-        const failedS3Object = s3Objects.find((it) => it.key === error.Key);
-        if (failedS3Object && failedS3Object.url !== null) {
-          failedUrls.push(failedS3Object.url);
-        }
-      }
-
-      logger.warn("Some S3 files failed to delete: %d errors", s3Errors.length);
-      for (const error of s3Errors) {
-        logger.warn("Failed to delete key %s: %s (%s)", error.Key, error.Message, error.Code, {
-          error,
-        });
-      }
+    if (result.Deleted !== undefined) {
+      await handleSuccessfulDeletions(result.Deleted, s3Objects);
     }
 
-    logger.debug(
-      "Successfully deleted %d out of %d S3 files",
-      successfulDeletions,
-      urlsToDelete.length,
-    );
-
-    return { success: failedUrls.length === 0, successfulDeletions, failedUrls };
+    if (result.Errors !== undefined) {
+      await handleFailedDeletions(result.Errors, s3Objects);
+    }
   } catch (error) {
     logger.error("Failed to execute batch S3 deletion", error);
-    return {
-      success: false,
-      successfulDeletions: 0,
-      failedUrls: urlsToDelete,
-    };
+    await markS3ObjectsAsOrphanedAndUnlink(s3Objects.map((it) => it.id));
   }
+}
+
+async function loadS3Objects(urlsToDelete: string[]) {
+  const s3Objects = await getS3ObjectsByPublicUrls(urlsToDelete);
+
+  if (s3Objects.length !== urlsToDelete.length) {
+    const missingKeys = urlsToDelete.filter(
+      (it) => !s3Objects.some((s3Object) => s3Object.key === it),
+    );
+    logger.error("Could not find all S3 objects for the given URLs: %o", missingKeys);
+  }
+
+  return s3Objects;
+}
+
+function makeDeleteObjectsCommand(s3Objects: S3Object[]) {
+  const deleteObjects = s3Objects.flatMap((it) => {
+    if (it.bucket !== s3Bucket) {
+      logger.error("S3 object is not in the correct bucket: %s", it.bucket);
+      updateS3ObjectStatus(it.id, "orphaned").catch((error: unknown) => {
+        logger.error("Failed to update S3 object status: %s", { error });
+      });
+      return [];
+    }
+    return { Key: it.key };
+  });
+  logger.debug("Delete objects request: %o", deleteObjects);
+  logger.debug("Using bucket: %s", s3Bucket);
+
+  return new DeleteObjectsCommand({
+    Bucket: s3Bucket,
+    Delete: {
+      Objects: deleteObjects,
+      Quiet: false,
+    },
+  });
+}
+
+async function handleSuccessfulDeletions(deletedObjects: DeletedObject[], s3Objects: S3Object[]) {
+  const successfulS3ObjectIds = deletedObjects.flatMap((deletedObject) => {
+    return s3Objects.find((it) => it.key === deletedObject.Key)?.id ?? [];
+  });
+  await deleteS3Objects(successfulS3ObjectIds);
+}
+
+async function handleFailedDeletions(s3Errors: _Error[], s3Objects: S3Object[]) {
+  logger.error("Some S3 files failed to delete: %d errors", s3Errors.length);
+  const failedS3ObjectIds = s3Errors.flatMap((error) => {
+    logger.warn("Failed to delete key %s: %s (%s)", error.Key, error.Message, error.Code, {
+      error: error,
+    });
+    return s3Objects.find((it) => it.key === error.Key)?.id ?? [];
+  });
+
+  await markS3ObjectsAsOrphanedAndUnlink(failedS3ObjectIds);
 }

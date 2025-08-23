@@ -16,7 +16,7 @@ import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
-import { deleteS3Files } from "~/lib/storage/s3Deletion.server";
+import { deleteS3FilesByPublicUrl } from "~/lib/storage/s3Deletion.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import {
   lowLevelTagLoader,
@@ -97,7 +97,7 @@ export const action = async ({
     }
 
     if (project.mainImage !== null && (mainImage !== undefined || removeMainImage)) {
-      await deleteS3Files([project.mainImage]);
+      await deleteS3FilesByPublicUrl([project.mainImage]);
     }
 
     const result = await updateProject(

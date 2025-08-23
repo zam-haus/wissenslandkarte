@@ -53,7 +53,6 @@ model Attachment {
   url          String
   text         String
   creationDate DateTime
-  isStale      Boolean  @default(false)
 
   project       Project?     @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId     String?

@@ -7,7 +7,7 @@ import { deleteProject, getProjectDetails } from "~/database/repositories/projec
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
-import { deleteS3Files } from "~/lib/storage/s3Deletion.server";
+import { deleteS3FilesByPublicUrl } from "~/lib/storage/s3Deletion.server";
 
 import { deleteAttachmentFiles } from "./lib/deleteAttachments.server";
 
@@ -44,7 +44,7 @@ export const action = async ({ params, request }: LoaderFunctionArgs) => {
   ];
 
   await deleteAttachmentFiles(allAttachments);
-  await deleteS3Files(project.mainImage ? [project.mainImage] : []);
+  await deleteS3FilesByPublicUrl(project.mainImage ? [project.mainImage] : []);
   await deleteProject(params.projectId);
 
   return redirect("?success=true&title=" + project.title);

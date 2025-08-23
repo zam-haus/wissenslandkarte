@@ -36,7 +36,7 @@ export async function upsertProjectToSearchIndex(project: SearchableProjectPrope
 export async function upsertProjectStepToSearchIndex(step: SearchableProjectStepProperties) {
   try {
     const { id, description, projectId } = step;
-    await projectStepsIndex.addDocuments([{ id, description, projectId }], { primaryKey: "id" });
+    await projectStepsIndex.addDocuments([{ id, description, projectId }], { primaryKey: "id" }); // TODO: make non-blocking
   } catch (e) {
     logger.error("Could not upsert project step into search index. Index is out of date", e);
     await setSearchIndexOutdated(true);
