@@ -1,7 +1,10 @@
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 
 import { Attachment, Project, User } from "prisma/generated";
-import { updateS3ObjectByPublicUrl } from "~/database/repositories/s3Objects.server";
+import {
+  getS3ObjectsByPublicUrls,
+  updateS3ObjectByPublicUrl,
+} from "~/database/repositories/s3Objects.server";
 
 import { environment } from "../environment.server";
 import { baseLogger } from "../logging.server";
@@ -25,25 +28,26 @@ export async function deleteS3Files(urlsToDelete: string[]): Promise<{
   logger.debug("Attempting to delete %d S3 files", urlsToDelete.length);
   logger.debug("URLs to delete: %o", urlsToDelete);
 
-  const { validEntries: s3Keys, invalidUrls } = extractS3KeysFromUrls(urlsToDelete);
+  const s3Objects = await getS3ObjectsByPublicUrls(urlsToDelete);
+  const failedUrls: string[] = [];
 
-  logger.debug(
-    "Extracted S3 keys: %o",
-    s3Keys.map((entry) => ({ url: entry.url, key: entry.key })),
-  );
-  logger.debug("Invalid URLs: %o", invalidUrls);
-
-  if (s3Keys.length === 0) {
-    logger.warn("No valid S3 keys found in URLs");
-    return {
-      success: false,
-      successfulDeletions: 0,
-      failedUrls: urlsToDelete,
-    };
+  if (s3Objects.length !== urlsToDelete.length) {
+    const missingKeys = urlsToDelete.filter(
+      (it) => !s3Objects.some((s3Object) => s3Object.key === it),
+    );
+    logger.error("Could not find all S3 objects for the given URLs: %o", missingKeys);
   }
 
   try {
-    const deleteObjects = s3Keys.map((entry) => ({ Key: entry.key }));
+    const deleteObjects = s3Objects.map((it) => {
+      if (it.bucket !== s3Bucket) {
+        if (it.url !== null) {
+          failedUrls.push(it.url);
+        }
+        logger.error("S3 object is not in the correct bucket: %s", it.bucket);
+      }
+      return { Key: it.key };
+    });
     logger.debug("Delete objects request: %o", deleteObjects);
     logger.debug("Using bucket: %s", s3Bucket);
 
@@ -65,16 +69,14 @@ export async function deleteS3Files(urlsToDelete: string[]): Promise<{
     const successfulDeletions = result.Deleted?.length ?? 0;
     const s3Errors = result.Errors ?? [];
 
-    const failedUrls: string[] = [...invalidUrls];
-
-    for (const error of s3Errors) {
-      const failedEntry = s3Keys.find((entry) => entry.key === error.Key);
-      if (failedEntry) {
-        failedUrls.push(failedEntry.url);
-      }
-    }
-
     if (s3Errors.length > 0) {
+      for (const error of s3Errors) {
+        const failedS3Object = s3Objects.find((it) => it.key === error.Key);
+        if (failedS3Object && failedS3Object.url !== null) {
+          failedUrls.push(failedS3Object.url);
+        }
+      }
+
       logger.warn("Some S3 files failed to delete: %d errors", s3Errors.length);
       for (const error of s3Errors) {
         logger.warn("Failed to delete key %s: %s (%s)", error.Key, error.Message, error.Code, {

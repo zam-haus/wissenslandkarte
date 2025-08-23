@@ -43,3 +43,9 @@ export async function updateS3ObjectStatus(s3ObjectId: string, status: S3ObjectS
     data: { status },
   });
 }
+
+export async function getS3ObjectsByPublicUrls(publicUrls: string[]) {
+  return prisma.s3Object.findMany({
+    where: { publicUrl: { in: publicUrls } },
+  });
+}
