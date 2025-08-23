@@ -3,6 +3,8 @@ import { ReadableStream } from "stream/web";
 import type { UploadHandler } from "@remix-run/node";
 import { fileTypeFromStream } from "file-type";
 
+import { User } from "prisma/generated";
+
 import { baseLogger } from "../logging.server";
 import { uploadStreamToS3 } from "../storage/s3Uploadig.server";
 
@@ -16,7 +18,10 @@ import {
 
 const logger = baseLogger.withTag("upload-s3");
 
-export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandler {
+export function createS3UploadHandler(
+  formFieldsToUpload: string[],
+  uploader: Pick<User, "id">,
+): UploadHandler {
   return async ({ name, data, contentType, filename }) => {
     logger.debug("checking name %s", name);
     if (!formFieldsToUpload.includes(name)) {
@@ -49,7 +54,12 @@ export function createS3UploadHandler(formFieldsToUpload: string[]): UploadHandl
     const newFilename = createValidFilename(filename);
     logger.debug("uploading to %s", newFilename);
     try {
-      const uploadResult = await uploadStreamToS3(streamForUpload, newFilename, contentType);
+      const uploadResult = await uploadStreamToS3(
+        streamForUpload,
+        newFilename,
+        contentType,
+        uploader,
+      );
 
       return uploadResult.publicUrl;
     } catch (error) {

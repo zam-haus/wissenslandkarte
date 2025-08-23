@@ -3,7 +3,7 @@ import { ReadableStream, TransformStream } from "stream/web";
 import { Upload } from "@aws-sdk/lib-storage";
 import { StreamingBlobPayloadInputTypes } from "@smithy/types";
 
-import { S3Object } from "prisma/generated";
+import { S3Object, User } from "prisma/generated";
 import {
   createS3Object,
   updateS3Object,
@@ -26,6 +26,7 @@ export async function uploadStreamToS3(
   inputData: ReadableStream<Uint8Array>,
   filename: string,
   contentType: string,
+  uploader: Pick<User, "id">,
 ) {
   let uploadedFileSize = 0;
   const passThroughWithSizeLimit = new TransformStream<Uint8Array, Uint8Array>({
@@ -46,6 +47,7 @@ export async function uploadStreamToS3(
     key: filename,
     bucket: s3Bucket,
     status: "uploading",
+    uploadedById: uploader.id,
   });
 
   const pipedStream = inputData.pipeThrough(passThroughWithSizeLimit);
