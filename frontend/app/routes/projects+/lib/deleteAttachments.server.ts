@@ -2,7 +2,7 @@ import { Attachment } from "prisma/generated";
 import { prisma } from "~/database/db.server";
 import { markAttachmentsAsStale } from "~/database/repositories/attachments.server";
 import { logger } from "~/lib/logging.server";
-import { deleteS3Files } from "~/lib/storage/s3Management.server";
+import { deleteS3Files } from "~/lib/storage/s3Deletion.server";
 
 export async function deleteAttachmentFilesByIds(ids: string[]) {
   const attachments = await prisma.attachment.findMany({

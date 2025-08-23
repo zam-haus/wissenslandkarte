@@ -7,7 +7,7 @@ import { deleteProject, getProjectDetails } from "~/database/repositories/projec
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
-import { deleteS3Files } from "~/lib/storage/s3Management.server";
+import { deleteS3Files } from "~/lib/storage/s3Deletion.server";
 
 import { deleteAttachmentFiles } from "./lib/deleteAttachments.server";
 
