@@ -15,8 +15,8 @@ import {
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
-import { deleteS3Files } from "~/lib/storage/s3Management.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
+import { deleteS3Files } from "~/lib/storage/s3Management.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import {
   lowLevelTagLoader,
@@ -32,6 +32,7 @@ import {
 
 import { ProjectForm } from "./components/project-form";
 import { getMetadataArray, validateMetadataArray } from "./lib/getMetadataArray.server";
+import { storeProjectMainImageS3ObjectPurposes } from "./lib/storeS3ObjectPurpose.server";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";
@@ -79,9 +80,15 @@ export const action = async ({
   }
 
   try {
+    const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
+    const { removeMainImage } = getBooleanDefaultFalse(formData, "removeMainImage");
     const metadata = getMetadataArray(formData);
-    const validationResult = await validateMetadataArray(metadata);
 
+    if (mainImage !== undefined) {
+      storeProjectMainImageS3ObjectPurposes(mainImage, project, logger("project-edit"));
+    }
+
+    const validationResult = await validateMetadataArray(metadata);
     if (!validationResult.valid) {
       return {
         error: UPDATE_FAILED,
@@ -89,8 +96,6 @@ export const action = async ({
       };
     }
 
-    const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
-    const { removeMainImage } = getBooleanDefaultFalse(formData, "removeMainImage");
     if (project.mainImage !== null && (mainImage !== undefined || removeMainImage)) {
       await deleteS3Files([project.mainImage]);
     }

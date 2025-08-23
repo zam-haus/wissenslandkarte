@@ -8,12 +8,14 @@ export async function createS3Object(data: {
   key: string;
   bucket: string;
   status?: S3ObjectStatus;
+  uploadedById?: string;
 }) {
   return await prisma.s3Object.create({
     data: {
       key: data.key,
       bucket: data.bucket,
       status: data.status || "pending",
+      uploadedById: data.uploadedById,
     },
   });
 }
@@ -21,6 +23,16 @@ export async function createS3Object(data: {
 export async function updateS3Object(s3ObjectId: string, data: Partial<Omit<S3Object, "id">>) {
   return prisma.s3Object.update({
     where: { id: s3ObjectId },
+    data,
+  });
+}
+
+export async function updateS3ObjectByPublicUrl(
+  publicUrl: string,
+  data: Partial<Omit<S3Object, "id">>,
+) {
+  return prisma.s3Object.update({
+    where: { publicUrl },
     data,
   });
 }

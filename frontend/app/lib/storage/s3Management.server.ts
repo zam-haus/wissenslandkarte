@@ -1,5 +1,8 @@
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 
+import { Attachment, Project, User } from "prisma/generated";
+import { updateS3ObjectByPublicUrl } from "~/database/repositories/s3Objects.server";
+
 import { environment } from "../environment.server";
 import { baseLogger } from "../logging.server";
 import { s3Client, s3Bucket } from "../storage/s3-client.server";
@@ -146,4 +149,19 @@ export function getPublicUrl(s3Url: string) {
   }
 
   return uploadedFileUrl.toString().replace(/https?:/, "");
+}
+
+export async function storePurpose(
+  publicS3Url: string,
+  purpose: {
+    attachmentTo?: Pick<Attachment, "id">;
+    projectMainImage?: Pick<Project, "id">;
+    userProfileImage?: Pick<User, "id">;
+  },
+) {
+  return updateS3ObjectByPublicUrl(publicS3Url, {
+    attachmentId: purpose.attachmentTo?.id,
+    mainImageInProjectId: purpose.projectMainImage?.id,
+    imageOfUserId: purpose.userProfileImage?.id,
+  });
 }

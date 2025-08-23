@@ -23,6 +23,9 @@ export async function createProjectStep(request: ProjectStepCreateRequest) {
         })),
       },
     },
+    include: {
+      attachments: true,
+    },
   });
 }
 
@@ -99,6 +102,9 @@ export async function updateProjectStep(
         })),
         deleteMany: request.attachmentsToRemove.map((id) => ({ id })),
       },
+    },
+    include: {
+      attachments: true,
     },
   });
 }

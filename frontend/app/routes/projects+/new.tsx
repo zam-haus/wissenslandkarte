@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { getAllMetadataTypes } from "~/database/repositories/projectMetadata.server";
 import { createProject } from "~/database/repositories/projects.server";
 import { getLoggedInUser, isAnyUserLoggedIn } from "~/lib/authorization.server";
+import { logger } from "~/lib/logging.server";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
@@ -23,6 +24,7 @@ import {
 
 import { ProjectForm } from "./components/project-form";
 import { getMetadataArray, validateMetadataArray } from "./lib/getMetadataArray.server";
+import { storeProjectMainImageS3ObjectPurposes } from "./lib/storeS3ObjectPurpose.server";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const CREATE_FAILED = "CREATE_FAILED";
@@ -52,16 +54,21 @@ export const action = async ({
       };
     }
 
+    const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
+
     const result = await createProject({
       title,
       description,
       owners: [user.username],
       ...getStringArray(formData, "coworkers", "tags"),
-      ...getStringsDefaultUndefined(formData, "mainImage"),
+      mainImage: mainImage,
       ...getBooleanDefaultFalse(formData, "needProjectSpace"),
       metadata,
     });
 
+    if (mainImage !== undefined) {
+      storeProjectMainImageS3ObjectPurposes(mainImage, result, logger("project-new"));
+    }
     await upsertProjectToSearchIndex(result);
 
     return redirect(`/projects/${result.id}`);

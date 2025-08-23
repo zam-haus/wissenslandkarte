@@ -17,7 +17,11 @@ import { getSession } from "~/lib/session.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 
-import { getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
+import {
+  getStringsDefaultUndefined,
+  getTrimmedStringsDefaultEmpty,
+} from "../../lib/formDataParser";
+import { storeProfileImageS3ObjectPurposes } from "../projects+/lib/storeS3ObjectPurpose.server";
 
 import styles from "./$username.edit.module.css";
 
@@ -65,6 +69,11 @@ export const action = async ({
       success: false,
       error: FIELD_EMPTY,
     };
+  }
+
+  const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
+  if (mainImage !== undefined) {
+    storeProfileImageS3ObjectPurposes(mainImage, user, logger("username-edit"));
   }
 
   try {

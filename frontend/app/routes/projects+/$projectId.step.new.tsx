@@ -22,6 +22,7 @@ import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.ser
 import { getStringArray, getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
 
 import { StepForm } from "./components/step-form";
+import { storeAttachmentsS3ObjectPurposes } from "./lib/storeS3ObjectPurpose.server";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const CREATE_FAILED = "CREATE_FAILED";
@@ -79,6 +80,8 @@ export const action = async ({
       projectId,
       imageAttachmentUrls: imageAttachments,
     });
+
+    storeAttachmentsS3ObjectPurposes(imageAttachments, result.attachments, logger("step-new"));
 
     await upsertProjectStepToSearchIndex(result);
 

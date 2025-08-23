@@ -26,6 +26,7 @@ import { getStringArray, getTrimmedStringsDefaultEmpty } from "../../lib/formDat
 
 import { StepForm } from "./components/step-form";
 import { deleteAttachmentFilesByIds } from "./lib/deleteAttachments.server";
+import { storeAttachmentsS3ObjectPurposes } from "./lib/storeS3ObjectPurpose.server";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";
@@ -113,6 +114,7 @@ export const action = async ({
       attachmentsToRemove,
     });
 
+    storeAttachmentsS3ObjectPurposes(imageAttachments, result.attachments, logger("step-edit"));
     await upsertProjectStepToSearchIndex(result);
 
     return redirect(`/projects/${result.projectId}`);
