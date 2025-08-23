@@ -5,7 +5,6 @@
 
 ## After update
 
-- csrf (delete step?)
 - paged search results, then replace loaders in {users+,projects+}/index
 
 ## S
