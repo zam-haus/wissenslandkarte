@@ -22,9 +22,9 @@ import {
   getStringsDefaultUndefined,
   getTrimmedStringsDefaultEmpty,
 } from "../../lib/formDataParser";
-import { storeProfileImageS3ObjectPurposes } from "../projects+/lib/storeS3ObjectPurpose.server";
 
 import styles from "./$username.edit.module.css";
+import { storeProfileImageS3ObjectPurposes } from "./lib/storeS3ObjectPurpose.server";
 
 const FIELD_EMPTY = "FIELD_EMPTY";
 const UPDATE_FAILED = "UPDATE_FAILED";
