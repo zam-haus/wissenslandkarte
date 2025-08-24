@@ -5,8 +5,8 @@ import { UNSAFE_DataWithResponseInit as DataWithResponseInit } from "@remix-run/
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
-import { Prisma } from "prisma/generated";
 import type { User } from "prisma/generated";
+import { Prisma } from "prisma/generated";
 import { ImageSelect } from "~/components/form-input/image-select";
 import { UserImage } from "~/components/user-image/user-image";
 import { getUserOverview, updateUser, UserOverview } from "~/database/repositories/user.server";
@@ -15,6 +15,7 @@ import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
 import { getSession } from "~/lib/session.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
+import { deleteS3FilesByPublicUrl } from "~/lib/storage/s3Deletion.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 
 import {
@@ -57,27 +58,39 @@ export const action = async ({
 
   await assertAuthorization(request, user);
 
-  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainImage"]);
+  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["image"]);
 
   const { username, description } = getTrimmedStringsDefaultEmpty(
     formData,
     "username",
     "description",
   );
+  const { image } = getStringsDefaultUndefined(formData, "image");
+
   if (username.length === 0) {
+    if (image !== undefined) {
+      await deleteS3FilesByPublicUrl([image]);
+    }
     return {
       success: false,
       error: FIELD_EMPTY,
     };
   }
 
-  const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
-  if (mainImage !== undefined) {
-    storeProfileImageS3ObjectPurposes(mainImage, user, logger("username-edit"));
+  if (image !== undefined) {
+    if (user.image !== null) {
+      await deleteS3FilesByPublicUrl([user.image]);
+    }
+    storeProfileImageS3ObjectPurposes(image, user, logger("username-edit"));
   }
 
   try {
-    const updatedUser = await updateUser({ id: user.id, username, description, image: user.image });
+    const updatedUser = await updateUser({
+      id: user.id,
+      username,
+      description,
+      image: image ?? user.image,
+    });
     const session = await getSession(request);
     session.set("user", updatedUser);
     const headers = await session.commit();
@@ -129,7 +142,7 @@ export default function UserEdit() {
 
   return (
     <main className={styles.main}>
-      <Form action="." method="POST" encType="multipart/form-data">
+      <Form method="POST" encType="multipart/form-data">
         <UserImage {...user} className={styles.atRight} />
         <ImageSelect
           maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
