@@ -142,6 +142,7 @@ export default function UserEdit() {
 
   return (
     <main className={styles.main}>
+      {actionData?.success === true ? <div>{t("profile-updated")}</div> : null}
       <Form method="POST" encType="multipart/form-data">
         <UserImage {...user} className={styles.atRight} />
         <ImageSelect

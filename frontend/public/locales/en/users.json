@@ -21,5 +21,6 @@
   "contact-no-sending-contact-address": "No message sent: You wanted your contact address included but don't have one in your profile.",
   "contact-sending-failed": "No message sent: An unknown error occurred.",
   "contact-confirmation": "Message sent.",
-  "contact-send": "Send"
+  "contact-send": "Send",
+  "profile-updated": "Profile updated successfully."
 }

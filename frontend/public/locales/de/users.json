@@ -21,5 +21,6 @@
   "contact-no-sending-contact-address": "Nicht abgeschickt: Du wolltest dass deine E-Mail-Adresse mitgeteilt wird, aber hast keine im Profil hinterlegt.",
   "contact-sending-failed": "Nicht abgeschickt: Ein unbekannter Fehler ist aufgetreten.",
   "contact-confirmation": "Nachricht abgeschickt.",
-  "contact-send": "Abschicken"
+  "contact-send": "Abschicken",
+  "profile-updated": "Profil erfolgreich aktualisiert."
 }
