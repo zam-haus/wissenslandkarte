@@ -20,6 +20,7 @@ import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/d
 import { logger } from "~/lib/logging.server";
 import { upsertProjectStepToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
+import { deleteS3FilesByPublicUrl } from "~/lib/storage/s3Deletion.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 
 import { getStringArray, getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
@@ -84,6 +85,7 @@ export const action = async ({
   );
 
   if (description.length === 0) {
+    await deleteS3FilesByPublicUrl(imageAttachments);
     return {
       error: FIELD_EMPTY,
     };
@@ -91,6 +93,7 @@ export const action = async ({
   if (project.id !== newProjectId) {
     const newProject = await getProjectDetails(newProjectId);
     if (newProject === null) {
+      await deleteS3FilesByPublicUrl(imageAttachments);
       return {
         error: UPDATE_FAILED,
         exception: "No such new project",

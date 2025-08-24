@@ -73,27 +73,33 @@ export const action = async ({
   const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainImage"]);
 
   const { title, description } = getTrimmedStringsDefaultEmpty(formData, "title", "description");
+  const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
   if (title.length === 0 || description.length === 0) {
+    if (mainImage !== undefined) {
+      await deleteS3FilesByPublicUrl([mainImage]);
+    }
     return {
       error: FIELD_EMPTY,
     };
   }
 
   try {
-    const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
     const { removeMainImage } = getBooleanDefaultFalse(formData, "removeMainImage");
     const metadata = getMetadataArray(formData);
 
-    if (mainImage !== undefined) {
-      storeProjectMainImageS3ObjectPurposes(mainImage, project, logger("project-edit"));
-    }
-
     const validationResult = await validateMetadataArray(metadata);
     if (!validationResult.valid) {
+      if (mainImage !== undefined) {
+        await deleteS3FilesByPublicUrl([mainImage]);
+      }
       return {
         error: UPDATE_FAILED,
         exception: "Metadata validation failed",
       };
+    }
+
+    if (mainImage !== undefined) {
+      storeProjectMainImageS3ObjectPurposes(mainImage, project, logger("project-edit"));
     }
 
     if (project.mainImage !== null && (mainImage !== undefined || removeMainImage)) {

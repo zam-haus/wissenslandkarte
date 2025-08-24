@@ -9,6 +9,7 @@ import { getLoggedInUser, isAnyUserLoggedIn } from "~/lib/authorization.server";
 import { logger } from "~/lib/logging.server";
 import { upsertProjectToSearchIndex } from "~/lib/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
+import { deleteS3FilesByPublicUrl } from "~/lib/storage/s3Deletion.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 import {
   lowLevelTagLoader,
@@ -37,7 +38,11 @@ export const action = async ({
   const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainImage"]);
 
   const { title, description } = getTrimmedStringsDefaultEmpty(formData, "title", "description");
+  const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
   if (title.length === 0 || description.length === 0) {
+    if (mainImage !== undefined) {
+      await deleteS3FilesByPublicUrl([mainImage]);
+    }
     return {
       error: FIELD_EMPTY,
     };
@@ -53,8 +58,6 @@ export const action = async ({
         exception: "Metadata validation failed",
       };
     }
-
-    const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
 
     const result = await createProject({
       title,
