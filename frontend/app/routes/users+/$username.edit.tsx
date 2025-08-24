@@ -91,9 +91,17 @@ export const action = async ({
       description,
       image: image ?? user.image,
     });
-    const session = await getSession(request);
-    session.set("user", updatedUser);
-    const headers = await session.commit();
+
+    let headers: Headers | undefined;
+    const wasEditedByAdmin = !(await isThisUserLoggedIn(request, updatedUser));
+    if (wasEditedByAdmin) {
+      logger("username-edit").debug("User edited by admin, not updating session");
+      headers = undefined;
+    } else {
+      const session = await getSession(request);
+      session.set("user", updatedUser);
+      headers = await session.commit();
+    }
 
     if (user.username !== updatedUser.username) {
       return redirect(`/users/${updatedUser.username}/edit`, { headers });
