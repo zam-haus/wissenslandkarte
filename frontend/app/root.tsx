@@ -1,5 +1,5 @@
 // import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
@@ -13,6 +13,8 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: mainStylesheetUrl },
   { rel: "stylesheet", href: variablesUrl },
 ];
+
+export const meta: MetaFunction = () => [{ title: "Wissenslandkarte" }];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const locale = await i18next.getLocale(request);
