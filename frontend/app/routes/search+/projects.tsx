@@ -4,7 +4,7 @@ import { useLoaderData } from "@remix-run/react";
 import { ProjectsList } from "~/components/project-list/projects-list";
 import type { ProjectListEntry } from "~/database/repositories/projects.server";
 import { getProjectDetails, getProjectList } from "~/database/repositories/projects.server";
-import { searchProjectInSearchIndex } from "~/lib/search.server";
+import { searchProjectInSearchIndex } from "~/lib/search/search.server";
 
 import { getSearchQuery, SearchForm } from "./components/search-form";
 import { SearchProjectPeopleSwitch } from "./components/search-header";

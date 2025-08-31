@@ -18,7 +18,7 @@ import {
 import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
-import { upsertProjectStepToSearchIndex } from "~/lib/search.server";
+import { upsertProjectStepToSearchIndex } from "~/lib/search/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
 import { deleteS3FilesByPublicUrl } from "~/lib/storage/s3Deletion.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";

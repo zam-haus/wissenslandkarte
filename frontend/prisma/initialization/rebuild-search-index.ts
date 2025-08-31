@@ -1,13 +1,19 @@
 import { MeiliSearch } from "meilisearch";
 
 import { setSearchIndexOutdated } from "~/database/repositories/appStatus.server";
-
-import { environment } from "../../app/lib/environment.server";
-import type {
+import {
+  removeAllSearchIndexesRaw,
+  upsertProjectStepsToSearchIndexRaw,
+  upsertProjectsToSearchIndexRaw,
+} from "~/lib/search/rawCommands.server";
+import {
+  projectIndexId,
+  projectStepsIndexId,
   SearchableProjectProperties,
   SearchableProjectStepProperties,
-} from "../../app/lib/search.server";
-import { projectIndexId, projectStepsIndexId } from "../../app/lib/search.server";
+} from "~/lib/search/search.server";
+
+import { environment } from "../../app/lib/environment.server";
 import type { PrismaClient } from "../generated";
 
 const client = new MeiliSearch({
@@ -29,44 +35,18 @@ export async function rebuildSearchIndex(prisma: PrismaClient) {
   }
 
   console.log("Purging existing indexes");
-  await cleanSearchIndexes();
+  await removeAllSearchIndexesRaw(client);
   const projects = await prisma.project.findMany();
   const stepsInDb = await prisma.projectStep.findMany();
 
+  const projectIndex = client.index<SearchableProjectProperties>(projectIndexId);
+  const projectStepsIndex = client.index<SearchableProjectStepProperties>(projectStepsIndexId);
+
   console.log("🏗 Building project search index");
-  await upsertProjectsToSearchIndex(projects);
+  await upsertProjectsToSearchIndexRaw(projectIndex, projects);
 
   console.log("🏗 🏗 Building project steps search index");
-  await upsertProjectStepsToSearchIndex(stepsInDb);
+  await upsertProjectStepsToSearchIndexRaw(projectStepsIndex, stepsInDb);
 
   console.log("🏗 🏗 🏗 Search index built");
-}
-
-async function cleanSearchIndexes() {
-  const indexes = await client.getIndexes();
-  for (const index of indexes.results) {
-    await client.deleteIndex(index.uid);
-  }
-}
-
-async function upsertProjectsToSearchIndex(projects: SearchableProjectProperties[]) {
-  const filteredProjects = projects.map(({ id, title, description }) => ({
-    id,
-    title,
-    description,
-  }));
-
-  const projectIndex = client.index(projectIndexId);
-  await projectIndex.addDocuments(filteredProjects, { primaryKey: "id" });
-}
-
-export async function upsertProjectStepsToSearchIndex(steps: SearchableProjectStepProperties[]) {
-  const filteredSteps = steps.map(({ id, description, projectId }) => ({
-    id,
-    description,
-    projectId,
-  }));
-
-  const projectStepsIndex = client.index(projectStepsIndexId);
-  await projectStepsIndex.addDocuments(filteredSteps, { primaryKey: "id" });
 }

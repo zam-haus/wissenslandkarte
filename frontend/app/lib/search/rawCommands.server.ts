@@ -1,0 +1,36 @@
+import { Index, MeiliSearch } from "meilisearch";
+
+import type { SearchableProjectProperties, SearchableProjectStepProperties } from "./search.server";
+
+export async function removeAllSearchIndexesRaw(client: MeiliSearch) {
+  const indexes = await client.getIndexes();
+  for (const index of indexes.results) {
+    await client.deleteIndex(index.uid);
+  }
+}
+
+export async function upsertProjectsToSearchIndexRaw(
+  projectIndex: Index<SearchableProjectProperties>,
+  projects: SearchableProjectProperties[],
+) {
+  const filteredProjects = projects.map(({ id, title, description }) => ({
+    id,
+    title,
+    description,
+  }));
+
+  await projectIndex.addDocuments(filteredProjects, { primaryKey: "id" });
+}
+
+export async function upsertProjectStepsToSearchIndexRaw(
+  projectStepsIndex: Index<SearchableProjectStepProperties>,
+  steps: SearchableProjectStepProperties[],
+) {
+  const filteredSteps = steps.map(({ id, description, projectId }) => ({
+    id,
+    description,
+    projectId,
+  }));
+
+  await projectStepsIndex.addDocuments(filteredSteps, { primaryKey: "id" });
+}
