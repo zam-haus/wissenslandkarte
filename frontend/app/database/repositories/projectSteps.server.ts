@@ -2,6 +2,10 @@ import { ProjectStep } from "prisma/generated";
 import type { AttachmentType } from "prisma/initialization/data/fake-data-generators";
 import { prisma } from "~/database/db.server";
 
+export async function getTotalProjectSteps() {
+  return prisma.projectStep.count();
+}
+
 type ProjectStepCreateRequest = {
   projectId: string;
   description: string;
@@ -107,4 +111,30 @@ export async function updateProjectStep(
       attachments: true,
     },
   });
+}
+
+export async function* getAllProjectStepsWithCursor(batchSize: number) {
+  let cursor: string | undefined;
+  let batch: Pick<ProjectStep, "id" | "projectId" | "description">[] = [];
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  while (true) {
+    batch = await prisma.projectStep.findMany({
+      select: {
+        id: true,
+        projectId: true,
+        description: true,
+      },
+      take: batchSize,
+      ...(cursor && { cursor: { id: cursor } }),
+      orderBy: { id: "asc" },
+    });
+
+    if (batch.length === 0) break;
+
+    yield batch;
+    cursor = batch[batch.length - 1]?.id;
+
+    if (batch.length < batchSize) break;
+  }
 }

@@ -6,6 +6,10 @@ import { ShallowMetadataValue } from "./projectMetadata.server";
 
 export type ProjectListEntry = Awaited<ReturnType<typeof getProjectList>>[number];
 
+export async function getTotalProjects() {
+  return prisma.project.count();
+}
+
 export async function getProjectList(options?: {
   limit?: number;
   page?: number;
@@ -248,4 +252,29 @@ export async function updateProject(request: ProjectStepRequest, options: Projec
 
 export async function deleteProject(projectId: Project["id"]) {
   return prisma.project.delete({ where: { id: projectId } });
+}
+
+export async function* getAllProjectsWithCursor(batchSize: number) {
+  let cursor: string | undefined;
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  while (true) {
+    const batch = await prisma.project.findMany({
+      select: {
+        id: true,
+        title: true,
+        description: true,
+      },
+      take: batchSize,
+      ...(cursor && { cursor: { id: cursor } }),
+      orderBy: { id: "asc" },
+    });
+
+    if (batch.length === 0) break;
+
+    yield batch;
+    cursor = batch[batch.length - 1]?.id;
+
+    if (batch.length < batchSize) break;
+  }
 }
