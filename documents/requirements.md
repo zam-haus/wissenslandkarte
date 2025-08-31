@@ -45,11 +45,11 @@ The Wissenslandkarte (WLK) or knowledge map offers an easy way of documenting pr
 ### Extended functionality
 
 - [ ] The WLK shall be installable as a PWA
-- [ ] The WLK shall allow users to take photos during the annotation process
+- [x] The WLK shall allow users to take photos during the annotation process
 - [ ] The WLK shall allow users to transfer project information and diary to a new wiki page
 - [ ] The WLK shall allow users to annotate newly created and existing project diaries with videos
 - [ ] The WLK shall allow users to take videos during the annotation process
-- [ ] The WLK shall allow users to collaborate on a project and annotate it together
+- [x] The WLK shall allow users to collaborate on a project and annotate it together
 - [ ] The WLK shall allow users to form groups and represent them
 - [ ] The WLK shall allow users to request a workplace for a project with information on required space and time
 - [ ] The WLK shall allow users to selectivly limit personal information to roles defined by ZAM single sign on
@@ -61,14 +61,14 @@ The Wissenslandkarte (WLK) or knowledge map offers an easy way of documenting pr
 
 ### MVP
 
-- [ ] The WLK shall allow admins to remove project diaries
+- [x] The WLK shall allow admins to remove project diaries
 - [ ] The WLK shall allow admins to remove users, removing or resign all projects to someone else
 - [x] The WLK shall allow admins to edit project diaries and their metadata
 - [ ] The WLK shall allow admins to create project diaries and their metadata for other people
 
 ### Extended functionality
 
-- [ ] The WLK shall allow admins to assign roles to users that grant them a subset of the admin's rights
+- [x] The WLK shall allow admins to assign roles to users that grant them a subset of the admin's rights
 - [ ] The WLK shall allow admin to respond to space and time requests
 
 ## Wishes, to be specified more clearly
