@@ -13,7 +13,6 @@
 
 - image file needs to be released to prevent memory leak in step image upload
 - image file (by name) can be added twice in image upload
-- site-admin role to rebuild search index
 
 ## L
 

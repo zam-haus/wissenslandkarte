@@ -19,5 +19,28 @@
       "main-image-in": "Hauptbild in",
       "image-of-user": "Bild von Benutzer"
     }
+  },
+  "searchIndex": {
+    "title": "Suchindex-Verwaltung",
+    "status-title": "Aktueller Suchindex-Status",
+    "rebuild-title": "Neuaufbau des Suchindex",
+    "status": {
+      "outdated": "Suchindex ist veraltet",
+      "upToDate": "Suchindex ist aktuell",
+      "noRebuildEverStarted": "Kein Neuaufbau wurde je gestartet",
+      "rebuildFailed": "Neuaufbau fehlgeschlagen",
+      "rebuildCompleted": "Neuaufbau erfolgreich abgeschlossen",
+      "rebuildInProgress": "Neuaufbau läuft",
+      "unknown": "Unbekannter Status"
+    },
+    "rebuild": {
+      "button": "Suchindex neu aufbauen",
+      "success": "Suchindex Neuaufbau erfolgreich ausgelöst",
+      "error": "Fehler beim Auslösen des Neuaufbaus des Suchindex"
+    },
+    "error": {
+      "prefix": "Fehler:",
+      "unknown": "Unbekannter Fehler aufgetreten"
+    }
   }
 }

@@ -32,6 +32,9 @@ export default function Admin() {
           <li>
             <Link to="/admin/s3Objects">Admin: S3 Objects</Link>
           </li>
+          <li>
+            <Link to="/admin/searchIndex">Admin: Search Index</Link>
+          </li>
         </>
       ) : null}
     </>

@@ -19,5 +19,28 @@
       "main-image-in": "Main Image In",
       "image-of-user": "Image Of User"
     }
+  },
+  "searchIndex": {
+    "title": "Search Index Management",
+    "status-title": "Current Search Index Status",
+    "rebuild-title": "Rebuild Search Index",
+    "status": {
+      "outdated": "Search index is outdated",
+      "upToDate": "Search index is up to date",
+      "noRebuildEverStarted": "No rebuild has ever been started",
+      "rebuildFailed": "Rebuild failed",
+      "rebuildCompleted": "Rebuild completed successfully",
+      "rebuildInProgress": "Rebuild in progress",
+      "unknown": "Unknown status"
+    },
+    "rebuild": {
+      "button": "Rebuild search index",
+      "success": "Search index rebuild triggered successfully",
+      "error": "Failed to trigger search index rebuild"
+    },
+    "error": {
+      "prefix": "Error:",
+      "unknown": "Unknown error occurred"
+    }
   }
 }
