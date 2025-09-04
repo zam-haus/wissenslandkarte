@@ -1,12 +1,12 @@
-// import { cssBundleHref } from "@remix-run/css-bundle";
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
+import beercss from "beercss/dist/cdn/beer.min.css?url";
 import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
 
 import i18next from "~/i18next.server";
-import mainStylesheetUrl from "~/styles/main.css?url";
-import variablesUrl from "~/styles/variables.css?url";
+
+import styles from "./root.module.css";
 
 export const links: LinksFunction = () => [
   {
@@ -14,9 +14,7 @@ export const links: LinksFunction = () => [
     href: "/favicon-128.png",
     type: "image/png",
   },
-  // ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-  { rel: "stylesheet", href: mainStylesheetUrl },
-  { rel: "stylesheet", href: variablesUrl },
+  { rel: "stylesheet", href: beercss },
 ];
 
 export const meta: MetaFunction = () => [{ title: "Wissenslandkarte" }];
@@ -38,14 +36,14 @@ export default function App() {
   useChangeLanguage(locale);
 
   return (
-    <html lang={locale} dir={i18n.dir()} className="h-full">
+    <html lang={locale} dir={i18n.dir()}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body className={styles.body}>
         <Outlet />
         <ScrollRestoration />
         <Scripts />
