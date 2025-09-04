@@ -1,13 +1,13 @@
 import { Link, UIMatch, useMatches } from "@remix-run/react";
 import { ParseKeys } from "i18next";
-import React, { type PropsWithChildren, useState } from "react";
+import React, { type PropsWithChildren, PropsWithRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ActionBar } from "./action-bar";
-import style from "./page.module.css";
 
 type GlobalButtonConfig = {
   relativeRoute: string;
+  icon: string;
   i18nLabelKey: ParseKeys<"common">;
 };
 
@@ -19,8 +19,16 @@ export function conditionalShowGlobalButtons(buttons: {
   editButton?: boolean;
   deleteButton?: boolean;
 }): { globalButtons: GlobalButtonConfig[] } {
-  const editButton = { relativeRoute: "edit", i18nLabelKey: "toplevel-edit" as const };
-  const deleteButton = { relativeRoute: "delete", i18nLabelKey: "toplevel-delete" as const };
+  const editButton = {
+    relativeRoute: "edit",
+    i18nLabelKey: "toplevel-edit" as const,
+    icon: "edit",
+  };
+  const deleteButton = {
+    relativeRoute: "delete",
+    i18nLabelKey: "toplevel-delete" as const,
+    icon: "delete",
+  };
   return {
     globalButtons: [
       ...(buttons.editButton ? [editButton] : []),
@@ -54,6 +62,7 @@ export function Page({
   const { t } = useTranslation("common");
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
 
   const matches = useMatches();
   const globalButtonRequests = getGlobalButtonRequests(matches);
@@ -71,61 +80,127 @@ export function Page({
     throw Error("Route does not include 'common' i18n resources in its handle export.");
   }
 
+  return (
+    <>
+      <header className="fill">
+        <nav>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="s circle transparent">
+            <i>menu</i>
+          </button>
+
+          <h1 className="max center-align" style={{ fontSize: "1.5rem" }}>
+            {title}
+          </h1>
+
+          <GlobalButtons globalButtonRequests={globalButtonRequests} />
+        </nav>
+      </header>
+
+      <nav
+        className={"left " + (menuOpen ? "s max" : "")}
+        style={{ display: menuOpen ? "block" : "none" }}
+      >
+        <button className="transparent" onClick={() => setMenuOpen(false)}>
+          <i>arrow_back</i>
+        </button>
+
+        <NavItems isLoggedIn={isLoggedIn} additionalNavItems={additionalNavItems} />
+      </nav>
+
+      <div id="globalScrollContainer" style={{ overflowY: "auto", flex: 1, minBlockSize: 0 }}>
+        <nav className={"m l left"} style={{ position: "sticky", insetBlockStart: 100 }}>
+          <NavItems isLoggedIn={isLoggedIn} additionalNavItems={additionalNavItems} />
+        </nav>
+        {children}
+      </div>
+      <footer style={{ padding: "0 " }}>{isLoggedIn ? <ActionBar /> : <></>}</footer>
+    </>
+  );
+}
+
+function NavItems({
+  isLoggedIn,
+  additionalNavItems,
+}: PropsWithRef<{
+  isLoggedIn: boolean;
+  additionalNavItems?: React.JSX.Element;
+}>) {
+  const { t } = useTranslation("common");
+
   const loginSection = isLoggedIn ? (
     <>
-      <li>
-        <Link to="/users/me">{t("nav-profile")}</Link>
-      </li>
-      <li>
-        <Link to="/logout">{t("nav-logout")}</Link>
-      </li>
+      <Link to="/users/me">
+        <i>account_box</i>
+        {t("nav-profile")}
+      </Link>
+
+      <Link to="/logout">
+        <i>logout</i>
+        {t("nav-logout")}
+      </Link>
     </>
   ) : (
     <>
-      <li>
-        <Link to="/login">{t("nav-login")}</Link>
-      </li>
+      <Link to="/login">
+        <i>login</i>
+        {t("nav-login")}
+      </Link>
     </>
   );
 
   return (
-    <div className={style.pageContainer}>
-      <header>
-        <button className={style.menuButton} onClick={() => setMenuOpen(!menuOpen)}>
-          ☰
-        </button>
-        <h1>{title}</h1>
+    <>
+      <Link to="/">
+        <i>home</i>
+        {t("nav-landing-page")}
+      </Link>
+
+      <Link to="/search">
+        <i>search</i>
+        {t("nav-search")}
+      </Link>
+
+      <Link to="/projects">
+        <i>handyman</i>
+        {t("nav-projects")}
+      </Link>
+
+      <Link to="/users">
+        <i>group</i>
+        {t("nav-people")}
+      </Link>
+
+      <Link to="/">
+        <i>help</i>
+        {t("nav-faq")}
+      </Link>
+
+      {additionalNavItems}
+      {loginSection}
+    </>
+  );
+}
+
+function GlobalButtons({ globalButtonRequests }: { globalButtonRequests: GlobalButton[] }) {
+  const { t } = useTranslation("common");
+
+  if (globalButtonRequests.length === 0) {
+    return null;
+  }
+
+  return (
+    <button className="transparent square">
+      <i>more_vert</i>
+      <menu className="border no-wrap left">
         {globalButtonRequests.map((button) => (
-          <Link key={button.route + button.i18nLabelKey} to={button.route}>
-            {t(button.i18nLabelKey)}
-          </Link>
+          <li>
+            <Link key={button.route + button.i18nLabelKey} to={button.route}>
+              <i>{button.icon}</i>
+              <span>{t(button.i18nLabelKey)}</span>
+            </Link>
+          </li>
         ))}
-      </header>
-      <nav className={menuOpen ? style.open : style.closed}>
-        <ul>
-          <li>
-            <Link to="/">{t("nav-landing-page")}</Link>
-          </li>
-          <li>
-            <Link to="/search">{t("nav-search")}</Link>
-          </li>
-          <li>
-            <Link to="/projects">{t("nav-projects")}</Link>
-          </li>
-          <li>
-            <Link to="/users">{t("nav-people")}</Link>
-          </li>
-          <li>
-            <Link to="/">{t("nav-faq")}</Link>
-          </li>
-          {additionalNavItems}
-          {loginSection}
-        </ul>
-      </nav>
-      <div id="globalScrollContainer" className={style.innerContainer}>
-        {children}
-      </div>
-      <footer>{isLoggedIn ? <ActionBar /> : <></>}</footer>
-    </div>
+      </menu>
+    </button>
   );
 }

@@ -7,14 +7,30 @@ export function ActionBar() {
   const { t } = useTranslation("common");
 
   return (
-    <nav className={style.actionBarNav}>
-      <Link to="/projects/new">{t("action-bar-new")}</Link>
-      <Link to="/projects/mine">{t("action-bar-projects")}</Link>
-      <Link to="/projects/step/new" className={style.mainItem}>
-        {t("action-bar-add")}
+    <nav className="toolbar max" style={{ padding: "8px 0" }}>
+      <Link className="vertical border small-round small" to="/projects/new">
+        <i>post_add</i>
+        <span>{t("action-bar-new")}</span>
       </Link>
-      <Link to="/search">{t("action-bar-search")}</Link>
-      <Link to="/users/me">{t("action-bar-profile")}</Link>
+      <Link className="vertical border small-round" to="/projects/mine">
+        <i>handyman</i>
+        <span>{t("action-bar-projects")}</span>
+      </Link>
+      <Link
+        className="vertical border small-round extra primary medium-elevate"
+        to="/projects/step/new"
+      >
+        <i>add</i>
+        <span>{t("action-bar-add")}</span>
+      </Link>
+      <Link className="vertical border small-round" to="/search">
+        <i>search</i>
+        <span>{t("action-bar-search")}</span>
+      </Link>
+      <Link className="vertical border small-round" to="/users/me">
+        <i>account_box</i>
+        <span>{t("action-bar-profile")}</span>
+      </Link>
     </nav>
   );
 }

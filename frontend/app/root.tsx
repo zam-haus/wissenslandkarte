@@ -7,11 +7,13 @@ import { useChangeLanguage } from "remix-i18next/react";
 import i18next from "~/i18next.server";
 import mainStylesheetUrl from "~/styles/main.css?url";
 import variablesUrl from "~/styles/variables.css?url";
+import beercss from "beercss/dist/cdn/beer.min.css?url";
 
 export const links: LinksFunction = () => [
   // ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-  { rel: "stylesheet", href: mainStylesheetUrl },
-  { rel: "stylesheet", href: variablesUrl },
+  // { rel: "stylesheet", href: mainStylesheetUrl },
+  // { rel: "stylesheet", href: variablesUrl },
+  { rel: "stylesheet", href: beercss },
 ];
 
 export const meta: MetaFunction = () => [{ title: "Wissenslandkarte" }];
@@ -40,7 +42,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
         <Outlet />
         <ScrollRestoration />
         <Scripts />
