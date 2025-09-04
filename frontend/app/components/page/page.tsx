@@ -119,8 +119,21 @@ export function Page({
         </nav>
       </header>
 
-      <div id="globalScrollContainer" style={{ overflowY: "auto", flex: 1, minBlockSize: 0 }}>
-        <nav className={"m l left"} style={{ position: "sticky", insetBlockStart: 100 }}>
+      <style>{`main { overflow-y: scroll!important; border: 1px solid red; padding-block-end: 50px /*for the top app bar*/}`}</style>
+      {/* TODO: find a better way to do this */}
+      <div
+        id="globalScrollContainer"
+        style={{ flex: 1, minBlockSize: 0, overflowY: "hidden", border: "1px solid blue" }}
+      >
+        <nav
+          className={"m l left"}
+          style={{
+            position: "sticky",
+            insetBlockStart: 0,
+            overflowY: "auto",
+            paddingBlockEnd: "200px",
+          }}
+        >
           <NavItems isLoggedIn={isLoggedIn} additionalNavItems={additionalNavItems} />
         </nav>
         {children}

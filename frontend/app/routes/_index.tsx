@@ -10,7 +10,7 @@ import { loaderLoginCheck } from "~/lib/authorization.server";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const projects = await getProjectList({
     byNewestModification: true,
-    limit: 5,
+    limit: 15,
   });
 
   return { projects, ...(await loaderLoginCheck(request)) };
