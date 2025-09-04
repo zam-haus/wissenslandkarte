@@ -80,7 +80,7 @@ export function Page({
 
   return (
     <>
-      <dialog className={"s left " + (menuOpen ? "active " : "")}>
+      <dialog className={"s left " + styles.drawer + " " + (menuOpen ? "active " : "")}>
         <header className={styles.drawerHeader}>
           <button className="transparent circle" onClick={() => setMenuOpen(false)}>
             <i>arrow_back</i>
@@ -100,7 +100,7 @@ export function Page({
           />
         </nav>
       </dialog>
-      <header className="fill">
+      <header className={"fill " + styles.globalHeader}>
         <nav>
           <button onClick={() => setMenuOpen(!menuOpen)} className="s circle transparent">
             <i>menu</i>
@@ -118,7 +118,9 @@ export function Page({
         </nav>
         <main className="no-padding">{children}</main>
       </div>
-      <footer className="no-padding">{isLoggedIn ? <ActionBar /> : <></>}</footer>
+      <footer className={"no-padding " + styles.globalFooter}>
+        {isLoggedIn ? <ActionBar /> : <></>}
+      </footer>
     </>
   );
 }

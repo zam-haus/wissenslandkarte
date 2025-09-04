@@ -6,8 +6,6 @@ import { useChangeLanguage } from "remix-i18next/react";
 
 import i18next from "~/i18next.server";
 
-import styles from "./root.module.css";
-
 export const links: LinksFunction = () => [
   {
     rel: "icon",
@@ -43,7 +41,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className={styles.body}>
+      <body>
         <Outlet />
         <ScrollRestoration />
         <Scripts />

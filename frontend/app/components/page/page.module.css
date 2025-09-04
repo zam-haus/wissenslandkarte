@@ -10,7 +10,10 @@
 
 .stickyNav {
   position: sticky;
+  top: 4rem;
   inset-block-start: 100px;
+  height: fit-content;
+  z-index: 150;
 }
 
 .drawerNav a {
@@ -23,4 +26,25 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+}
+
+/* Extracted from inline styles */
+.drawer {
+  z-index: 250;
+}
+
+.globalHeader {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  margin-top: 0px;
+}
+
+.globalFooter {
+  position: sticky;
+  bottom: 0;
+  z-index: 200;
+}
+
+.leftNav {
 }
