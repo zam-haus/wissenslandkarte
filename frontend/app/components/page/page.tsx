@@ -214,18 +214,28 @@ function GlobalButtons({ globalButtonRequests }: { globalButtonRequests: GlobalB
   }
 
   return (
-    <button className="transparent square">
-      <i>more_vert</i>
-      <menu className="border no-wrap left">
-        {globalButtonRequests.map((button) => (
-          <li>
-            <Link key={button.route + button.i18nLabelKey} to={button.route}>
-              <i>{button.icon}</i>
-              <span>{t(button.i18nLabelKey)}</span>
-            </Link>
-          </li>
-        ))}
-      </menu>
-    </button>
+    <>
+      <button className="s m transparent square">
+        <i>more_vert</i>
+        <menu className="border no-wrap left">
+          {globalButtonRequests.map((button) => (
+            <li key={button.route}>
+              <Link to={button.route}>
+                <i>{button.icon}</i>
+                <span>{t(button.i18nLabelKey)}</span>
+              </Link>
+            </li>
+          ))}
+        </menu>
+      </button>
+      {globalButtonRequests.map((button) => (
+        <Link className="l" key={button.route + button.i18nLabelKey} to={button.route}>
+          <button className="border small-round">
+            <i>{button.icon}</i>
+            <span>{t(button.i18nLabelKey)}</span>
+          </button>
+        </Link>
+      ))}
+    </>
   );
 }
