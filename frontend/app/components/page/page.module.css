@@ -2,14 +2,6 @@
   font-size: 1.5rem;
 }
 
-.drawerMenu {
-  display: none;
-}
-
-.drawerMenu.open {
-  display: block;
-}
-
 .scrollContainer {
   overflow-y: auto;
   flex: 1;
@@ -19,4 +11,16 @@
 .stickyNav {
   position: sticky;
   inset-block-start: 100px;
+}
+
+.drawerNav a {
+  align-self: stretch;
+  justify-content: flex-start;
+}
+
+.drawerHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
