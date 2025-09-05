@@ -59,10 +59,7 @@ export function Page({
   isLoggedIn: boolean;
   additionalNavItems?: React.JSX.Element;
 }>) {
-  const { t } = useTranslation("common");
-
   const [menuOpen, setMenuOpen] = useState(false);
-  const [actionsOpen, setActionsOpen] = useState(false);
 
   const matches = useMatches();
   const globalButtonRequests = getGlobalButtonRequests(matches);
@@ -82,6 +79,32 @@ export function Page({
 
   return (
     <>
+      <style>{`
+
+        .slidemenu {
+         transition: transform 200ms;
+         position: absolute!important;
+         max-width: fit-content;
+       }
+
+      .menuOpen {
+       transform: translateX(0)!important;
+      }
+
+     .menuClosed {
+       transform: translateX(-100%) translate(-10px)!important ;
+      }
+
+    `}</style>
+      <nav
+        className={"left slidemenu medium-elevate " + (menuOpen ? "s max menuOpen" : "menuClosed")}
+      >
+        <button className="transparent" onClick={() => setMenuOpen(false)}>
+          <i>arrow_back</i>
+        </button>
+
+        <NavItems isLoggedIn={isLoggedIn} additionalNavItems={additionalNavItems} />
+      </nav>
       <header className="fill">
         <nav>
           <button onClick={() => setMenuOpen(!menuOpen)} className="s circle transparent">
@@ -95,17 +118,6 @@ export function Page({
           <GlobalButtons globalButtonRequests={globalButtonRequests} />
         </nav>
       </header>
-
-      <nav
-        className={"left " + (menuOpen ? "s max" : "")}
-        style={{ display: menuOpen ? "block" : "none" }}
-      >
-        <button className="transparent" onClick={() => setMenuOpen(false)}>
-          <i>arrow_back</i>
-        </button>
-
-        <NavItems isLoggedIn={isLoggedIn} additionalNavItems={additionalNavItems} />
-      </nav>
 
       <div id="globalScrollContainer" style={{ overflowY: "auto", flex: 1, minBlockSize: 0 }}>
         <nav className={"m l left"} style={{ position: "sticky", insetBlockStart: 100 }}>
