@@ -22,33 +22,37 @@ export function ProjectsList({
 }) {
   const { t } = useTranslation("common");
 
-  return (
-    <ul className={localStyle.projectList}>
-      {projects.map((project) => (
-        <li
-          key={project.id}
-          className={localStyle.projectEntry + " " + (styles?.projectEntry ?? "")}
-        >
-          <Link to={`/projects/${encodeURIComponent(project.id)}`} className={styles?.projectTitle}>
-            {project.title}
-          </Link>
-          <span className={styles?.projectModificationDate}>
-            <LocalDate date={project.latestModificationDate}></LocalDate>
-          </span>
-          {project.mainImage === null ? (
-            <div
-              className={localStyle.projectMainImage + " " + (styles?.projectMainImage ?? "")}
-            ></div>
-          ) : (
-            <img
-              loading="lazy"
-              className={localStyle.projectMainImage + " " + (styles?.projectMainImage ?? "")}
-              alt={t("project-image-alt-text", { title: project.title })}
-              src={project.mainImage}
-            />
-          )}
-        </li>
-      ))}
-    </ul>
-  );
+  return projects.map((project) => (
+    <Link
+      to={`/projects/${encodeURIComponent(project.id)}`}
+      style={{ display: "inline-block", margin: "18px" }}
+    >
+      <article className="no-padding border" style={{ maxWidth: "500px" }}>
+        <div className="grid no-space">
+          <div className="s4">
+            {project.mainImage === null ? (
+              <div
+                className={localStyle.projectMainImage + " " + (styles?.projectMainImage ?? "")}
+              ></div>
+            ) : (
+              <img
+                loading="lazy"
+                className="responsive"
+                alt={t("project-image-alt-text", { title: project.title })}
+                src={project.mainImage}
+              />
+            )}
+          </div>
+          <div className="s8">
+            <div className="padding">
+              <h3 style={{ fontSize: "1.5rem" }}>{project.title}</h3>
+              <span className={styles?.projectModificationDate}>
+                <LocalDate date={project.latestModificationDate}></LocalDate>
+              </span>{" "}
+            </div>
+          </div>
+        </div>
+      </article>
+    </Link>
+  ));
 }

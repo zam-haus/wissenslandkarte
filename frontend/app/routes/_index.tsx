@@ -28,7 +28,9 @@ export default function Index() {
     <Page isLoggedIn={isLoggedIn} title={t("main-headline")}>
       <p>{t("browse-prompt")}</p>
 
-      <Link to="search/projects">{t("search-button")}</Link>
+      <Link className="chip small" to="search/projects">
+        {t("search-button")}
+      </Link>
 
       <h2>{t("newest-steps-headline")}</h2>
       <ProjectsList projects={projects}></ProjectsList>
