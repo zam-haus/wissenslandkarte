@@ -6,9 +6,10 @@ import style from "./metadata-display.module.css";
 
 type MetadataDisplayProps = {
   metadata: MetadataValue[];
+  className?: string;
 };
 
-export function MetadataDisplay({ metadata }: MetadataDisplayProps) {
+export function MetadataDisplay({ metadata, className }: MetadataDisplayProps) {
   const { t, i18n } = useTranslation("projects");
   const { language } = i18n;
 
@@ -17,9 +18,11 @@ export function MetadataDisplay({ metadata }: MetadataDisplayProps) {
   }
 
   return (
-    <aside className={style.metadataSection}>
-      <h3>{t("metadata")}</h3>
-      <div className={style.metadataGrid}>
+    <aside className={`border tertiary padding small-round ${className}`}>
+      <h3 className="small" style={{ fontSize: "1.2rem" }}>
+        {t("metadata")}
+      </h3>
+      <ul className="list border">
         {metadata.map((item) => {
           if (item.metadataType.translations.length === 0) {
             return null;
@@ -30,9 +33,13 @@ export function MetadataDisplay({ metadata }: MetadataDisplayProps) {
             item.metadataType.translations[0];
 
           return (
-            <div key={item.id}>
+            <li key={item.id}>
+              {/* TODO: add an icon */}
               <div className={style.metadataLabel}>
-                <span title={translation.description}>{translation.displayName}</span>
+                <h4 className="small" style={{ fontSize: "1rem", fontWeight: "bold" }}>
+                  {translation.displayName}
+                  <div className="tooltip">{translation.description}</div>
+                </h4>
               </div>
               <div>
                 <MetadataValue
@@ -41,10 +48,10 @@ export function MetadataDisplay({ metadata }: MetadataDisplayProps) {
                   unit={translation.unit}
                 />
               </div>
-            </div>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </aside>
   );
 }

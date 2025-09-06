@@ -1,5 +1,6 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import { ParseKeys } from "i18next";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -48,62 +49,100 @@ export default function Project() {
   const allUsers = [...project.owners, ...project.members];
 
   return (
-    <main>
-      <header>
-        <h2>{project.title}</h2>
-        {t("by")}:{" "}
-        <ul className={style.memberList}>
-          {allUsers.map(({ username }) => (
-            <li key={username} className={style.member}>
-              <Link to={`/users/${username}`}>{username}</Link>
-            </li>
-          ))}
-        </ul>
+    <>
+      <header className={`${style.projectHeader} secondary padding`}>
+        <div className="main-info">
+          <h2>{project.title}</h2>
+          <p className={`left ${style.memberList} tiny-margin`}>
+            {t("by")}:
+            <nav className={style.memberListNav}>
+              {allUsers.map(({ username }) => (
+                <UserChip key={username} username={username} />
+              ))}
+            </nav>
+          </p>
+
+          <p className={`left ${style.tagList} tiny-margin`}>
+            {t("tags")}:
+            <ProjectTagList className="no-margin" tags={project.tags} />
+          </p>
+
+          <div className="description">
+            <CommonMarkdown>{project.description}</CommonMarkdown>
+          </div>
+        </div>
+
+        <MetadataDisplay metadata={project.metadata} className={style.metadata} />
         {project.mainImage ? (
-          <img style={{ maxWidth: 500 }} src={project.mainImage} alt={t("main-image")} />
+          <img
+            className={`small-round ${style.mainImage}`}
+            src={project.mainImage}
+            alt={t("main-image")}
+          />
         ) : null}
       </header>
 
-      <CommonMarkdown>{project.description}</CommonMarkdown>
+      {project.attachments.length > 0 ? (
+        <section className="tertiary padding no-margin">
+          <AttachmentSummary attachments={project.attachments} textKey="attachments" />
+        </section>
+      ) : null}
 
-      <ProjectTagList className="tags" tags={project.tags} />
-
-      <MetadataDisplay metadata={project.metadata} />
-
-      <ul className={style.attachments}>
-        {project.attachments.map((attachment) => (
-          <li key={attachment.id}>
-            <AttachmentEntry {...attachment} />
-          </li>
-        ))}
-      </ul>
-
-      <ul className={style.stepList}>
+      <ul className="list border margin">
         {project.steps.map((step) => (
-          <li key={step.creationDate.valueOf()}>
-            <article className={style.step}>
-              <header>
-                <h4>
-                  {t("project-step-headline", {
-                    date: renderDate(step.creationDate, i18n.language),
-                  })}
-                </h4>
-                {isLoggedInUserAuthorizedToEdit ? DeleteAndEditButton(step.id) : null}
-              </header>
+          <li key={step.id} className={style.stepItem}>
+            <div className="max">
+              <h4 className={style.stepHeadline}>
+                {t("project-step-headline", {
+                  date: renderDate(step.creationDate, i18n.language),
+                })}
+              </h4>
               <CommonMarkdown>{step.description}</CommonMarkdown>
 
-              <ul className={style.attachments}>
-                {step.attachments.map((attachment) => (
-                  <li key={attachment.id}>
-                    <AttachmentEntry {...attachment} />
-                  </li>
-                ))}
-              </ul>
-            </article>
+              {step.attachments.length > 0 ? (
+                <AttachmentSummary attachments={step.attachments} textKey="step.attachments" />
+              ) : null}
+            </div>
+            {isLoggedInUserAuthorizedToEdit ? DeleteAndEditButton(step.id) : null}
           </li>
         ))}
       </ul>
-    </main>
+    </>
+  );
+}
+
+function AttachmentSummary({
+  attachments,
+  textKey,
+}: {
+  attachments: Attachment[];
+  textKey: ParseKeys<"projects">;
+}) {
+  const { t } = useTranslation("projects");
+
+  return (
+    <details>
+      <summary>
+        <span className="chip">
+          <i>attach_file</i>
+          <div className="badge none">{attachments.length}</div>
+          {t(textKey)}
+        </span>
+      </summary>
+      <AttachmentRow attachments={attachments} />
+    </details>
+  );
+}
+
+function AttachmentRow({ attachments }: { attachments: Attachment[] }) {
+  return (
+    <ul className={`row scroll tertiary padding ${style.attachmentRow}`}>
+      {attachments.map((attachment) => (
+        <li key={attachment.id}>
+          <AttachmentEntry {...attachment} />
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -113,16 +152,18 @@ function DeleteAndEditButton(stepId: string) {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
-    <>
+    <div className={style.deleteEditContainer}>
       <ModalDialog
         visible={confirmDelete}
         closed={() => setConfirmDelete(false)}
         render={(close) => (
           <>
-            {t("delete-step-confirm")}
+            {t("step.delete-confirm")}
             <footer>
               <form action={`/projects/step/${stepId}/delete`} method="post">
-                <button type="submit">{t("yes", { ns: "common" })}</button>
+                <button type="submit" className={style.deleteButton}>
+                  {t("yes", { ns: "common" })}
+                </button>
                 <button type="button" autoFocus onClick={close}>
                   {t("no", { ns: "common" })}
                 </button>
@@ -131,8 +172,13 @@ function DeleteAndEditButton(stepId: string) {
           </>
         )}
       />
-      <a
-        href={`/projects/step/${stepId}/delete`}
+      <Link className="button small-round" to={`/projects/step/${stepId}/edit`}>
+        <i>edit</i>
+        <span className="m l">{t("step.edit")}</span>
+      </Link>
+      <Link
+        className="button border small-round"
+        to={`/projects/step/${stepId}/delete`}
         onClick={(event) => {
           setConfirmDelete(true);
           event.stopPropagation();
@@ -140,10 +186,10 @@ function DeleteAndEditButton(stepId: string) {
           return false;
         }}
       >
-        {t("delete-step")}
-      </a>
-      | <Link to={`/projects/step/${stepId}/edit`}>{t("edit-step")}</Link>
-    </>
+        <i>delete</i>
+        <span className="m l">{t("step.delete")}</span>
+      </Link>
+    </div>
   );
 }
 
@@ -157,11 +203,27 @@ function AttachmentEntry(props: Attachment) {
   switch (type) {
     case "file": //fallthrough
     case "link":
-      return <a href={url}>{text}</a>;
+      return (
+        <a className="chip" href={url}>
+          <i>link</i>
+          {text}
+        </a>
+      );
     case "image":
-      return <img src={url} alt={text} />;
+      return <img className={`small-round ${style.attachmentImage}`} src={url} alt={text} />;
   }
 
   // This should be dead code, but just in case someone uses a nonstandard tsc...
   return <>Error: Unknown attachment type {{ type }}</>;
+}
+
+function UserChip({ username }: { username: string }) {
+  return (
+    <Link key={username} to={`/users/${username}`}>
+      <button className="chip">
+        <i>account_circle</i>
+        <span>{username}</span>
+      </button>
+    </Link>
+  );
 }

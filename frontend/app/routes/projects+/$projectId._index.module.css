@@ -1,49 +1,70 @@
-.attachments {
+.projectHeader {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  list-style: none;
+  gap: 16px;
 }
 
-.attachments img {
-  max-width: 150px;
+.metadata {
+  align-self: flex-start;
 }
 
+.tagList,
 .memberList {
-  padding: 0;
+  white-space: nowrap;
+}
+
+.tagList ul,
+.memberList nav {
+  flex-wrap: wrap;
+  color: inherit;
+}
+
+.memberList button,
+.tagList button {
+  color: inherit;
+}
+
+@media only screen and (max-device-width: 992px) {
+  .projectHeader {
+    flex-direction: column;
+  }
+}
+
+.memberListNav {
   display: inline-flex;
-  gap: var(--secondary-gap);
+  gap: 0;
+}
+
+.mainImage {
+  max-width: min(500px, 25%);
+  align-self: flex-start;
+}
+
+.stepItem {
+  padding: 8px 0;
+  text-wrap: wrap;
+}
+
+.stepHeadline {
+  font-size: 1.25rem;
+}
+
+.attachmentRow {
   list-style: none;
-  margin-bottom: 0.8em;
+  padding: 0;
+  margin: 0;
 }
 
-.member {
-  border: var(--secondary-border);
-  border-radius: var(--secondary-border-radius);
-  padding: var(--padding-small);
-  background: var(--secondary-background);
-}
-
-.member::before {
-  content: "👤 ";
-  filter: saturate(0);
-}
-
-.stepList {
+.deleteEditContainer {
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
-  list-style: none;
-  padding: 0;
+  gap: 8px;
 }
 
-.step {
-  border: var(--primary-border);
-  border-radius: var(--primary-border-radius);
-  padding: var(--padding-medium);
-  margin: var(--margin-medium);
+.deleteButton {
+  background-color: red;
 }
 
-.step header {
-  display: flex;
-  gap: 1ex;
+.attachmentImage {
+  max-width: 250px;
 }

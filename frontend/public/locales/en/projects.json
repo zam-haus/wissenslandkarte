@@ -1,10 +1,12 @@
 {
   "main-headline": "Projects",
   "by": "By",
+  "tags": "Tags",
   "main-image": "The main image of this project as uploaded by the user",
   "project-step-headline": "Update from {{date}}",
   "project-name": "Project name",
   "project-description": "Description",
+  "attachments": "The project has attachments",
   "select-main-image": "Project main image",
   "current-main-image": "Current main image",
   "select-image": "Image",
@@ -16,9 +18,12 @@
   "missing-description": "Description must be provided!",
   "creation-failed": "Creation failed: ",
   "required": "(required)",
-  "delete-step": "Delete",
-  "edit-step": "Edit",
-  "delete-step-confirm": "Do you really want to delete this update?",
+  "step": {
+    "delete": "Delete",
+    "edit": "Edit",
+    "delete-confirm": "Do you really want to delete this update?",
+    "attachments": "This step has attachments"
+  },
   "delete-image": "Delete this image:",
   "metadata": "Project Metadata",
   "yes": "Yes",
