@@ -80,31 +80,38 @@ export function Page({
   return (
     <>
       <style>{`
-
-        .slidemenu {
-         transition: transform 200ms;
-         position: absolute!important;
-         max-width: fit-content;
-       }
-
-      .menuOpen {
-       transform: translateX(0)!important;
-      }
-
-     .menuClosed {
-       transform: translateX(-100%) translate(-10px)!important ;
-      }
-
+        .drawer-nav a {
+          align-self: stretch;
+          justify-content: flex-start;
+        }
     `}</style>
-      <nav
-        className={"left slidemenu medium-elevate " + (menuOpen ? "s max menuOpen" : "menuClosed")}
-      >
-        <button className="transparent" onClick={() => setMenuOpen(false)}>
-          <i>arrow_back</i>
-        </button>
+      <dialog className={"s left " + (menuOpen ? "active " : "")}>
+        <header
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <button className="transparent circle" onClick={() => setMenuOpen(false)}>
+            <i>arrow_back</i>
+          </button>
 
-        <NavItems isLoggedIn={isLoggedIn} additionalNavItems={additionalNavItems} />
-      </nav>
+          <nav>
+            <img className="circle large" src="/favicon-128.png" />
+          </nav>
+        </header>
+        <div className="space"></div>
+
+        <nav className="left row drawer-nav">
+          <NavItems
+            isLoggedIn={isLoggedIn}
+            additionalNavItems={additionalNavItems}
+            itemClassName="button small-round transparent"
+          />
+        </nav>
+      </dialog>
       <header className="fill">
         <nav>
           <button onClick={() => setMenuOpen(!menuOpen)} className="s circle transparent">
@@ -146,27 +153,28 @@ export function Page({
 function NavItems({
   isLoggedIn,
   additionalNavItems,
+  itemClassName,
 }: PropsWithRef<{
   isLoggedIn: boolean;
   additionalNavItems?: React.JSX.Element;
+  itemClassName?: string;
 }>) {
   const { t } = useTranslation("common");
 
   const loginSection = isLoggedIn ? (
     <>
-      <Link to="/users/me">
+      <Link to="/users/me" className={itemClassName}>
         <i>account_box</i>
         {t("nav-profile")}
       </Link>
-
-      <Link to="/logout">
+      <Link to="/logout" className={itemClassName}>
         <i>logout</i>
         {t("nav-logout")}
       </Link>
     </>
   ) : (
     <>
-      <Link to="/login">
+      <Link to="/login" className={itemClassName}>
         <i>login</i>
         {t("nav-login")}
       </Link>
@@ -175,32 +183,28 @@ function NavItems({
 
   return (
     <>
-      <Link to="/">
+      <Link to="/" className={itemClassName}>
         <i>home</i>
         {t("nav-landing-page")}
       </Link>
-
-      <Link to="/search">
+      <Link to="/search" className={itemClassName}>
         <i>search</i>
         {t("nav-search")}
       </Link>
-
-      <Link to="/projects">
+      <Link to="/projects" className={itemClassName}>
         <i>handyman</i>
         {t("nav-projects")}
       </Link>
-
-      <Link to="/users">
+      <Link to="/users" className={itemClassName}>
         <i>group</i>
         {t("nav-people")}
       </Link>
-
-      <Link to="/">
+      <Link to="/" className={itemClassName}>
         <i>help</i>
         {t("nav-faq")}
       </Link>
-
       {additionalNavItems}
+      <div className="space"></div>
       {loginSection}
     </>
   );
