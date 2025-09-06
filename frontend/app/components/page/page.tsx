@@ -126,12 +126,7 @@ export function Page({
         </nav>
       </header>
 
-      <style>{`main { overflow-y: scroll!important; border: 1px solid red; padding-block-end: 50px /*for the top app bar*/}`}</style>
-      {/* TODO: find a better way to do this */}
-      <div
-        id="globalScrollContainer"
-        style={{ flex: 1, minBlockSize: 0, overflowY: "hidden", border: "1px solid blue" }}
-      >
+      <div id="globalScrollContainer" style={{ flex: 1, minBlockSize: 0, display: "flex" }}>
         <nav
           className={"m l left"}
           style={{
@@ -143,7 +138,16 @@ export function Page({
         >
           <NavItems isLoggedIn={isLoggedIn} additionalNavItems={additionalNavItems} />
         </nav>
-        {children}
+        <main
+          style={{
+            overflowY: "scroll",
+            flex: 1,
+            border: "1px solid red",
+            paddingBlockEnd: "50px /*for the top app bar*/",
+          }}
+        >
+          {children}
+        </main>
       </div>
       <footer style={{ padding: "0 " }}>{isLoggedIn ? <ActionBar /> : <></>}</footer>
     </>

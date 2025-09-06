@@ -26,14 +26,12 @@ export default function Index() {
 
   return (
     <Page isLoggedIn={isLoggedIn} title={t("main-headline")}>
-      <main>
-        <p>{t("browse-prompt")}</p>
+      <p>{t("browse-prompt")}</p>
 
-        <Link to="search/projects">{t("search-button")}</Link>
+      <Link to="search/projects">{t("search-button")}</Link>
 
-        <h2>{t("newest-steps-headline")}</h2>
-        <ProjectsList projects={projects}></ProjectsList>
-      </main>
+      <h2>{t("newest-steps-headline")}</h2>
+      <ProjectsList projects={projects}></ProjectsList>
     </Page>
   );
 }
