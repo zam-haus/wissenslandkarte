@@ -1,10 +1,12 @@
 {
   "main-headline": "Projekte",
   "by": "Von",
+  "tags": "Tags",
   "main-image": "Das Hauptbild dieses Projekts wie von dem oder der Nutzer:in hochgeladen.",
   "project-step-headline": "Update vom {{date}}",
   "project-name": "Projektname",
   "project-description": "Beschreibung",
+  "attachments": "Die Projekt hat Anhänge",
   "select-main-image": "Hauptbild",
   "current-main-image": "Aktuelles Hauptbild",
   "select-image": "Bild",
@@ -16,9 +18,12 @@
   "missing-description": "Beschreibung muss ausgefüllt werden!",
   "creation-failed": "Erstellung fehlgeschlagen: ",
   "required": "(erforderlich)",
-  "delete-step": "Löschen",
-  "edit-step": "Bearbeiten",
-  "delete-step-confirm": "Willst du dieses Update wirklich löschen?",
+  "step": {
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "delete-confirm": "Willst du dieses Update wirklich löschen?",
+    "attachments": "Dieser Schritt hat Anhänge"
+  },
   "delete-image": "Dieses Bild löschen:",
   "metadata": "Projekt-Metadaten",
   "yes": "Ja",

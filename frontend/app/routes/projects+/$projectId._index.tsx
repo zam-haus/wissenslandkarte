@@ -16,6 +16,7 @@ import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 
 import style from "./$projectId._index.module.css";
 import { MetadataDisplay } from "./components/metadata-display";
+import { ParseKeys } from "i18next";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   assertExistsOr400(params.projectId, `Missing project id`);
@@ -48,62 +49,93 @@ export default function Project() {
   const allUsers = [...project.owners, ...project.members];
 
   return (
-    <main>
-      <header>
+    <>
+      <header className="left">
         <h2>{project.title}</h2>
-        {t("by")}:{" "}
-        <ul className={style.memberList}>
-          {allUsers.map(({ username }) => (
-            <li key={username} className={style.member}>
-              <Link to={`/users/${username}`}>{username}</Link>
-            </li>
-          ))}
-        </ul>
-        {project.mainImage ? (
-          <img style={{ maxWidth: 500 }} src={project.mainImage} alt={t("main-image")} />
-        ) : null}
+        <p>
+          {t("by")}:
+          <nav className={style.memberList} style={{ display: "inline-flex", gap: 0 }}>
+            {allUsers.map(({ username }) => (
+              <UserChip key={username} username={username} />
+            ))}
+          </nav>
+        </p>
+        <p>
+          {t("tags")}:
+          <ProjectTagList className="" tags={project.tags} />
+        </p>
       </header>
+      {project.mainImage ? (
+        <img
+          className="small-round"
+          style={{ maxWidth: 500 }}
+          src={project.mainImage}
+          alt={t("main-image")}
+        />
+      ) : null}
+      <MetadataDisplay metadata={project.metadata} className="right" />
 
       <CommonMarkdown>{project.description}</CommonMarkdown>
 
-      <ProjectTagList className="tags" tags={project.tags} />
+      {project.attachments.length > 0 ? (
+        <AttachmentSummary attachments={project.attachments} textKey="attachments" />
+      ) : null}
 
-      <MetadataDisplay metadata={project.metadata} />
-
-      <ul className={style.attachments}>
-        {project.attachments.map((attachment) => (
-          <li key={attachment.id}>
-            <AttachmentEntry {...attachment} />
-          </li>
-        ))}
-      </ul>
-
-      <ul className={style.stepList}>
+      <ul className="list border">
         {project.steps.map((step) => (
-          <li key={step.creationDate.valueOf()}>
-            <article className={style.step}>
-              <header>
-                <h4>
-                  {t("project-step-headline", {
-                    date: renderDate(step.creationDate, i18n.language),
-                  })}
-                </h4>
-                {isLoggedInUserAuthorizedToEdit ? DeleteAndEditButton(step.id) : null}
-              </header>
+          <li style={{ padding: "8px 0", textWrap: "wrap" }}>
+            <div className="max">
+              <h4 style={{ fontSize: "1.25rem" }}>
+                {t("project-step-headline", {
+                  date: renderDate(step.creationDate, i18n.language),
+                })}
+              </h4>
               <CommonMarkdown>{step.description}</CommonMarkdown>
 
-              <ul className={style.attachments}>
-                {step.attachments.map((attachment) => (
-                  <li key={attachment.id}>
-                    <AttachmentEntry {...attachment} />
-                  </li>
-                ))}
-              </ul>
-            </article>
+              {step.attachments.length > 0 ? (
+                <AttachmentSummary attachments={step.attachments} textKey="step.attachments" />
+              ) : null}
+            </div>
+            {isLoggedInUserAuthorizedToEdit ? DeleteAndEditButton(step.id) : null}
           </li>
         ))}
       </ul>
-    </main>
+    </>
+  );
+}
+
+function AttachmentSummary({
+  attachments,
+  textKey,
+}: {
+  attachments: Attachment[];
+  textKey: ParseKeys<"projects">;
+}) {
+  const { t } = useTranslation("projects");
+
+  return (
+    <details>
+      <summary>
+        <span className="chip">
+          <i>attach_file</i>
+          <div className="badge none">{attachments.length}</div>
+          {t(textKey)}
+        </span>
+      </summary>
+      <AttachmentRow attachments={attachments} />
+    </details>
+  );
+}
+
+function AttachmentRow({ attachments }: { attachments: Attachment[] }) {
+  return (
+    <ul className="row scroll" style={{ listStyle: "none", padding: 0, margin: 0 }}>
+      {attachments.map((attachment) => (
+        <li key={attachment.id}>
+          <AttachmentEntry {...attachment} />
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -113,16 +145,25 @@ function DeleteAndEditButton(stepId: string) {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
-    <>
+    <div
+      style={{
+        alignSelf: "flex-start",
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+      }}
+    >
       <ModalDialog
         visible={confirmDelete}
         closed={() => setConfirmDelete(false)}
         render={(close) => (
           <>
-            {t("delete-step-confirm")}
+            {t("step.delete-confirm")}
             <footer>
               <form action={`/projects/step/${stepId}/delete`} method="post">
-                <button type="submit">{t("yes", { ns: "common" })}</button>
+                <button type="submit" style={{ backgroundColor: "red" }}>
+                  {t("yes", { ns: "common" })}
+                </button>
                 <button type="button" autoFocus onClick={close}>
                   {t("no", { ns: "common" })}
                 </button>
@@ -131,8 +172,13 @@ function DeleteAndEditButton(stepId: string) {
           </>
         )}
       />
-      <a
-        href={`/projects/step/${stepId}/delete`}
+      <Link className="button small-round" to={`/projects/step/${stepId}/edit`}>
+        <i>edit</i>
+        {t("step.edit")}
+      </Link>
+      <Link
+        className="button border small-round"
+        to={`/projects/step/${stepId}/delete`}
         onClick={(event) => {
           setConfirmDelete(true);
           event.stopPropagation();
@@ -140,10 +186,10 @@ function DeleteAndEditButton(stepId: string) {
           return false;
         }}
       >
-        {t("delete-step")}
-      </a>
-      | <Link to={`/projects/step/${stepId}/edit`}>{t("edit-step")}</Link>
-    </>
+        <i>delete</i>
+        {t("step.delete")}
+      </Link>
+    </div>
   );
 }
 
@@ -157,11 +203,27 @@ function AttachmentEntry(props: Attachment) {
   switch (type) {
     case "file": //fallthrough
     case "link":
-      return <a href={url}>{text}</a>;
+      return (
+        <a className="chip" href={url}>
+          <i>link</i>
+          {text}
+        </a>
+      );
     case "image":
-      return <img src={url} alt={text} />;
+      return <img style={{ maxWidth: "250px" }} src={url} alt={text} className="small-round" />;
   }
 
   // This should be dead code, but just in case someone uses a nonstandard tsc...
   return <>Error: Unknown attachment type {{ type }}</>;
+}
+
+function UserChip({ username }: { username: string }) {
+  return (
+    <Link key={username} to={`/users/${username}`}>
+      <button className="chip">
+        <i>account_circle</i>
+        <span>{username}</span>
+      </button>
+    </Link>
+  );
 }

@@ -6,9 +6,10 @@ import style from "./metadata-display.module.css";
 
 type MetadataDisplayProps = {
   metadata: MetadataValue[];
+  className?: string;
 };
 
-export function MetadataDisplay({ metadata }: MetadataDisplayProps) {
+export function MetadataDisplay({ metadata, className }: MetadataDisplayProps) {
   const { t, i18n } = useTranslation("projects");
   const { language } = i18n;
 
@@ -17,7 +18,7 @@ export function MetadataDisplay({ metadata }: MetadataDisplayProps) {
   }
 
   return (
-    <aside className={style.metadataSection}>
+    <aside className={`${className}`}>
       <h3>{t("metadata")}</h3>
       <div className={style.metadataGrid}>
         {metadata.map((item) => {

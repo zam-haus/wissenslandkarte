@@ -35,7 +35,12 @@ export function PeopleTagList({ tags, className }: { tags: Tag[]; className?: st
 function TagElem({ url, text }: { url: string; text: string }) {
   return (
     <li className={localStyles.tag}>
-      <Link to={url}>{text}</Link>
+      <Link to={url}>
+        <button className="chip">
+          <i>tag</i>
+          <span>{text}</span>
+        </button>
+      </Link>
     </li>
   );
 }
