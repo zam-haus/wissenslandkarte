@@ -9,6 +9,11 @@ import mainStylesheetUrl from "~/styles/main.css?url";
 import variablesUrl from "~/styles/variables.css?url";
 
 export const links: LinksFunction = () => [
+  {
+    rel: "icon",
+    href: "/favicon-128.png",
+    type: "image/png",
+  },
   // ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
   { rel: "stylesheet", href: mainStylesheetUrl },
   { rel: "stylesheet", href: variablesUrl },

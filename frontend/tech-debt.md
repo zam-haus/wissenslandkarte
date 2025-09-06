@@ -17,3 +17,11 @@
 ## L
 
 - renovate pipeline
+
+Create Issues:
+
+- alerting wenn festplatte voll laeuft/generelle observability
+- limit amount of emails sendable per day
+- include link to user profile in email
+- site-admin role to remove unreferenced images
+- decide on favicon, trace it as svg https://favicon.im/de/blog/favicon-formats-sizes-best-practices
