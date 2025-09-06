@@ -80,12 +80,34 @@ export function Page({
   return (
     <>
       <style>{`
+        .drawer {
+          z-index: 250;
+      }
         .drawer-nav a {
           align-self: stretch;
           justify-content: flex-start;
         }
+
+        body > header {
+          position: sticky;
+          top: 0;
+          z-index: 200;
+          margin-top: 0px;
+        }
+
+        body > footer {
+          position: sticky;
+          bottom: 0;
+          z-index: 200;
+        }
+
+        #globalScrollContainer > nav.left {
+          position: sticky;
+          top: 4rem;
+          z-index: 150;
+        }
     `}</style>
-      <dialog className={"s left " + (menuOpen ? "active " : "")}>
+      <dialog className={"s left drawer " + (menuOpen ? "active " : "")}>
         <header
           style={{
             display: "flex",
@@ -126,28 +148,11 @@ export function Page({
         </nav>
       </header>
 
-      <div id="globalScrollContainer" style={{ flex: 1, minBlockSize: 0, display: "flex" }}>
-        <nav
-          className={"m l left"}
-          style={{
-            position: "sticky",
-            insetBlockStart: 0,
-            overflowY: "auto",
-            paddingBlockEnd: "200px",
-          }}
-        >
+      <div id="globalScrollContainer">
+        <nav className="m l left" style={{ height: "fit-content" }}>
           <NavItems isLoggedIn={isLoggedIn} additionalNavItems={additionalNavItems} />
         </nav>
-        <main
-          style={{
-            overflowY: "scroll",
-            flex: 1,
-            border: "1px solid red",
-            paddingBlockEnd: "50px /*for the top app bar*/",
-          }}
-        >
-          {children}
-        </main>
+        <main>{children}</main>
       </div>
       <footer style={{ padding: "0 " }}>{isLoggedIn ? <ActionBar /> : <></>}</footer>
     </>
