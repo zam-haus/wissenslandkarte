@@ -1,4 +1,4 @@
-import { Link, UIMatch, useMatches } from "@remix-run/react";
+import { Link, UIMatch, useFetcher, useMatches } from "@remix-run/react";
 import { ParseKeys } from "i18next";
 import React, { type PropsWithChildren, PropsWithRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -226,14 +226,19 @@ function GlobalButtons({ globalButtonRequests }: { globalButtonRequests: GlobalB
 
 function LanguageChooser({ className }: { className?: string }) {
   const { t, i18n } = useTranslation("common");
+  const fetcher = useFetcher();
 
   const supportedLanguages = [
     { code: "en", label: t("language-english"), icon: "🇬🇧" },
     { code: "de", label: t("language-german"), icon: "🇩🇪" },
   ];
 
-  const handleLanguageChange = (languageCode: string) => {
-    i18n.changeLanguage(languageCode);
+  const handleLanguageChange = async (languageCode: string) => {
+    await i18n.changeLanguage(languageCode);
+    fetcher.submit(
+      { lng: languageCode },
+      { method: "post", action: "/global_loaders/set-language" },
+    );
   };
 
   return (
