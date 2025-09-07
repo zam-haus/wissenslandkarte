@@ -7,14 +7,34 @@ export function ActionBar() {
   const { t } = useTranslation("common");
 
   return (
-    <nav className={style.actionBarNav}>
-      <Link to="/projects/new">{t("action-bar-new")}</Link>
-      <Link to="/projects/mine">{t("action-bar-projects")}</Link>
-      <Link to="/projects/step/new" className={style.mainItem}>
-        {t("action-bar-add")}
-      </Link>
-      <Link to="/search">{t("action-bar-search")}</Link>
-      <Link to="/users/me">{t("action-bar-profile")}</Link>
-    </nav>
+    <div className="center-align">
+      <nav className="center-align group  fill connected primary toolbar">
+        <Link className="button small left-round" to="/projects/new">
+          <i>post_add</i>
+          <span className="m l">{t("action-bar-new")}</span>
+          <span className="s tooltip">{t("action-bar-new")}</span>
+        </Link>
+        <Link className={`button small no-round ${style["no-round-fix"]}`} to="/projects/mine">
+          <i>handyman</i>
+          <span className="m l">{t("action-bar-projects")}</span>
+          <span className="s tooltip">{t("action-bar-projects")}</span>
+        </Link>
+        <Link className={`button large no-round ${style["no-round-fix"]}`} to="/projects/step/new">
+          <i>add</i>
+          <span className="m l">{t("action-bar-add")}</span>
+          <span className="s tooltip">{t("action-bar-add")}</span>
+        </Link>
+        <Link className={`button small no-round ${style["no-round-fix"]}`} to="/search">
+          <i>search</i>
+          <span className="m l">{t("action-bar-search")}</span>
+          <span className="s tooltip">{t("action-bar-search")}</span>
+        </Link>
+        <Link className="button small right-round" to="/users/me">
+          <i>account_box</i>
+          <span className="m l">{t("action-bar-profile")}</span>
+          <span className="s tooltip">{t("action-bar-profile")}</span>
+        </Link>
+      </nav>
+    </div>
   );
 }
