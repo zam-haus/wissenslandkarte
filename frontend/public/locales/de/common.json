@@ -35,5 +35,8 @@
   "select-tags": "Tags",
   "typeahead-users": "Tippen zum Nutzer hinzufügen...",
   "select-other-users": "Mitbearbeiter",
-  "optional": "(optional)"
+  "optional": "(optional)",
+  "language": "Sprache",
+  "language-english": "English",
+  "language-german": "Deutsch"
 }

@@ -35,5 +35,8 @@
   "select-tags": "Tags",
   "typeahead-users": "Type to add co-worker...",
   "select-other-users": "Co-Workers",
-  "optional": "(optional)"
+  "optional": "(optional)",
+  "language": "Language",
+  "language-english": "English",
+  "language-german": "Deutsch"
 }

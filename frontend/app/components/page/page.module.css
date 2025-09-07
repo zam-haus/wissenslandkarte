@@ -16,7 +16,8 @@
   z-index: 150;
 }
 
-.drawerNav a {
+.drawerNav a,
+.drawerNav button {
   align-self: stretch;
   justify-content: flex-start;
 }

@@ -98,6 +98,8 @@ export function Page({
             additionalNavItems={additionalNavItems}
             itemClassName="button small-round transparent"
           />
+          <div className="space"></div>
+          <LanguageChooser className="small-round transparent" />
         </nav>
       </dialog>
       <header className={"fill " + styles.globalHeader}>
@@ -115,6 +117,9 @@ export function Page({
       <div id="globalScrollContainer" className={styles.scrollContainer}>
         <nav className={`m l left ${styles.stickyNav}`}>
           <NavItems isLoggedIn={isLoggedIn} additionalNavItems={additionalNavItems} />
+
+          <div className="space"></div>
+          <LanguageChooser className="vertical" />
         </nav>
         <main className="no-padding">{children}</main>
       </div>
@@ -215,6 +220,40 @@ function GlobalButtons({ globalButtonRequests }: { globalButtonRequests: GlobalB
           </button>
         </Link>
       ))}
+    </>
+  );
+}
+
+function LanguageChooser({ className }: { className?: string }) {
+  const { t, i18n } = useTranslation("common");
+
+  const supportedLanguages = [
+    { code: "en", label: t("language-english"), icon: "🇬🇧" },
+    { code: "de", label: t("language-german"), icon: "🇩🇪" },
+  ];
+
+  const handleLanguageChange = (languageCode: string) => {
+    i18n.changeLanguage(languageCode);
+  };
+
+  return (
+    <>
+      <button className={`button small-round transparent ${className ?? ""}`}>
+        <i>language</i>
+        <span>{t("language")}</span>
+        <menu className="top border no-wrap">
+          {supportedLanguages.map((lang) => (
+            <li
+              key={lang.code}
+              onClick={() => handleLanguageChange(lang.code)}
+              className={lang.code === i18n.language ? "active" : ""}
+            >
+              <i>{lang.icon}</i>
+              {lang.label}
+            </li>
+          ))}
+        </menu>
+      </button>
     </>
   );
 }
