@@ -104,6 +104,7 @@ export function Page({
       </dialog>
       <header className={"fill " + styles.globalHeader}>
         <nav>
+          <img src="/favicon-128.png" className={`m l round ${styles.logo}`} />
           <button onClick={() => setMenuOpen(!menuOpen)} className="s circle transparent">
             <i>menu</i>
           </button>
