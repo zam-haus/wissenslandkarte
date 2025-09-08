@@ -3,6 +3,8 @@ import { ParseKeys } from "i18next";
 import React, { type PropsWithChildren, PropsWithRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { ToastDuration, useToast } from "~/components/toast/toast-context";
+
 import { ActionBar } from "./action-bar";
 import styles from "./page.module.css";
 
@@ -228,18 +230,26 @@ function GlobalButtons({ globalButtonRequests }: { globalButtonRequests: GlobalB
 function LanguageChooser({ className }: { className?: string }) {
   const { t, i18n } = useTranslation("common");
   const fetcher = useFetcher();
+  const { showToast } = useToast();
 
   const supportedLanguages = [
     { code: "en", label: t("language-english"), icon: "🇬🇧" },
     { code: "de", label: t("language-german"), icon: "🇩🇪" },
   ];
 
-  const handleLanguageChange = async (languageCode: string) => {
-    await i18n.changeLanguage(languageCode);
-    fetcher.submit(
-      { lng: languageCode },
-      { method: "post", action: "/global_loaders/set-language" },
-    );
+  const handleLanguageChange = (languageCode: string) => {
+    i18n
+      .changeLanguage(languageCode)
+      .then(() => {
+        fetcher.submit(
+          { lng: languageCode },
+          { method: "post", action: "/global_loaders/set-language" },
+        );
+      })
+      .catch((error: unknown) => {
+        showToast(t("language-change-error"), { type: "error", duration: ToastDuration.LONG });
+        console.error(error);
+      });
   };
 
   return (

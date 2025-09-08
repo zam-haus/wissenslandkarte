@@ -4,6 +4,8 @@ import beercss from "beercss/dist/cdn/beer.min.css?url";
 import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
 
+import { ToastContainer } from "~/components/toast/toast-container";
+import { ToastProvider } from "~/components/toast/toast-context";
 import i18next from "~/i18next.server";
 
 export const links: LinksFunction = () => [
@@ -42,7 +44,10 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <ToastProvider>
+          <Outlet />
+          <ToastContainer />
+        </ToastProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

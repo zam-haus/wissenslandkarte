@@ -38,5 +38,6 @@
   "optional": "(optional)",
   "language": "Language",
   "language-english": "English",
-  "language-german": "Deutsch"
+  "language-german": "Deutsch",
+  "language-change-error": "Failed to save language preferences"
 }

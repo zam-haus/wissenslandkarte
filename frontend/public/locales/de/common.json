@@ -38,5 +38,6 @@
   "optional": "(optional)",
   "language": "Sprache",
   "language-english": "English",
-  "language-german": "Deutsch"
+  "language-german": "Deutsch",
+  "language-change-error": "Spracheneinstellungen konnten nicht gespeichert werden"
 }
