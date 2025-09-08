@@ -23,28 +23,34 @@ export default function Admin() {
   const { t } = useTranslation("admin");
   const { isLoggedIn, showInfrastructureRoutes, showUserRoles } = useLoaderData<typeof loader>();
 
-  const adminSpecialNav = (
-    <>
-      {showInfrastructureRoutes ? (
-        <>
-          <li>
-            <Link to="/admin/applicationInfo">Admin: Application Info</Link>
-          </li>
-          <li>
-            <Link to="/admin/s3Objects">Admin: S3 Objects</Link>
-          </li>
-          <li>
-            <Link to="/admin/searchIndex">Admin: Search Index</Link>
-          </li>
-        </>
-      ) : null}
-      {showUserRoles ? (
-        <li>
-          <Link to="/admin/user-roles">Admin: User Roles</Link>
-        </li>
-      ) : null}
-    </>
-  );
+  const adminSpecialNav = (className?: string) =>
+    (
+      <>
+        <div className="space"></div>
+        {showInfrastructureRoutes ? (
+          <>
+            <Link to="/admin/applicationInfo" className={className}>
+              <i>info</i>
+              Admin: Application Info
+            </Link>
+            <Link to="/admin/s3Objects" className={className}>
+              <i>cloud_upload</i>
+              Admin: S3 Objects
+            </Link>
+            <Link to="/admin/searchIndex" className={className}>
+              <i>search</i>
+              Admin: Search Index
+            </Link>
+          </>
+        ) : null}
+        {showUserRoles ? (
+          <Link to="/admin/user-roles" className={className}>
+            <i>admin_panel_settings</i>
+            Admin: User Roles
+          </Link>
+        ) : null}
+      </>
+    ) as React.ReactElement;
 
   return (
     <Page isLoggedIn={isLoggedIn} additionalNavItems={adminSpecialNav} title={t("main-headline")}>

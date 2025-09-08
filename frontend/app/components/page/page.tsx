@@ -60,7 +60,7 @@ export function Page({
 }: PropsWithChildren<{
   title: string;
   isLoggedIn: boolean;
-  additionalNavItems?: React.JSX.Element;
+  additionalNavItems?: (className?: string) => React.ReactElement;
 }>) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -139,7 +139,7 @@ function NavItems({
   itemClassName,
 }: PropsWithRef<{
   isLoggedIn: boolean;
-  additionalNavItems?: React.JSX.Element;
+  additionalNavItems?: (className?: string) => React.ReactElement;
   itemClassName?: string;
 }>) {
   const { t } = useTranslation("common");
@@ -186,7 +186,7 @@ function NavItems({
         <i>help</i>
         {t("nav-faq")}
       </Link>
-      {additionalNavItems}
+      {additionalNavItems?.(itemClassName)}
       <div className="space"></div>
       {loginSection}
     </>
