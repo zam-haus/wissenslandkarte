@@ -1,9 +1,11 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 
 import { ProjectsList } from "~/components/project-list/projects-list";
 import type { ProjectListEntry } from "~/database/repositories/projects.server";
 import { getProjectDetails, getProjectList } from "~/database/repositories/projects.server";
+import { logger } from "~/lib/logging.server";
 import { searchProjectInSearchIndex } from "~/lib/search/search.server";
 
 import { getSearchQuery, SearchForm } from "./components/search-form";
@@ -23,27 +25,34 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   if (query === null || query.trim() === "") {
     const projects = filterByTags(await getProjectList({ limit: 50 }));
-    return { projects };
+    return { projects, searchError: null };
   }
 
-  const { projectResults, projectStepResults } = await searchProjectInSearchIndex(query);
+  try {
+    const { projectResults, projectStepResults } = await searchProjectInSearchIndex(query);
 
-  const projectIds = Array.from(
-    new Set([
-      ...projectResults.hits.map(({ id }) => id),
-      ...projectStepResults.hits
-        .map(({ projectId }) => projectId)
-        .filter((it): it is string => it !== null),
-    ]),
-  );
+    const projectIds = Array.from(
+      new Set([
+        ...projectResults.hits.map(({ id }) => id),
+        ...projectStepResults.hits
+          .map(({ projectId }) => projectId)
+          .filter((it): it is string => it !== null),
+      ]),
+    );
 
-  const foundProjects = (await Promise.all(projectIds.map((id) => getProjectDetails(id)))).filter(
-    function isNotNull<B>(it: B | null): it is B {
-      return it !== null;
-    },
-  );
+    const foundProjects = (await Promise.all(projectIds.map((id) => getProjectDetails(id)))).filter(
+      function isNotNull<B>(it: B | null): it is B {
+        return it !== null;
+      },
+    );
 
-  return { projects: filterByTags(foundProjects) };
+    return { projects: filterByTags(foundProjects), searchError: null };
+  } catch (error) {
+    // If search fails, fall back to showing all projects with tag filtering
+    logger("project-search").error("Search service unavailable:", error);
+    const projects = filterByTags(await getProjectList({ limit: 50 }));
+    return { projects, searchError: "search-unavailable" };
+  }
 };
 
 export const handle = {
@@ -51,12 +60,19 @@ export const handle = {
 };
 
 export default function Search() {
-  const { projects } = useLoaderData<typeof loader>();
+  const { projects, searchError } = useLoaderData<typeof loader>();
+  const { t } = useTranslation("search");
 
   return (
     <main>
       <SearchProjectPeopleSwitch />
       <SearchForm />
+      {searchError ? (
+        <div className="error small-padding small-round min margin">
+          <i>error</i>
+          <span>{t("search-error")}</span>
+        </div>
+      ) : null}
       <ProjectsList projects={projects}></ProjectsList>
     </main>
   );
