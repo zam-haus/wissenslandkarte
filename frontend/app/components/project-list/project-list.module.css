@@ -9,9 +9,19 @@
 
 .projectMainImagePlaceholder {
   width: 110px;
+  height: 100%;
   float: right;
 }
 
 .projectTitle {
   font-size: 1.5rem;
+  border-start-start-radius: 0 !important;
+  border-end-end-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+}
+
+.projectMainImage,
+.projectMainImagePlaceholder {
+  border-end-end-radius: 0 !important;
+  border-start-end-radius: 0 !important;
 }

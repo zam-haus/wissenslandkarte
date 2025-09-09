@@ -6,7 +6,7 @@ import localStyles from "./tags.module.css";
 
 export function ProjectTagList({ tags, className }: { tags: Tag[]; className: string }) {
   return (
-    <ul className={[className, localStyles.tagList].join(" ")}>
+    <ul className={`${className} ${localStyles.tagList}`}>
       {tags.map((tag) => (
         <TagElem
           key={tag.id}
@@ -20,7 +20,7 @@ export function ProjectTagList({ tags, className }: { tags: Tag[]; className: st
 
 export function PeopleTagList({ tags, className }: { tags: Tag[]; className?: string }) {
   return (
-    <ul className={[className, localStyles.tagList].join(" ")}>
+    <ul className={`${className} ${localStyles.tagList}`}>
       {tags.map((tag) => (
         <TagElem
           key={tag.id}

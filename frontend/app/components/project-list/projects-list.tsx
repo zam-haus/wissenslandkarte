@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { ProjectListEntry } from "~/database/repositories/projects.server";
 
 import { LocalDate } from "../date-rendering";
+import { ProjectTagList } from "../tags/tags";
 
 import localStyle from "./project-list.module.css";
 
@@ -34,25 +35,30 @@ export function ProjectsList({
             {project.mainImage === null ? (
               <div
                 className={
-                  localStyle.projectMainImagePlaceholder + " " + (styles?.projectMainImage ?? "")
+                  localStyle.projectMainImagePlaceholder +
+                  " surface-variant " +
+                  (styles?.projectMainImage ?? "")
                 }
               ></div>
             ) : (
               <img
                 loading="lazy"
-                className="responsive"
+                className={`responsive ${localStyle.projectMainImage} ${styles?.projectMainImage ?? ""}`}
                 alt={t("project-image-alt-text", { title: project.title })}
                 src={project.mainImage}
               />
             )}
           </div>
           <div className="s8">
-            <div className="padding">
-              <h3 className={localStyle.projectTitle}>{project.title}</h3>
-              <span className={styles?.projectModificationDate}>
-                <LocalDate date={project.latestModificationDate}></LocalDate>
-              </span>{" "}
-            </div>
+            <h3
+              className={`secondary ${localStyle.projectTitle} no-round top-right-round no-margin small-padding`}
+            >
+              {project.title}
+            </h3>
+            <span className={`${styles?.projectModificationDate} padding`}>
+              <LocalDate date={project.latestModificationDate}></LocalDate>
+              <ProjectTagList tags={project.tags} className="" />
+            </span>
           </div>
         </div>
       </article>
