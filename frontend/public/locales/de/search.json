@@ -6,5 +6,6 @@
   "query": "Suchanfrage",
   "filter-tags": "Nach Tags filtern",
   "search-placeholder": "Volltextsuche",
-  "search-helper-text": "Hiermit kannst du in allen Projekten und Projekteinträgen suchen."
+  "search-helper-text": "Hiermit kannst du in allen Projekten und Projekteinträgen suchen.",
+  "tag-filter-helper-text": "Der Tag-Filter wird nach der Suche angewandt und alle Tags müssen gleichzeitig vorkommen."
 }

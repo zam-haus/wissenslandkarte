@@ -35,11 +35,14 @@ export function SearchForm() {
       </fieldset>
       <fieldset>
         <legend>{t("filter-tags")}</legend>
-        <TagSelect
-          defaultValue={tagFilter.map((it) => ({ id: "", name: it }))}
-          initiallyAvailableTags={[]}
-          allowAddingNew={false}
-        />
+        <div className={`field ${styles.tagFilterField}`}>
+          <TagSelect
+            defaultValue={tagFilter.map((it) => ({ id: "", name: it }))}
+            initiallyAvailableTags={[]}
+            allowAddingNew={false}
+          />
+          <span className="helper">{t("tag-filter-helper-text")}</span>
+        </div>
       </fieldset>
 
       <button className="margin-top" type="submit">

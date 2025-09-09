@@ -1,3 +1,7 @@
+:global(.field).tagFilterField {
+  height: fit-content;
+}
+
 @media screen and (--custom-media-large) {
   .form {
     display: grid;

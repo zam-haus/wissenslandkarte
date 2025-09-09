@@ -17,7 +17,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return tagFilter.length === 0
       ? projects
       : projects.filter((project) =>
-          tagFilter.some((tag) => project.tags.map((it) => it.name).includes(tag)),
+          tagFilter.every((tag) => project.tags.map((it) => it.name).includes(tag)),
         );
   }
 

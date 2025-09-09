@@ -6,5 +6,6 @@
   "query": "Query",
   "filter-tags": "Filter by tags",
   "search-placeholder": "Full text search",
-  "search-helper-text": "You can search within all projects and project updates."
+  "search-helper-text": "You can search within all projects and project updates.",
+  "tag-filter-helper-text": "The tag filter is applied after the search and all tags must appear together."
 }
