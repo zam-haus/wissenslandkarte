@@ -1,0 +1,22 @@
+:root {
+  /**
+   * Some css variables that are not defined in beer.css
+   **/
+
+  /**
+    * Media queries, enabled by custom-media-queries plugin
+    **/
+  --max-device-size-small: 600px;
+  --min-device-size-medium: 601px;
+  --max-device-size-medium: 992px;
+  --min-device-size-large: 993px;
+
+  @custom-media --custom-media-small (max-width: 600px);
+  @custom-media --custom-media-medium (min-width: 600px) and (max-width: 992px);
+  @custom-media --custom-media-large (min-width: 993px);
+
+  /**
+   * Colors
+   */
+  --primary-border-color: var(--primary);
+}

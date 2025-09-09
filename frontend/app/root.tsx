@@ -6,6 +6,7 @@ import { useChangeLanguage } from "remix-i18next/react";
 
 import { ToastContainer } from "~/components/toast/toast-container";
 import { ToastProvider } from "~/components/toast/toast-context";
+import globalStyles from "~/global.css?url";
 import i18next from "~/i18next.server";
 
 export const links: LinksFunction = () => [
@@ -15,6 +16,7 @@ export const links: LinksFunction = () => [
     type: "image/png",
   },
   { rel: "stylesheet", href: beercss },
+  { rel: "stylesheet", href: globalStyles },
 ];
 
 export const meta: MetaFunction = () => [{ title: "Wissenslandkarte" }];

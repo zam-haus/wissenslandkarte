@@ -1,4 +1,7 @@
+import postcssGlobalData from "@csstools/postcss-global-data";
 import { vitePlugin as remix } from "@remix-run/dev";
+import postcssAutoprefixer from "autoprefixer";
+import postcssCustomMedia from "postcss-custom-media";
 import { flatRoutes } from "remix-flat-routes";
 import { defineConfig } from "vite";
 import { envOnlyMacros } from "vite-env-only";
@@ -29,4 +32,15 @@ export default defineConfig({
     tsconfigPaths(),
     envOnlyMacros(),
   ],
+  css: {
+    postcss: {
+      plugins: [
+        postcssAutoprefixer(),
+        postcssGlobalData({
+          files: ["./app/global.css"],
+        }),
+        postcssCustomMedia(),
+      ],
+    },
+  },
 });
