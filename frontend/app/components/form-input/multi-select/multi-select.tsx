@@ -15,7 +15,6 @@ type MultiSelectProps = {
   valuesToSuggest: string[];
   chosenValues: string[];
   inputPlaceholder: string;
-  inputLabel: string;
   inputName: string;
   onValueChosen: (value: string) => void;
   onValueRemoved: (value: string) => void;
@@ -83,7 +82,7 @@ export function MultiSelect(props: MultiSelectProps) {
   const filteredInput = [...new Set(props.valuesToSuggest)].filter(itemFilter);
 
   const debouncedOnFilterInput = useDebounceCallback(props.onFilterInput ?? (() => void 0), 200);
-  const { getLabelProps, getInputProps, getItemProps, getMenuProps, isOpen } = useCombobox({
+  const { getInputProps, getItemProps, getMenuProps, highlightedIndex } = useCombobox({
     items: filteredInput,
     stateReducer: downshiftStateReducer,
     onSelectedItemChange: selectItemViaDropdown,
@@ -96,44 +95,36 @@ export function MultiSelect(props: MultiSelectProps) {
   });
 
   return (
-    <div>
-      <label {...getLabelProps()}>{props.inputLabel}</label>
-      <div>
-        <div className={style.chosenItemsWrapper} onClick={focusInputElement}>
-          {props.chosenValues.map((item) => (
-            <Fragment key={item}>
-              <RemovableItem value={item} onRemove={() => props.onValueRemoved(item)} />
-              <input type="hidden" name={props.inputName} value={item} />
-            </Fragment>
-          ))}
+    <div className={style.chosenItemsWrapper} onClick={focusInputElement}>
+      {props.chosenValues.map((item) => (
+        <Fragment key={item}>
+          <RemovableItem value={item} onRemove={() => props.onValueRemoved(item)} />
+          <input type="hidden" name={props.inputName} value={item} />
+        </Fragment>
+      ))}
 
-          <div>
-            <input
-              placeholder={props.inputPlaceholder}
-              {...getInputProps({ ref: inputElementRef, onKeyDown: onInputKeyDown })}
-            />
-            <div style={{ position: "relative" }}>
-              <ul
-                className={`${style.menu} ${isOpen ? style.openMenu : style.closedMenu}`}
-                {...getMenuProps()}
-              >
-                {!isOpen
-                  ? null
-                  : filteredInput.map((item) => (
-                      <li
-                        className={style.item}
-                        key={item}
-                        {...getItemProps({
-                          item,
-                        })}
-                      >
-                        {item}
-                      </li>
-                    ))}
-              </ul>
+      <div className={`field small small-round border no-margin`}>
+        <input placeholder={props.inputPlaceholder} />
+        <menu {...getMenuProps()} className="min">
+          <li>
+            <div className="field large prefix">
+              <i className="front">arrow_back</i>
+              <input {...getInputProps({ ref: inputElementRef, onKeyDown: onInputKeyDown })} />
             </div>
-          </div>
-        </div>
+          </li>
+          {filteredInput.map((item, index) => (
+            <li
+              key={item}
+              className={index === highlightedIndex ? "active" : ""}
+              {...getItemProps({
+                item,
+              })}
+            >
+              <i>add</i>
+              {item}
+            </li>
+          ))}
+        </menu>
       </div>
     </div>
   );

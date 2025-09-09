@@ -39,5 +39,6 @@
   "language": "Language",
   "language-english": "English",
   "language-german": "Deutsch",
-  "language-change-error": "Failed to save language preferences"
+  "language-change-error": "Failed to save language preferences",
+  "remove-item": "Remove item"
 }

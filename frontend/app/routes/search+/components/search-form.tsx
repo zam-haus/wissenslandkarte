@@ -19,25 +19,32 @@ export function SearchForm() {
   const { query, tagFilter } = getSearchQuery(searchParams);
 
   return (
-    <Form method="get">
-      <label>
-        {t("query")}
-        <input
-          className={styles.searchInput}
-          type="text"
-          name="q"
-          placeholder="🔎"
-          defaultValue={query ?? ""}
+    <Form method="get" className={styles.form}>
+      <fieldset>
+        <legend>{t("query")}</legend>
+        <div className="field prefix small-round border fill">
+          <i className="front">search</i>
+          <input
+            type="text"
+            name="q"
+            placeholder={t("search-placeholder")}
+            defaultValue={query ?? ""}
+          />
+          <span className="helper">{t("search-helper-text")}</span>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>{t("filter-tags")}</legend>
+        <TagSelect
+          defaultValue={tagFilter.map((it) => ({ id: "", name: it }))}
+          initiallyAvailableTags={[]}
+          allowAddingNew={false}
         />
-      </label>
-      {t("filter-tags")}
-      <TagSelect
-        defaultValue={tagFilter.map((it) => ({ id: "", name: it }))}
-        initiallyAvailableTags={[]}
-        allowAddingNew={false}
-      />
+      </fieldset>
 
-      <button type="submit">{t("search")}</button>
+      <button className="margin-top" type="submit">
+        {t("search")}
+      </button>
     </Form>
   );
 }

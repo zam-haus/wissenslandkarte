@@ -43,7 +43,6 @@ export function UserSelect({
       {userFetcher.state == "loading" ? "Loading..." : ""}
       <MultiSelect
         inputPlaceholder={t("typeahead-users")}
-        inputLabel={`${t("select-other-users")} ${t("optional")}`}
         inputName="coworkers"
         chosenValues={chosenUsers}
         valuesToSuggest={availableUsers

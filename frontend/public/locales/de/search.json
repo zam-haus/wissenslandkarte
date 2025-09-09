@@ -4,5 +4,7 @@
   "projects": "Projekte",
   "people": "Personen",
   "query": "Suchanfrage",
-  "filter-tags": "Nach Tags filtern"
+  "filter-tags": "Nach Tags filtern",
+  "search-placeholder": "Volltextsuche",
+  "search-helper-text": "Hiermit kannst du in allen Projekten und Projekteinträgen suchen."
 }

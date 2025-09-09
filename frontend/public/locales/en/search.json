@@ -4,5 +4,7 @@
   "projects": "Projects",
   "people": "People",
   "query": "Query",
-  "filter-tags": "Filter by tags"
+  "filter-tags": "Filter by tags",
+  "search-placeholder": "Full text search",
+  "search-helper-text": "You can search within all projects and project updates."
 }

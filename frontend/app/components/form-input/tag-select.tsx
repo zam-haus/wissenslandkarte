@@ -45,7 +45,6 @@ export function TagSelect({
       {tagFetcher.state == "loading" ? "Loading..." : ""}
       <MultiSelect
         inputPlaceholder={t("typeahead-tags")}
-        inputLabel={`${t("select-tags")} ${t("optional")}`}
         inputName="tags"
         chosenValues={chosenTags}
         onFilterInput={fetchMoreTags}

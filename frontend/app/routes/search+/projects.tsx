@@ -55,8 +55,8 @@ export default function Search() {
 
   return (
     <main>
-      <SearchForm />
       <SearchProjectPeopleSwitch />
+      <SearchForm />
       <ProjectsList projects={projects}></ProjectsList>
     </main>
   );

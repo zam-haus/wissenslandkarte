@@ -39,5 +39,6 @@
   "language": "Sprache",
   "language-english": "English",
   "language-german": "Deutsch",
-  "language-change-error": "Spracheneinstellungen konnten nicht gespeichert werden"
+  "language-change-error": "Spracheneinstellungen konnten nicht gespeichert werden",
+  "remove-item": "Element entfernen"
 }

@@ -29,8 +29,8 @@ export default function Search() {
 
   return (
     <main>
-      <SearchForm />
       <SearchProjectPeopleSwitch />
+      <SearchForm />
       <ul>
         {users.map((user) => (
           <li key={user.id}>

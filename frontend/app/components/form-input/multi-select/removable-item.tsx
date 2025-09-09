@@ -1,16 +1,16 @@
-import style from "./removable-item.module.css";
+import { useTranslation } from "react-i18next";
 
 type RemovableItemProps = {
   value: string;
   onRemove: () => void;
 };
 export function RemovableItem({ value, onRemove }: RemovableItemProps) {
+  const { t } = useTranslation("common");
+
   return (
-    <div className={style.selectedItem}>
+    <div className="chip fill medium" onClick={onRemove}>
       {value}
-      <button title="Remove Item" className={style.xButton} onClick={onRemove}>
-        x
-      </button>
+      <i title={t("remove-item")}>close</i>
     </div>
   );
 }
