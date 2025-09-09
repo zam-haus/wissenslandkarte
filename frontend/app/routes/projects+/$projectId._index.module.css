@@ -40,23 +40,31 @@
 }
 
 .stepItem {
-  padding: 8px 0;
+  padding: 8px;
   text-wrap: wrap;
+  white-space: break-spaces !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
 }
 
 .stepHeadline {
-  font-size: 1.25rem;
+  font-size: 1.05rem;
+}
+
+.stepAttachments {
+  width: calc(100% + var(--_margin) + var(--_padding)) !important;
 }
 
 .attachmentRow {
   list-style: none;
   padding: 0;
   margin: 0;
+  margin-left: calc(-1 * var(--_padding) - var(--_margin)) !important;
 }
 
 .deleteEditContainer {
   align-self: flex-start;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   gap: 8px;
 }

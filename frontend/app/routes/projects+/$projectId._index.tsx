@@ -90,20 +90,18 @@ export default function Project() {
 
       <ul className="list border margin">
         {project.steps.map((step) => (
-          <li key={step.id} className={style.stepItem}>
-            <div className="max">
-              <h4 className={style.stepHeadline}>
-                {t("project-step-headline", {
-                  date: renderDate(step.creationDate, i18n.language),
-                })}
-              </h4>
-              <CommonMarkdown>{step.description}</CommonMarkdown>
+          <li key={step.id} className={`${style.stepItem} small-padding`}>
+            <h4 className={style.stepHeadline}>
+              {t("project-step-headline", {
+                date: renderDate(step.creationDate, i18n.language),
+              })}
+              {isLoggedInUserAuthorizedToEdit ? DeleteAndEditButton(step.id) : null}
+            </h4>
+            <CommonMarkdown>{step.description}</CommonMarkdown>
 
-              {step.attachments.length > 0 ? (
-                <AttachmentSummary attachments={step.attachments} textKey="step.attachments" />
-              ) : null}
-            </div>
-            {isLoggedInUserAuthorizedToEdit ? DeleteAndEditButton(step.id) : null}
+            {step.attachments.length > 0 ? (
+              <AttachmentSummary attachments={step.attachments} textKey="step.attachments" />
+            ) : null}
           </li>
         ))}
       </ul>
@@ -121,7 +119,7 @@ function AttachmentSummary({
   const { t } = useTranslation("projects");
 
   return (
-    <details>
+    <details className={style.stepAttachments}>
       <summary>
         <span className="chip">
           <i>attach_file</i>
@@ -172,23 +170,29 @@ function DeleteAndEditButton(stepId: string) {
           </>
         )}
       />
-      <Link className="button small-round" to={`/projects/step/${stepId}/edit`}>
-        <i>edit</i>
-        <span className="m l">{t("step.edit")}</span>
-      </Link>
-      <Link
-        className="button border small-round"
-        to={`/projects/step/${stepId}/delete`}
-        onClick={(event) => {
-          setConfirmDelete(true);
-          event.stopPropagation();
-          event.preventDefault();
-          return false;
-        }}
-      >
-        <i>delete</i>
-        <span className="m l">{t("step.delete")}</span>
-      </Link>
+
+      <button className="transparent square">
+        <i>more_vert</i>
+        <menu className="border no-wrap left vertical">
+          <Link className="button small-margin small-round" to={`/projects/step/${stepId}/edit`}>
+            <i>edit</i>
+            <span className="m l">{t("step.edit")}</span>
+          </Link>
+          <Link
+            className="button small-margin border small-round"
+            to={`/projects/step/${stepId}/delete`}
+            onClick={(event) => {
+              setConfirmDelete(true);
+              event.stopPropagation();
+              event.preventDefault();
+              return false;
+            }}
+          >
+            <i>delete</i>
+            <span className="m l">{t("step.delete")}</span>
+          </Link>
+        </menu>
+      </button>
     </div>
   );
 }
