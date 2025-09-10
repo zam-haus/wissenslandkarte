@@ -89,7 +89,7 @@ export function UserMain({ user }: { user: UserOverview }) {
 
       <section>
         <h3>{t("projects-headline")}</h3>
-        <ProjectsList projects={allProjects} styles={styles}></ProjectsList>
+        <ProjectsList projects={allProjects}></ProjectsList>
       </section>
     </main>
   );
