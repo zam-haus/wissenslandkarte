@@ -18,7 +18,7 @@ export function MetadataDisplay({ metadata, className }: MetadataDisplayProps) {
   }
 
   return (
-    <aside className={`border tertiary padding small-round ${className}`}>
+    <aside className={`tertiary padding small-round no-margin margin-bottom ${className}`}>
       <h3 className="small" style={{ fontSize: "1.2rem" }}>
         {t("metadata")}
       </h3>

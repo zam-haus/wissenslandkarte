@@ -29,7 +29,7 @@ export function ProjectsList({
       to={`/projects/${encodeURIComponent(project.id)}`}
       className={localStyle.projectEntry}
     >
-      <article className={`no-padding border ${localStyle.projectCard}`}>
+      <article className={`no-padding primary-container no-elevate ${localStyle.projectCard}`}>
         <div className="grid no-space">
           <div className="s4">
             {project.mainImage === null ? (
