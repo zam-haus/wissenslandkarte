@@ -19,4 +19,12 @@
    * Colors
    */
   --primary-border-color: var(--primary);
+
+  /**
+   * Spacing
+   */
+  --spacing-tiny: 4px;
+  --spacing-small: 8px;
+  --spacing-medium: 16px;
+  --spacing-large: 24px;
 }

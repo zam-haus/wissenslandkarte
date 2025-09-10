@@ -1,6 +1,6 @@
 .projectEntry {
   display: inline-block;
-  margin: 18px;
+  margin: var(--spacing-medium);
 }
 
 .projectCard {

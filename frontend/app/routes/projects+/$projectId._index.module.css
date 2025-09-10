@@ -1,6 +1,6 @@
 .projectHeader {
   display: flex;
-  gap: 16px;
+  gap: var(--spacing-medium);
 }
 
 .metadata {
@@ -60,7 +60,7 @@
   align-self: flex-start;
   display: inline-flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-small);
 }
 
 .deleteButton {

@@ -5,7 +5,7 @@
 @media screen and (--custom-media-large) {
   .form {
     display: grid;
-    gap: 16px;
+    gap: var(--spacing-medium);
     align-items: start;
   }
 
