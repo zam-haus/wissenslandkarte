@@ -3,6 +3,6 @@
   gap: var(--secondary-gap);
   list-style: none;
   padding: 0;
-  white-space: no-wrap;
+  white-space: nowrap;
   flex-wrap: wrap;
 }
