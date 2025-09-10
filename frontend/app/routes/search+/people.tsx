@@ -1,8 +1,7 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 
-import { LocalDate } from "~/components/date-rendering";
-import { UserImage } from "~/components/user-image/user-image";
+import { UserList } from "~/components/user/user-list";
 import { searchUsers } from "~/database/repositories/user.server";
 
 import { getSearchQuery, SearchForm } from "./components/search-form";
@@ -31,17 +30,7 @@ export default function Search() {
     <main>
       <SearchProjectPeopleSwitch />
       <SearchForm />
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            <Link to={`/users/${encodeURIComponent(user.username)}`}>{user.username}</Link>
-            <span>
-              <LocalDate date={user.registrationDate}></LocalDate>
-            </span>
-            <UserImage {...user} />
-          </li>
-        ))}
-      </ul>
+      <UserList users={users} />
     </main>
   );
 }

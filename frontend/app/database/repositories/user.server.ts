@@ -1,25 +1,33 @@
 import type { Tag, User } from "prisma/generated";
+import { UserGetPayload } from "prisma/generated/models";
 import { prisma } from "~/database/db.server";
 import { UserWithRoles } from "~/lib/authorization.server";
 
 import type { ProjectListEntry } from "./projects.server";
 
-export type UserListEntry = Pick<User, "id" | "username"> &
-  Partial<Pick<User, "image" | "registrationDate">>;
+export type UserListEntry = UserGetPayload<{
+  select: {
+    id: true;
+    username: true;
+    description: true;
+    image: true;
+    registrationDate: true;
+    tags: true;
+  };
+}>;
 
-export async function getUserList(
-  properties: { image?: boolean; registrationDate?: boolean } = {},
-  options?: {
-    limit?: number;
-    page?: number;
-  },
-): Promise<UserListEntry[]> {
+export async function getUserList(options?: {
+  limit?: number;
+  page?: number;
+}): Promise<UserListEntry[]> {
   return prisma.user.findMany({
     select: {
       id: true,
       username: true,
-      image: properties.image ?? false,
-      registrationDate: properties.registrationDate ?? false,
+      description: true,
+      image: true,
+      registrationDate: true,
+      tags: true,
     },
     take: options?.limit,
     skip: (options?.limit ?? 0) * (options?.page ?? 0),
@@ -79,13 +87,24 @@ export async function getUserOverview(username: User["username"]): Promise<UserO
   });
 }
 
-type UserSearchResult = Pick<User, "id" | "username" | "image" | "registrationDate">;
+type UserSearchResult = UserGetPayload<{
+  select: {
+    id: true;
+    username: true;
+    description: true;
+    image: true;
+    registrationDate: true;
+    tags: true;
+  };
+}>;
 export async function searchUsers(tags?: string[]): Promise<UserSearchResult[]> {
   const select = {
     id: true,
     username: true,
+    description: true,
     image: true,
     registrationDate: true,
+    tags: true,
     _count: { select: { ownedProjects: true, memberProjects: true } },
   };
 

@@ -1,0 +1,39 @@
+.userImage {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.userCard {
+  white-space: break-spaces;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.userHeader {
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  grid-template-rows: 1fr min-content;
+  grid-template-areas: "username image" "date image";
+  gap: var(--spacing-medium);
+  align-items: flex-start;
+  justify-content: space-between;
+  white-space: wrap;
+  border-end-end-radius: 0 !important;
+  border-end-start-radius: 0 !important;
+}
+
+.userHeader h3 {
+  word-break: break-all;
+  grid-area: username;
+}
+
+.userRegistrationDate {
+  grid-area: date;
+}
+
+.userImage {
+  grid-area: image;
+}

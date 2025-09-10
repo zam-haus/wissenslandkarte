@@ -1,11 +1,11 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { Pager, usePagedInfinitScroll } from "~/components/infinite-scroll-pager";
-import { UserImage } from "~/components/user-image/user-image";
+import { UserList } from "~/components/user/user-list";
 import type { UserListEntry } from "~/database/repositories/user.server";
 import { getUserList } from "~/database/repositories/user.server";
 
@@ -15,7 +15,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const page = isNaN(parsedPage) ? 0 : parsedPage;
 
   return {
-    pageData: await getUserList({ image: true }, { limit: 30, page }),
+    pageData: await getUserList({ limit: 30, page }),
     page,
   };
 };
@@ -29,7 +29,7 @@ export default function Users() {
     page,
     hasMore,
     fetcher,
-  } = usePagedInfinitScroll<Omit<UserListEntry, "registrationDate">>(
+  } = usePagedInfinitScroll<UserListEntry>(
     loaderData,
     useCallback((loadedData) => loadedData, []),
   );
@@ -49,19 +49,7 @@ export default function Users() {
       hasMore={hasMore}
     >
       <main>
-        <h1>Users</h1>
-        <ul>
-          {users.map((user) => (
-            <li key={user.id}>
-              <Link to={encodeURIComponent(user.username)}>
-                {user.image === undefined ? null : (
-                  <UserImage image={user.image} username={user.username} />
-                )}
-                {user.username}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <UserList users={users} />
       </main>
       <Pager page={page} hasMore={hasMore}></Pager>
     </InfiniteScroll>

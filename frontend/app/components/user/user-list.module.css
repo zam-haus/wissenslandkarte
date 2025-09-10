@@ -1,0 +1,14 @@
+.userList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-medium);
+}
+
+.userLink {
+  display: inline-block;
+  justify-self: stretch;
+}
+
+.userLink > * {
+  height: 100%;
+}
