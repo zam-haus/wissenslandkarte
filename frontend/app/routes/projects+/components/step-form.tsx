@@ -37,9 +37,9 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
 
   return (
     <Form method="post" encType="multipart/form-data" className={style.verticalForm}>
-      <label>
-        {t("project-name")}
+      <div className="field border label">
         <select
+          id="newProjectId"
           name="newProjectId"
           required
           onChange={(e) => {
@@ -53,7 +53,8 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
             </option>
           ))}
         </select>
-      </label>
+        <label htmlFor="newProjectId">{t("project-name")}</label>
+      </div>
 
       {currentState?.attachments.map((attachment) => {
         if (attachment.type !== "image") {
@@ -71,15 +72,20 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
 
       <ImageSelect
         name="imageAttachments"
-        label={`${t("select-image")} ${t("common", "optional")}`}
+        label={`${t("select-image")} (${t("common", "optional")})`}
         maxImageSize={maxImageSize}
         multiple={true}
       />
 
-      <label>
-        {t("step-text")}
-        <textarea name="description" required defaultValue={currentState?.description}></textarea>
-      </label>
+      <div className="field border label textarea">
+        <textarea
+          name="description"
+          required
+          defaultValue={currentState?.description}
+          id="description-input"
+        ></textarea>
+        <label htmlFor="description-input">{t("step-text")}</label>
+      </div>
 
       <button type="submit">{t("save")}</button>
     </Form>

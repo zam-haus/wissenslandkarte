@@ -1,3 +1,13 @@
+.buttonRow {
+  display: flex;
+  gap: var(--spacing-small);
+  align-items: center;
+}
+
+.buttonRow button {
+  flex: 1;
+}
+
 .imagePreview {
   max-width: 120px;
 }
@@ -7,23 +17,26 @@
   pointer-events: none;
 }
 
+.imagePreviewsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+}
+
 .deleteImageButtonContainer {
   position: relative;
   width: fit-content;
-  margin-top: 5px;
-  margin-right: 5px;
+  max-width: 120px;
 }
 
 .deleteImageButton {
   border-radius: 100%;
-  padding: 2px;
-  border: 1px solid black;
-  width: 20px;
-  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
   top: -5px;
-  right: -5px;
+  right: -15px;
+  z-index: 2;
+  aspect-ratio: 1;
 }

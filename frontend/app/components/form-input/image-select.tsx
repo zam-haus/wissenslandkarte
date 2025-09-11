@@ -152,38 +152,54 @@ export function ImageSelect({
     <>
       <noscript>{t("noscript-warning")}</noscript>
       <input className={style.actualFileInput} type="file" name={name} ref={actualFileUploadRef} />
-      <label>
-        {label} {hasCamera ? t("file-system-suffix") : ""}
-        <input
-          type="file"
-          accept="image/*"
-          multiple={multiple}
-          onClick={resetSizeCheckWarning}
-          onChange={(event) => newImageSelected(event)}
-        />
-      </label>
-      {hasCamera ? (
-        <label>
-          {label} {t("camera-suffix")}
+      <div className={style.buttonRow}>
+        <button>
+          <i>add_photo_alternate</i>
+          <span>
+            {label} {hasCamera ? t("file-system-suffix") : ""}
+          </span>
           <input
             type="file"
-            capture="environment"
             accept="image/*"
+            multiple={multiple}
             onClick={resetSizeCheckWarning}
             onChange={(event) => newImageSelected(event)}
           />
-        </label>
-      ) : null}
-      {fileTooLarge ? t("image-too-large") : ""}
-      {imagePreviews.map((url, index) => (
-        <div key={url} className={style.deleteImageButtonContainer}>
-          <button className={style.deleteImageButton} onClick={() => removeImageByIndex(index)}>
-            ×
+        </button>
+        {hasCamera ? (
+          <button>
+            <i>add_a_photo</i>
+            <span>
+              {label} {t("camera-suffix")}
+            </span>
+            <input
+              type="file"
+              capture="environment"
+              accept="image/*"
+              onClick={resetSizeCheckWarning}
+              onChange={(event) => newImageSelected(event)}
+            />
           </button>
-          <img src={url} alt={t("image-preview")} className={style.imagePreview} />{" "}
-          {/*TODO: Add text input for alt text */}
-        </div>
-      ))}
+        ) : null}
+      </div>
+      {fileTooLarge ? t("image-too-large") : ""}
+      <div className={style.imagePreviewsContainer}>
+        {imagePreviews.map((url, index) => (
+          <div
+            key={url}
+            className={`small-rounds small-margin ${style.deleteImageButtonContainer}`}
+          >
+            <button
+              className={`small-elevate secondary no-padding ${style.deleteImageButton}`}
+              onClick={() => removeImageByIndex(index)}
+            >
+              <i className="tiny">delete</i>
+            </button>
+            <img src={url} alt={t("image-preview")} className={style.imagePreview} />{" "}
+            {/*TODO: Add text input for alt text */}
+          </div>
+        ))}
+      </div>
     </>
   );
 }
