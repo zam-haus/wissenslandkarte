@@ -19,6 +19,10 @@
   justify-content: flex-start;
 }
 
+.drawerNav a:global(.active) {
+  background-color: var(--primary-container) !important;
+}
+
 .drawerHeader {
   display: flex;
   flex-direction: row;

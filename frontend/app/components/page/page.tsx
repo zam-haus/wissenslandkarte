@@ -1,4 +1,4 @@
-import { Link, UIMatch, useFetcher, useMatches } from "@remix-run/react";
+import { Link, NavLink, UIMatch, useFetcher, useMatches } from "@remix-run/react";
 import { ParseKeys } from "i18next";
 import React, { type PropsWithChildren, PropsWithRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -146,46 +146,46 @@ function NavItems({
 
   const loginSection = isLoggedIn ? (
     <>
-      <Link to="/users/me" className={itemClassName}>
+      <NavLink to="/users/me" className={itemClassName}>
         <i>account_box</i>
         {t("nav-profile")}
-      </Link>
-      <Link to="/logout" className={itemClassName}>
+      </NavLink>
+      <NavLink to="/logout" className={itemClassName}>
         <i>logout</i>
         {t("nav-logout")}
-      </Link>
+      </NavLink>
     </>
   ) : (
     <>
-      <Link to="/login" className={itemClassName}>
+      <NavLink to="/login" className={itemClassName}>
         <i>login</i>
         {t("nav-login")}
-      </Link>
+      </NavLink>
     </>
   );
 
   return (
     <>
-      <Link to="/" className={itemClassName}>
+      <NavLink to="/" className={itemClassName}>
         <i>home</i>
         {t("nav-landing-page")}
-      </Link>
-      <Link to="/search" className={itemClassName}>
+      </NavLink>
+      <NavLink to="/search" className={itemClassName}>
         <i>search</i>
         {t("nav-search")}
-      </Link>
-      <Link to="/projects" className={itemClassName}>
+      </NavLink>
+      <NavLink to="/projects" className={itemClassName}>
         <i>handyman</i>
         {t("nav-projects")}
-      </Link>
-      <Link to="/users" className={itemClassName}>
+      </NavLink>
+      <NavLink to="/users" className={itemClassName}>
         <i>group</i>
         {t("nav-people")}
-      </Link>
-      <Link to="/" className={itemClassName}>
+      </NavLink>
+      <NavLink to="/" className={itemClassName}>
         <i>help</i>
         {t("nav-faq")}
-      </Link>
+      </NavLink>
       {additionalNavItems?.(itemClassName)}
       <div className="space"></div>
       {loginSection}
