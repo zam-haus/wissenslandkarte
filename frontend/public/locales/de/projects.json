@@ -12,11 +12,7 @@
   "select-image": "Bild",
   "select-need-space": "Ich brauche Projektfläche",
   "step-text": "Beschreibung",
-  "no-projects": "Du hast noch keine Projekte. Erstelle ein Projekt, bevor du Projektupdates erstellst.",
   "save": "Speichern",
-  "missing-name-or-description": "Name und Beschreibung müssen ausgefüllt werden!",
-  "missing-description": "Beschreibung muss ausgefüllt werden!",
-  "creation-failed": "Erstellung fehlgeschlagen: ",
   "required": "(erforderlich)",
   "step": {
     "delete": "Löschen",
@@ -29,11 +25,22 @@
   "yes": "Ja",
   "no": "Nein",
   "select-value": "Wert auswählen",
+  "project-create-edit": {
+    "creation-failed": "Erstellung fehlgeschlagen: ",
+    "missing-name-or-description": "Name und Beschreibung müssen ausgefüllt werden!",
+    "missing-description": "Beschreibung muss ausgefüllt werden!"
+  },
   "delete": {
     "confirmation-prompt": "Willst du das Projekt \"{{title}}\" wirklich löschen?",
     "confirmation-response-yes": "Ja, Projekt unwiederbringlich löschen",
     "project-deleted": "Projekt gelöscht",
     "project-deleted-message": "Projekt \"{{title}}\" wurde erfolgreich gelöscht.",
     "back-to-projects": "Zurück zu Projekten"
+  },
+  "steps-create-edit": {
+    "no-projects": "Du hast noch keine Projekte. Erstelle ein Projekt, bevor du Projektupdates erstellst.",
+    "no-such-project": "Das Projekt existiert nicht.",
+    "creation-failed": "Erstellung fehlgeschlagen: ",
+    "missing-description": "Beschreibung muss ausgefüllt werden!"
   }
 }

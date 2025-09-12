@@ -12,11 +12,7 @@
   "select-image": "Image",
   "select-need-space": "I need project space",
   "step-text": "Description",
-  "no-projects": "You don't have any projects yet. Create a project before creating a project update.",
   "save": "Save",
-  "missing-name-or-description": "Name and description must be provided!",
-  "missing-description": "Description must be provided!",
-  "creation-failed": "Creation failed: ",
   "required": "(required)",
   "step": {
     "delete": "Delete",
@@ -29,11 +25,22 @@
   "yes": "Yes",
   "no": "No",
   "select-value": "Select a value",
+  "project-create-edit": {
+    "creation-failed": "Creation failed: ",
+    "missing-name-or-description": "Name and description must be provided!",
+    "missing-description": "Description must be provided!"
+  },
   "delete": {
     "confirmation-prompt": "Do you really want to delete the project \"{{title}}\"?",
     "confirmation-response-yes": "Yes, delete project irrevocably",
     "project-deleted": "Project Deleted",
     "project-deleted-message": "Project \"{{title}}\" has been successfully deleted.",
     "back-to-projects": "Back to Projects"
+  },
+  "steps-create-edit": {
+    "no-projects": "You don't have any projects yet. Create a project before creating a project update.",
+    "no-such-project": "The project does not exist.",
+    "creation-failed": "Creation failed: ",
+    "missing-description": "Description must be provided!"
   }
 }

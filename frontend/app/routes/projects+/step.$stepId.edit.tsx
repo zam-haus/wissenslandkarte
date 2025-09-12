@@ -157,7 +157,7 @@ export default function EditStep() {
   const { t } = useTranslation("projects");
 
   if (projects.length === 0) {
-    return <main>{t("no-projects")}</main>;
+    return <main>{t("steps-create-edit.no-projects")}</main>;
   }
 
   const projectsWithDates = projects;
@@ -165,10 +165,12 @@ export default function EditStep() {
 
   return (
     <main>
-      {actionData?.error === FIELD_EMPTY ? <div>{t("missing-description")}</div> : null}
+      {actionData?.error === FIELD_EMPTY ? (
+        <div>{t("steps-create-edit.missing-description")}</div>
+      ) : null}
       {actionData?.error === UPDATE_FAILED ? (
         <div>
-          {t("creation-failed")} {actionData.exception}
+          {t("steps-create-edit.creation-failed")} {actionData.exception}
         </div>
       ) : null}
 

@@ -136,15 +136,21 @@ export default function CreateStep() {
   const actionData = useActionData<typeof action>();
   const { t } = useTranslation("projects");
 
-  const projectsWithDates = projects;
+  if (projects === undefined) {
+    return <main>{t("steps-create-edit.no-such-project")}</main>;
+  }
+
+  const projectsWithDates = [...projects];
   projectsWithDates.sort(descendingByDatePropertyComparator("latestModificationDate"));
 
   return (
     <main>
-      {actionData?.error === FIELD_EMPTY ? <div>{t("missing-description")}</div> : null}
+      {actionData?.error === FIELD_EMPTY ? (
+        <div>{t("steps-create-edit.missing-description")}</div>
+      ) : null}
       {actionData?.error === CREATE_FAILED ? (
         <div>
-          {t("creation-failed")} {actionData.exception}
+          {t("steps-create-edit.creation-failed")} {actionData.exception}
         </div>
       ) : null}
 

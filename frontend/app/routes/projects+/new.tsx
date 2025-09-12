@@ -109,10 +109,12 @@ export default function NewProject() {
 
   return (
     <main>
-      {actionData?.error === FIELD_EMPTY ? <div>{t("missing-name-or-description")}</div> : null}
+      {actionData?.error === FIELD_EMPTY ? (
+        <div>{t("project-create-edit.missing-description")}</div>
+      ) : null}
       {actionData?.error === CREATE_FAILED ? (
         <div>
-          {t("creation-failed")} {actionData.exception}
+          {t("project-create-edit.creation-failed")} {actionData.exception}
         </div>
       ) : null}
 

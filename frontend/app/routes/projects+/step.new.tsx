@@ -19,5 +19,5 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function CreateStep() {
   const { t } = useTranslation("projects");
 
-  return <main>{t("no-projects")}</main>;
+  return <main>{t("steps-create-edit.no-projects")}</main>;
 }
