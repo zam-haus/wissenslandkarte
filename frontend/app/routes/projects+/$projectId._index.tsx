@@ -53,19 +53,19 @@ export default function Project() {
       <header className={`${style.projectHeader} secondary padding`}>
         <div className="main-info">
           <h2>{project.title}</h2>
-          <p className={`left ${style.memberList} tiny-margin`}>
+          <span className={`left ${style.memberList} tiny-margin`}>
             {t("by")}:
             <nav className={style.memberListNav}>
               {allUsers.map(({ username }) => (
                 <UserChip key={username} username={username} />
               ))}
             </nav>
-          </p>
+          </span>
 
-          <p className={`left ${style.tagList} tiny-margin`}>
+          <span className={`left ${style.tagList} tiny-margin`}>
             {t("tags")}:
             <ProjectTagList className="no-margin" tags={project.tags} />
-          </p>
+          </span>
 
           <div className="description">
             <CommonMarkdown>{project.description}</CommonMarkdown>

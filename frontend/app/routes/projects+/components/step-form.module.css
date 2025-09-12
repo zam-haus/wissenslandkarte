@@ -7,6 +7,12 @@
   max-width: 120px;
 }
 
+.existingImagesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+}
+
 .existingImage {
   width: min-content;
   position: relative;

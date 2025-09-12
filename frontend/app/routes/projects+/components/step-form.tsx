@@ -37,6 +37,11 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
 
   const currentState: EditableStepProps | null = props.mode === "edit" ? props.currentState : null;
 
+  const linkAttachments =
+    currentState?.attachments.filter((attachment) => attachment.type === "link") ?? [];
+  const imageAttachments =
+    currentState?.attachments.filter((attachment) => attachment.type === "image") ?? [];
+
   return (
     <Form method="post" encType="multipart/form-data" className={style.verticalForm}>
       <fieldset>
@@ -70,10 +75,10 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
         </div>
       </fieldset>
 
-      {(currentState?.attachments.length ?? 0) > 0 ? (
-        <fieldset>
+      {imageAttachments.length > 0 ? (
+        <fieldset className={style.existingImagesContainer}>
           <legend>{t("steps-create-edit.existing-images")}</legend>
-          {currentState?.attachments.map((attachment) => {
+          {imageAttachments.map((attachment) => {
             if (attachment.type !== "image") {
               return null;
             }
@@ -86,17 +91,21 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
                     <i className="fill">cancel</i>
                   </span>
                 </label>
-                <img src={attachment.url} alt={attachment.text} className={style.imagePreview} />
+                <img
+                  src={attachment.url}
+                  alt={attachment.text}
+                  className={`${style.imagePreview} small-round small-margin  `}
+                />
               </div>
             );
           })}
         </fieldset>
       ) : null}
 
-      {(currentState?.attachments.length ?? 0) > 0 ? (
+      {linkAttachments.length > 0 ? (
         <fieldset>
           <legend>{t("steps-create-edit.link-attachments")}</legend>
-          {currentState?.attachments.map((attachment) => {
+          {linkAttachments.map((attachment) => {
             if (attachment.type !== "link") {
               return null;
             }

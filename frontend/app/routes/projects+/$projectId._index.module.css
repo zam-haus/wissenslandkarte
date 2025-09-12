@@ -10,6 +10,7 @@
 .tagList,
 .memberList {
   white-space: nowrap;
+  display: inline-flex;
 }
 
 .tagList ul,
@@ -47,6 +48,10 @@
 
 .stepAttachments {
   width: calc(100% + var(--_margin) + var(--_padding)) !important;
+}
+
+.stepAttachments :global(.chip) {
+  color: inherit;
 }
 
 .attachmentRow {
