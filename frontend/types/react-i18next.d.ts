@@ -2,6 +2,7 @@ import "react-i18next";
 
 import type admin from "../public/locales/en/admin.json";
 import type common from "../public/locales/en/common.json";
+import type faq from "../public/locales/en/faq.json";
 import type landing_page from "../public/locales/en/landing-page.json";
 import type login from "../public/locales/en/login.json";
 import type projects from "../public/locales/en/projects.json";
@@ -19,6 +20,7 @@ declare module "i18next" {
       "landing-page": typeof landing_page;
       search: typeof search;
       login: typeof login;
+      faq: typeof faq;
     };
   }
 }

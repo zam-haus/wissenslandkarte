@@ -1,0 +1,17 @@
+{
+  "title": "Häufige Fragen",
+  "items": [
+    {
+      "question": "Was ist das?",
+      "answer": "Dies ist eine Wissenslandkarte. Sie hilft Menschen, die Wissen oder Fähigkeiten haben und solche die auf der Suche danach sind, einander zu finden."
+    },
+    {
+      "question": "Wie funktioniert das, wenn ich Wissen oder Fähigkeiten habe?",
+      "answer": "Wenn du ein Projekt machst, kannst du mit der Wissenslandkarte ein Tagebuch darüber führen und das Projekt zB mit Stichwörtern beschreiben. Andere Nutzer:innen können dann nach den Stichwörtern oder den Beschreibungen suchen und sich inspirieren lassen oder dich kontaktieren und um Rat fragen."
+    },
+    {
+      "question": "Wie funktioniert das, wenn nach Hilfe suche?",
+      "answer": "Nutze die Suchfunktion um ein Projekt zu finden, das deinem ähnelt. Dann kannst du entweder nachsehen, wie andere es bisher gemacht haben, oder diese kontaktieren und um Rat fragen."
+    }
+  ]
+}

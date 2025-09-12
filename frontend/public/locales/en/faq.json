@@ -1,0 +1,17 @@
+{
+  "title": "Frequently Asked Questions",
+  "items": [
+    {
+      "question": "What is this?",
+      "answer": "This is a knowledge map. It helps people who have knowledge or skills and those who are looking for them to find each other."
+    },
+    {
+      "question": "How does it work if I have knowledge or skills?",
+      "answer": "If you are working on a project, you can use the knowledge map to keep a diary about it and describe the project with tags, for example. Other users can then search by tags or descriptions, get inspired, or contact you to ask for advice."
+    },
+    {
+      "question": "How does it work if I am looking for help?",
+      "answer": "Use the search function to find a project similar to yours. Then you can either see how others have done it so far or contact them to ask for advice."
+    }
+  ]
+}

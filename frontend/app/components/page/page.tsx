@@ -182,7 +182,7 @@ function NavItems({
         <i>group</i>
         {t("nav-people")}
       </NavLink>
-      <NavLink to="/" className={itemClassName}>
+      <NavLink to="/faq" className={itemClassName}>
         <i>help</i>
         {t("nav-faq")}
       </NavLink>
