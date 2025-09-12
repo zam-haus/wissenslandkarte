@@ -7,6 +7,7 @@ import { serverOnly$ } from "vite-env-only/macros";
 import {
   getProjectDetails,
   getProjectsByUser,
+  ProjectListEntry,
   updateProjectLatestModificationDate,
 } from "~/database/repositories/projects.server";
 import { createProjectStep } from "~/database/repositories/projectSteps.server";
@@ -105,9 +106,27 @@ export const action = async ({
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   assertExistsOr400(params.projectId);
-  const user = await getLoggedInUser(request, { ifNotLoggedInRedirectTo: "/" });
 
-  const projects = await getProjectsByUser(user.username);
+  const project = await getProjectDetails(params.projectId);
+  if (project === null) {
+    return {
+      error: CREATE_FAILED,
+      exception: "No such project",
+    };
+  }
+  await assertAuthorization(request, project);
+  const isAdminCreatingStep = !(await isAnyUserFromListLoggedIn(request, [
+    ...project.owners,
+    ...project.members,
+  ]));
+
+  let projects: ProjectListEntry[] = [];
+  if (isAdminCreatingStep) {
+    projects = [project];
+  } else {
+    const user = await getLoggedInUser(request, { ifNotLoggedInRedirectTo: "/" });
+    projects = await getProjectsByUser(user.username);
+  }
 
   return { projects, projectId: params.projectId };
 };
