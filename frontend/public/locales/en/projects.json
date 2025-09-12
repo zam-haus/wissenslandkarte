@@ -43,6 +43,7 @@
     "creation-failed": "Creation failed: ",
     "missing-description": "Description must be provided!",
     "existing-images": "Existing images",
-    "add-images": "Add new images"
+    "add-images": "Add new images",
+    "link-attachments": "Link-Attachments"
   }
 }

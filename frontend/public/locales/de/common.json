@@ -40,5 +40,9 @@
   "language-english": "English",
   "language-german": "Deutsch",
   "language-change-error": "Spracheneinstellungen konnten nicht gespeichert werden",
-  "remove-item": "Element entfernen"
+  "remove-item": "Element entfernen",
+  "form-input": {
+    "link-address": "Link-Adresse",
+    "link-description": "Link-Beschreibung"
+  }
 }

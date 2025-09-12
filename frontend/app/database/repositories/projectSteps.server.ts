@@ -10,6 +10,7 @@ type ProjectStepCreateRequest = {
   projectId: string;
   description: string;
   imageAttachmentUrls: string[];
+  linkAttachments: { url: string; description: string }[];
 };
 export async function createProjectStep(request: ProjectStepCreateRequest) {
   return prisma.projectStep.create({
@@ -19,12 +20,20 @@ export async function createProjectStep(request: ProjectStepCreateRequest) {
       latestModificationDate: new Date(),
       description: request.description,
       attachments: {
-        create: request.imageAttachmentUrls.map((url) => ({
-          type: "image" as AttachmentType,
-          url,
-          text: "",
-          creationDate: new Date(),
-        })),
+        create: [
+          ...request.imageAttachmentUrls.map((url) => ({
+            type: "image" as AttachmentType,
+            url,
+            text: "",
+            creationDate: new Date(),
+          })),
+          ...request.linkAttachments.map(({ url, description }) => ({
+            type: "link" as AttachmentType,
+            url,
+            text: description,
+            creationDate: new Date(),
+          })),
+        ],
       },
     },
     include: {
@@ -98,12 +107,20 @@ export async function updateProjectStep(
       description: request.description,
       projectId: request.projectId,
       attachments: {
-        create: request.imageAttachmentUrls.map((url) => ({
-          type: "image" satisfies AttachmentType,
-          url,
-          text: "",
-          creationDate: new Date(),
-        })),
+        create: [
+          ...request.imageAttachmentUrls.map((url) => ({
+            type: "image" satisfies AttachmentType,
+            url,
+            text: "",
+            creationDate: new Date(),
+          })),
+          ...request.linkAttachments.map(({ url, description }) => ({
+            type: "link" satisfies AttachmentType,
+            url,
+            text: description,
+            creationDate: new Date(),
+          })),
+        ],
         deleteMany: request.attachmentsToRemove.map((id) => ({ id })),
       },
     },

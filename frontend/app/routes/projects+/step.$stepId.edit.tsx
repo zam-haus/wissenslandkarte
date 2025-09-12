@@ -78,11 +78,22 @@ export const action = async ({
     "newProjectId",
     "description",
   );
-  const { imageAttachments, attachmentsToRemove } = getStringArray(
-    formData,
-    "imageAttachments",
-    "attachmentsToRemove",
-  );
+  const { imageAttachments, attachmentsToRemove, linkAttachments, linkAttachmentsDescriptions } =
+    getStringArray(
+      formData,
+      "imageAttachments",
+      "attachmentsToRemove",
+      "linkAttachments",
+      "linkAttachmentsDescriptions",
+    );
+
+  if (linkAttachments.length !== linkAttachmentsDescriptions.length) {
+    await deleteS3FilesByPublicUrl(imageAttachments);
+    return {
+      error: UPDATE_FAILED,
+      exception: "Link attachments and descriptions must have the same length",
+    };
+  }
 
   if (description.length === 0) {
     await deleteS3FilesByPublicUrl(imageAttachments);
@@ -115,6 +126,10 @@ export const action = async ({
       projectId: newProjectId,
       imageAttachmentUrls: imageAttachments,
       attachmentsToRemove,
+      linkAttachments: linkAttachments.map((url, index) => ({
+        url,
+        description: linkAttachmentsDescriptions[index],
+      })),
     });
 
     storeAttachmentsS3ObjectPurposes(imageAttachments, result.attachments, logger("step-edit"));

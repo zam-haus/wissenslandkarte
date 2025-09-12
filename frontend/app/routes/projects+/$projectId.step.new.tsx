@@ -84,6 +84,7 @@ export const action = async ({
       description,
       projectId,
       imageAttachmentUrls: imageAttachments,
+      linkAttachments: [],
     });
 
     await updateProjectLatestModificationDate(projectId);

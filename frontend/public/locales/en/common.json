@@ -40,5 +40,9 @@
   "language-english": "English",
   "language-german": "Deutsch",
   "language-change-error": "Failed to save language preferences",
-  "remove-item": "Remove item"
+  "remove-item": "Remove item",
+  "form-input": {
+    "link-address": "Link address",
+    "link-description": "Link description"
+  }
 }

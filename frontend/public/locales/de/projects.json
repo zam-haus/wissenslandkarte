@@ -43,6 +43,7 @@
     "creation-failed": "Erstellung fehlgeschlagen: ",
     "missing-description": "Beschreibung muss ausgefüllt werden!",
     "existing-images": "Existierende Bilder",
-    "add-images": "Neue Bilder hinzufügen"
+    "add-images": "Neue Bilder hinzufügen",
+    "link-attachments": "Link-Anhänge"
   }
 }

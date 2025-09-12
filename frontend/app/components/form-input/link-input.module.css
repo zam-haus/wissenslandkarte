@@ -1,0 +1,13 @@
+.linkInputContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  align-items: flex-start;
+
+  padding: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+}
+
+.linkInputContainer :global(.field) {
+  margin: 0;
+}

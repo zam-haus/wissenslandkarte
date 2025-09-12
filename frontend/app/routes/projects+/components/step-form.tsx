@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import type { Attachment, ProjectStep } from "prisma/generated";
 import { ImageSelect } from "~/components/form-input/image-select";
+import { MultipleLinkInputs } from "~/components/form-input/link-input";
 import type { ProjectListEntry } from "~/database/repositories/projects.server";
 
 import style from "./step-form.module.css";
@@ -98,6 +99,14 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
           label={`${t("select-image")} (${t("common", "optional")})`}
           maxImageSize={maxImageSize}
           multiple={true}
+        />
+      </fieldset>
+
+      <fieldset>
+        <legend>{t("steps-create-edit.link-attachments")}</legend>
+        <MultipleLinkInputs
+          addressName="linkAttachments"
+          descriptionName="linkAttachmentsDescriptions"
         />
       </fieldset>
 

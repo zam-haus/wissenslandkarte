@@ -11,6 +11,7 @@
 
 - upload warn messages should include rejected filename and user
 - healtchecks in docker compose
+- "dieses projekt hat N updates" -> "update hinzufuegen"
 
 ## M
 
