@@ -96,6 +96,7 @@ export async function deleteProjectStep(projectStepId: ProjectStep["id"]) {
 
 type ProjectStepUpdateRequest = ProjectStepCreateRequest & {
   attachmentsToRemove: string[];
+  attachmentsToUpdate: { id: string; url: string; description: string }[];
 };
 export async function updateProjectStep(
   projectStepId: ProjectStep["id"],
@@ -122,6 +123,10 @@ export async function updateProjectStep(
           })),
         ],
         deleteMany: request.attachmentsToRemove.map((id) => ({ id })),
+        update: request.attachmentsToUpdate.map(({ id, url, description }) => ({
+          where: { id },
+          data: { url, text: description },
+        })),
       },
     },
     include: {

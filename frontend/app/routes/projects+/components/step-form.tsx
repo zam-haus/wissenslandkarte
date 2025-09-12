@@ -31,6 +31,7 @@ type EditableStepProps = Pick<ProjectStep, "description" | "id"> & {
 export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
   const { maxImageSize, projectsWithDates } = props;
   const { t } = useTranslation("projects");
+  const { t: tCommon } = useTranslation("common");
 
   const navigate = useNavigate();
 
@@ -86,6 +87,48 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
                   </span>
                 </label>
                 <img src={attachment.url} alt={attachment.text} className={style.imagePreview} />
+              </div>
+            );
+          })}
+        </fieldset>
+      ) : null}
+
+      {(currentState?.attachments.length ?? 0) > 0 ? (
+        <fieldset>
+          <legend>{t("steps-create-edit.link-attachments")}</legend>
+          {currentState?.attachments.map((attachment) => {
+            if (attachment.type !== "link") {
+              return null;
+            }
+            return (
+              <div key={attachment.id} className={`${style.existingLink} small-padding border`}>
+                <label className="checkbox icon">
+                  <input type="checkbox" name="attachmentsToRemove" value={attachment.id} />
+                  <span>
+                    <i className="fill">delete</i>
+                    <i className="fill">cancel</i>
+                  </span>
+                </label>
+                <div className={style.existingLinkFields}>
+                  <input type="hidden" name="existingLinkIds" value={attachment.id} />
+                  <div className="field border label">
+                    <input
+                      type="url"
+                      name="existingLinkUrls"
+                      defaultValue={attachment.url}
+                      required
+                    />
+                    <label>{tCommon("form-input.link-address")}</label>
+                  </div>
+                  <div className="field border label">
+                    <input
+                      type="text"
+                      name="existingLinkDescriptions"
+                      defaultValue={attachment.text}
+                    />
+                    <label>{tCommon("form-input.link-description")}</label>
+                  </div>
+                </div>
               </div>
             );
           })}

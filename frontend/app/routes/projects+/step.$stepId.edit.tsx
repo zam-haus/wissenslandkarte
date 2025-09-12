@@ -78,20 +78,41 @@ export const action = async ({
     "newProjectId",
     "description",
   );
-  const { imageAttachments, attachmentsToRemove, linkAttachments, linkAttachmentsDescriptions } =
-    getStringArray(
-      formData,
-      "imageAttachments",
-      "attachmentsToRemove",
-      "linkAttachments",
-      "linkAttachmentsDescriptions",
-    );
+  const {
+    imageAttachments,
+    attachmentsToRemove,
+    linkAttachments,
+    linkAttachmentsDescriptions,
+    existingLinkIds,
+    existingLinkUrls,
+    existingLinkDescriptions,
+  } = getStringArray(
+    formData,
+    "imageAttachments",
+    "attachmentsToRemove",
+    "linkAttachments",
+    "linkAttachmentsDescriptions",
+    "existingLinkIds",
+    "existingLinkUrls",
+    "existingLinkDescriptions",
+  );
 
   if (linkAttachments.length !== linkAttachmentsDescriptions.length) {
     await deleteS3FilesByPublicUrl(imageAttachments);
     return {
       error: UPDATE_FAILED,
       exception: "Link attachments and descriptions must have the same length",
+    };
+  }
+
+  if (
+    existingLinkIds.length !== existingLinkUrls.length ||
+    existingLinkIds.length !== existingLinkDescriptions.length
+  ) {
+    await deleteS3FilesByPublicUrl(imageAttachments);
+    return {
+      error: UPDATE_FAILED,
+      exception: "Existing link arrays must have the same length",
     };
   }
 
@@ -121,6 +142,14 @@ export const action = async ({
   try {
     await deleteAttachmentFilesByIds(attachmentsToRemove);
 
+    const attachmentsToUpdate = existingLinkIds
+      .map((id, index) => ({
+        id,
+        url: existingLinkUrls[index],
+        description: existingLinkDescriptions[index],
+      }))
+      .filter((update) => !attachmentsToRemove.includes(update.id));
+
     const result = await updateProjectStep(params.stepId, {
       description,
       projectId: newProjectId,
@@ -130,6 +159,7 @@ export const action = async ({
         url,
         description: linkAttachmentsDescriptions[index],
       })),
+      attachmentsToUpdate,
     });
 
     storeAttachmentsS3ObjectPurposes(imageAttachments, result.attachments, logger("step-edit"));
