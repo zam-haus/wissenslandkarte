@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, Outlet, useLoaderData } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Page } from "~/components/page/page";
@@ -29,25 +29,25 @@ export default function Admin() {
         <div className="space"></div>
         {showInfrastructureRoutes ? (
           <>
-            <Link to="/admin/applicationInfo" className={className}>
+            <NavLink to="/admin/applicationInfo" className={className}>
               <i>info</i>
               Admin: Application Info
-            </Link>
-            <Link to="/admin/s3Objects" className={className}>
+            </NavLink>
+            <NavLink to="/admin/s3Objects" className={className}>
               <i>cloud_upload</i>
               Admin: S3 Objects
-            </Link>
-            <Link to="/admin/searchIndex" className={className}>
+            </NavLink>
+            <NavLink to="/admin/searchIndex" className={className}>
               <i>search</i>
               Admin: Search Index
-            </Link>
+            </NavLink>
           </>
         ) : null}
         {showUserRoles ? (
-          <Link to="/admin/user-roles" className={className}>
+          <NavLink to="/admin/user-roles" className={className}>
             <i>admin_panel_settings</i>
             Admin: User Roles
-          </Link>
+          </NavLink>
         ) : null}
       </>
     ) as React.ReactElement;
