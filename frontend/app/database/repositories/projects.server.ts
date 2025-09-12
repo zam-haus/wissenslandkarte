@@ -254,6 +254,13 @@ export async function deleteProject(projectId: Project["id"]) {
   return prisma.project.delete({ where: { id: projectId } });
 }
 
+export async function updateProjectLatestModificationDate(projectId: Project["id"]) {
+  return prisma.project.update({
+    where: { id: projectId },
+    data: { latestModificationDate: new Date() },
+  });
+}
+
 export async function* getAllProjectsWithCursor(batchSize: number) {
   let cursor: string | undefined;
 

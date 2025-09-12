@@ -4,7 +4,11 @@ import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
-import { getProjectDetails, getProjectsByUser } from "~/database/repositories/projects.server";
+import {
+  getProjectDetails,
+  getProjectsByUser,
+  updateProjectLatestModificationDate,
+} from "~/database/repositories/projects.server";
 import { createProjectStep } from "~/database/repositories/projectSteps.server";
 import {
   getLoggedInUser,
@@ -80,6 +84,8 @@ export const action = async ({
       projectId,
       imageAttachmentUrls: imageAttachments,
     });
+
+    await updateProjectLatestModificationDate(projectId);
 
     storeAttachmentsS3ObjectPurposes(imageAttachments, result.attachments, logger("step-new"));
 
