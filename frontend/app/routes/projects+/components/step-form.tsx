@@ -37,57 +37,73 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
 
   return (
     <Form method="post" encType="multipart/form-data" className={style.verticalForm}>
-      <div className="field border label">
-        <select
-          id="newProjectId"
-          name="newProjectId"
-          required
-          onChange={(e) => {
-            if (props.mode === "create") navigate(`/projects/${e.target.value}/step/new`);
-          }}
-          defaultValue={props.projectId}
-        >
-          {projectsWithDates.map((project) => (
-            <option key={project.id} value={project.id}>
-              {project.title}
-            </option>
-          ))}
-        </select>
-        <label htmlFor="newProjectId">{t("project-name")}</label>
-      </div>
+      <fieldset>
+        <div className="field border label">
+          <select
+            id="newProjectId"
+            name="newProjectId"
+            required
+            onChange={(e) => {
+              if (props.mode === "create") navigate(`/projects/${e.target.value}/step/new`);
+            }}
+            defaultValue={props.projectId}
+          >
+            {projectsWithDates.map((project) => (
+              <option key={project.id} value={project.id}>
+                {project.title}
+              </option>
+            ))}
+          </select>
+          <label htmlFor="newProjectId">{t("project-name")}</label>
+        </div>
 
-      {currentState?.attachments.map((attachment) => {
-        if (attachment.type !== "image") {
-          return null;
-        }
+        <div className="field border label textarea">
+          <textarea
+            name="description"
+            required
+            defaultValue={currentState?.description}
+            id="description-input"
+          ></textarea>
+          <label htmlFor="description-input">{t("step-text")}</label>
+        </div>
+      </fieldset>
 
-        return (
-          <label key={attachment.id}>
-            {t("delete-image")}
-            <input type="checkbox" name="attachmentsToRemove" value={attachment.id} />
-            <img src={attachment.url} alt={attachment.text} className={style.imagePreview} />
-          </label>
-        );
-      })}
+      {(currentState?.attachments.length ?? 0) > 0 ? (
+        <fieldset>
+          <legend>{t("steps-create-edit.existing-images")}</legend>
+          {currentState?.attachments.map((attachment) => {
+            if (attachment.type !== "image") {
+              return null;
+            }
+            return (
+              <div key={attachment.id} className={style.existingImage}>
+                <label className="checkbox icon">
+                  <input type="checkbox" name="attachmentsToRemove" value={attachment.id} />
+                  <span>
+                    <i className="fill">delete</i>
+                    <i className="fill">cancel</i>
+                  </span>
+                </label>
+                <img src={attachment.url} alt={attachment.text} className={style.imagePreview} />
+              </div>
+            );
+          })}
+        </fieldset>
+      ) : null}
 
-      <ImageSelect
-        name="imageAttachments"
-        label={`${t("select-image")} (${t("common", "optional")})`}
-        maxImageSize={maxImageSize}
-        multiple={true}
-      />
+      <fieldset>
+        <legend>{t("steps-create-edit.add-images")}</legend>
+        <ImageSelect
+          name="imageAttachments"
+          label={`${t("select-image")} (${t("common", "optional")})`}
+          maxImageSize={maxImageSize}
+          multiple={true}
+        />
+      </fieldset>
 
-      <div className="field border label textarea">
-        <textarea
-          name="description"
-          required
-          defaultValue={currentState?.description}
-          id="description-input"
-        ></textarea>
-        <label htmlFor="description-input">{t("step-text")}</label>
-      </div>
-
-      <button type="submit">{t("save")}</button>
+      <button className="margin-top" type="submit">
+        {t("save")}
+      </button>
     </Form>
   );
 }

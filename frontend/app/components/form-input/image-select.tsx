@@ -152,6 +152,20 @@ export function ImageSelect({
     <>
       <noscript>{t("noscript-warning")}</noscript>
       <input className={style.actualFileInput} type="file" name={name} ref={actualFileUploadRef} />
+      <div className={style.imagePreviewsContainer}>
+        {imagePreviews.map((url, index) => (
+          <div key={url} className={`small-margin ${style.deleteImageButtonContainer}`}>
+            <button
+              className={`transparent no-padding ${style.deleteImageButton}`}
+              onClick={() => removeImageByIndex(index)}
+            >
+              <i className="fill primary-text">delete</i>
+            </button>
+            <img src={url} alt={t("image-preview")} className={style.imagePreview} />{" "}
+            {/*TODO: Add text input for alt text */}
+          </div>
+        ))}
+      </div>
       <div className={style.buttonRow}>
         <button>
           <i>add_photo_alternate</i>
@@ -183,23 +197,6 @@ export function ImageSelect({
         ) : null}
       </div>
       {fileTooLarge ? t("image-too-large") : ""}
-      <div className={style.imagePreviewsContainer}>
-        {imagePreviews.map((url, index) => (
-          <div
-            key={url}
-            className={`small-rounds small-margin ${style.deleteImageButtonContainer}`}
-          >
-            <button
-              className={`small-elevate secondary no-padding ${style.deleteImageButton}`}
-              onClick={() => removeImageByIndex(index)}
-            >
-              <i className="tiny">delete</i>
-            </button>
-            <img src={url} alt={t("image-preview")} className={style.imagePreview} />{" "}
-            {/*TODO: Add text input for alt text */}
-          </div>
-        ))}
-      </div>
     </>
   );
 }

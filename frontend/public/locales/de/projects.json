@@ -41,6 +41,8 @@
     "no-projects": "Du hast noch keine Projekte. Erstelle ein Projekt, bevor du Projektupdates erstellst.",
     "no-such-project": "Das Projekt existiert nicht.",
     "creation-failed": "Erstellung fehlgeschlagen: ",
-    "missing-description": "Beschreibung muss ausgefüllt werden!"
+    "missing-description": "Beschreibung muss ausgefüllt werden!",
+    "existing-images": "Existierende Bilder",
+    "add-images": "Neue Bilder hinzufügen"
   }
 }
