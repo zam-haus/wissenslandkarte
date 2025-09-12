@@ -9,7 +9,12 @@
 
 ## S
 
+- upload warn messages should include rejected filename and user
+- healtchecks in docker compose
+
 ## M
+
+- show toast if image upload failed
 
 - image file needs to be released to prevent memory leak in step image upload
 - image file (by name) can be added twice in image upload
