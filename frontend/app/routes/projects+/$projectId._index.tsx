@@ -205,7 +205,13 @@ function AttachmentEntry(props: Attachment) {
   }
 
   switch (type) {
-    case "file": //fallthrough
+    case "file":
+      return (
+        <a className="chip" href={url}>
+          <i>file_save</i>
+          {text}
+        </a>
+      );
     case "link":
       return (
         <a className="chip" href={url}>
