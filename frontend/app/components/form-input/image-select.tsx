@@ -167,7 +167,7 @@ export function ImageSelect({
         ))}
       </div>
       <div className={style.buttonRow}>
-        <button>
+        <button className="transparent">
           <i>add_photo_alternate</i>
           <span>
             {label} {hasCamera ? t("file-system-suffix") : ""}
@@ -181,7 +181,7 @@ export function ImageSelect({
           />
         </button>
         {hasCamera ? (
-          <button>
+          <button className="transparent">
             <i>add_a_photo</i>
             <span>
               {label} {t("camera-suffix")}

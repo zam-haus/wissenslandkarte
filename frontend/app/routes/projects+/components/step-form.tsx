@@ -148,7 +148,7 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
         <legend>{t("steps-create-edit.add-images")}</legend>
         <ImageSelect
           name="imageAttachments"
-          label={`${t("select-image")} (${t("common", "optional")})`}
+          label={`${t("steps-create-edit.add-image")} ${tCommon("optional")}`}
           maxImageSize={maxImageSize}
           multiple={true}
         />

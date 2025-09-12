@@ -44,6 +44,7 @@
     "missing-description": "Description must be provided!",
     "existing-images": "Existing images",
     "add-images": "Add new images",
-    "link-attachments": "Link-Attachments"
+    "link-attachments": "Link-Attachments",
+    "add-image": "Add image"
   }
 }

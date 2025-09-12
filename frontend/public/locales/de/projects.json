@@ -44,6 +44,7 @@
     "missing-description": "Beschreibung muss ausgefüllt werden!",
     "existing-images": "Existierende Bilder",
     "add-images": "Neue Bilder hinzufügen",
-    "link-attachments": "Link-Anhänge"
+    "link-attachments": "Link-Anhänge",
+    "add-image": "Bild hinzufügen"
   }
 }

@@ -4,10 +4,6 @@
   align-items: center;
 }
 
-.buttonRow button {
-  flex: 1;
-}
-
 .imagePreview {
   max-width: 120px;
 }

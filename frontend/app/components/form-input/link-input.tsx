@@ -12,6 +12,8 @@ export function MultipleLinkInputs({
   addressName: string;
   descriptionName: string;
 }) {
+  const { t } = useTranslation("common");
+
   const minLinkCount = 0;
   const [linkKeys, setLinkKeys] = useState<string[]>([]);
 
@@ -36,8 +38,11 @@ export function MultipleLinkInputs({
           descriptionName={descriptionName}
         />
       ))}
-      <button className="transparent no-padding no-margin" onClick={increaseLinkCount}>
-        <i className="small">add</i>
+      <button className="transparent" onClick={increaseLinkCount}>
+        <i className="small">add_link</i>
+        <span>
+          {t("form-input.add-link")} {t("optional")}
+        </span>
       </button>
     </>
   );

@@ -43,6 +43,7 @@
   "remove-item": "Element entfernen",
   "form-input": {
     "link-address": "Link-Adresse",
-    "link-description": "Link-Beschreibung"
+    "link-description": "Link-Beschreibung",
+    "add-link": "Link hinzufügen"
   }
 }
