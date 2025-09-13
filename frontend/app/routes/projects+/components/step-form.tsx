@@ -1,10 +1,17 @@
 import { Form, useNavigate } from "@remix-run/react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { Attachment, ProjectStep } from "prisma/generated";
 import { ImageSelect } from "~/components/form-input/image-select";
 import { MultipleLinkInputs } from "~/components/form-input/link-input";
 import type { ProjectListEntry } from "~/database/repositories/projects.server";
+import {
+  ImageAttachment,
+  isImageAttachment,
+  isLinkAttachment,
+  LinkAttachment,
+} from "~/lib/attachments";
 
 import style from "./step-form.module.css";
 
@@ -37,10 +44,10 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
 
   const currentState: EditableStepProps | null = props.mode === "edit" ? props.currentState : null;
 
-  const linkAttachments =
-    currentState?.attachments.filter((attachment) => attachment.type === "link") ?? [];
-  const imageAttachments =
-    currentState?.attachments.filter((attachment) => attachment.type === "image") ?? [];
+  const linkAttachments = currentState?.attachments.filter(isLinkAttachment) ?? [];
+  const imageAttachments = currentState?.attachments.filter(isImageAttachment) ?? [];
+
+  console.log(linkAttachments, imageAttachments);
 
   return (
     <Form method="post" encType="multipart/form-data" className={style.verticalForm}>
@@ -79,24 +86,12 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
         <fieldset className={style.existingImagesContainer}>
           <legend>{t("steps-create-edit.existing-images")}</legend>
           {imageAttachments.map((attachment) => {
-            if (attachment.type !== "image") {
-              return null;
-            }
             return (
-              <div key={attachment.id} className={style.existingImage}>
-                <label className="checkbox icon">
-                  <input type="checkbox" name="attachmentsToRemove" value={attachment.id} />
-                  <span>
-                    <i className="fill">delete</i>
-                    <i className="fill">cancel</i>
-                  </span>
-                </label>
-                <img
-                  src={attachment.url}
-                  alt={attachment.text}
-                  className={`${style.imagePreview} small-round small-margin  `}
-                />
-              </div>
+              <EditableAndRemovableImageAttachment
+                key={attachment.id}
+                attachment={attachment}
+                removeCheckboxName="attachmentsToRemove"
+              />
             );
           })}
         </fieldset>
@@ -105,42 +100,16 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
       {linkAttachments.length > 0 ? (
         <fieldset>
           <legend>{t("steps-create-edit.link-attachments")}</legend>
-          {linkAttachments.map((attachment) => {
-            if (attachment.type !== "link") {
-              return null;
-            }
-            return (
-              <div key={attachment.id} className={`${style.existingLink} small-padding border`}>
-                <label className="checkbox icon">
-                  <input type="checkbox" name="attachmentsToRemove" value={attachment.id} />
-                  <span>
-                    <i className="fill">delete</i>
-                    <i className="fill">cancel</i>
-                  </span>
-                </label>
-                <div className={style.existingLinkFields}>
-                  <input type="hidden" name="existingLinkIds" value={attachment.id} />
-                  <div className="field border label">
-                    <input
-                      type="url"
-                      name="existingLinkUrls"
-                      defaultValue={attachment.url}
-                      required
-                    />
-                    <label>{tCommon("form-input.link-address")}</label>
-                  </div>
-                  <div className="field border label">
-                    <input
-                      type="text"
-                      name="existingLinkDescriptions"
-                      defaultValue={attachment.text}
-                    />
-                    <label>{tCommon("form-input.link-description")}</label>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {linkAttachments.map((attachment) => (
+            <EditableAndRemovableLinkAttachment
+              key={attachment.id}
+              attachment={attachment}
+              removeCheckboxName="attachmentsToRemove"
+              idName="existingLinkIds"
+              urlName="existingLinkUrls"
+              descriptionName="existingLinkDescriptions"
+            />
+          ))}
         </fieldset>
       ) : null}
 
@@ -166,5 +135,82 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
         {t("save")}
       </button>
     </Form>
+  );
+}
+
+function EditableAndRemovableImageAttachment({
+  attachment,
+  removeCheckboxName,
+}: {
+  attachment: Pick<ImageAttachment, "id" | "url" | "text">;
+  removeCheckboxName: string;
+}) {
+  return (
+    <div key={attachment.id} className={style.existingImage}>
+      <label className="checkbox icon">
+        <input type="checkbox" name={removeCheckboxName} value={attachment.id} />
+        <span>
+          <i className="fill">delete</i>
+          <i className="fill">cancel</i>
+        </span>
+      </label>
+      <img
+        src={attachment.url}
+        alt={attachment.text}
+        className={`${style.imagePreview} small-round small-margin  `}
+      />
+    </div>
+  );
+}
+
+function EditableAndRemovableLinkAttachment({
+  attachment,
+  removeCheckboxName,
+  idName,
+  urlName,
+  descriptionName,
+}: {
+  attachment: Pick<LinkAttachment, "id" | "url" | "text">;
+  removeCheckboxName: string;
+  idName: string;
+  urlName: string;
+  descriptionName: string;
+}) {
+  const { t } = useTranslation("common");
+
+  const id = useMemo(() => Math.random().toString(36).substring(2, 15), []);
+
+  return (
+    <div key={attachment.id} className={`${style.existingLink} small-padding border`}>
+      <label className="checkbox icon">
+        <input type="checkbox" name={removeCheckboxName} value={attachment.id} />
+        <span>
+          <i className="fill">delete</i>
+          <i className="fill">cancel</i>
+        </span>
+      </label>
+      <div className={style.existingLinkFields}>
+        <input type="hidden" name={idName} value={attachment.id} />
+        <div className="field border label">
+          <input
+            type="url"
+            name={urlName}
+            id={`${id}-url`}
+            defaultValue={attachment.url}
+            required
+          />
+          <label htmlFor={`${id}-url`}>{t("form-input.link-address")}</label>
+        </div>
+        <div className="field border label">
+          <input
+            type="text"
+            name={descriptionName}
+            id={`${id}-description`}
+            defaultValue={attachment.text}
+          />
+          <label htmlFor={`${id}-description`}>{t("form-input.link-description")}</label>
+        </div>
+      </div>
+    </div>
   );
 }
