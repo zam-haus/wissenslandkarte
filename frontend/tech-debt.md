@@ -11,7 +11,6 @@
 
 - upload warn messages should include rejected filename and user
 - healtchecks in docker compose
-- "dieses projekt hat N updates" -> "update hinzufuegen"
 
 ## M
 
@@ -33,3 +32,10 @@ Create Issues:
 - site-admin role to remove unreferenced images
 - decide on favicon, trace it as svg https://favicon.im/de/blog/favicon-formats-sizes-best-practices
 - personensuche noch nicht implementiert
+- look into proper transfer of complex objects ({existingLinkId: "123", "existingLinkUrl": ...}[])
+- allow setting global title from subpage
+- knip installieren
+- health check include db connection, s3 und meili
+- add a "add step" button to global button bar
+- global button bar should be a split button (if applicable)
+- nicht alle image-uploads verwenden schon das "failed"-setting. das muss vereinheitlicht werden
