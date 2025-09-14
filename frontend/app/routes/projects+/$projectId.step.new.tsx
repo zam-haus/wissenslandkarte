@@ -78,24 +78,39 @@ export const action = async ({
     uploadFailed,
   );
   const { description } = getTrimmedStringsDefaultEmpty(formData, "description");
-  const { imageAttachments, imageAttachmentDescriptions } = getStringArray(
+  const {
+    imageAttachments,
+    imageAttachmentDescriptions,
+    linkAttachments,
+    linkAttachmentsDescriptions,
+  } = getStringArray(
     formData,
     "imageAttachments",
     "imageAttachmentDescriptions",
+    "linkAttachments",
+    "linkAttachmentsDescriptions",
   );
 
   if (description.length === 0) {
-    await deleteS3FilesByPublicUrl(imageAttachments);
+    await deleteS3FilesByPublicUrl(imageAttachments.filter((url) => url !== uploadFailed));
     return {
       error: FIELD_EMPTY,
     };
   }
 
   if (imageAttachments.length !== imageAttachmentDescriptions.length) {
-    await deleteS3FilesByPublicUrl(imageAttachments);
+    await deleteS3FilesByPublicUrl(imageAttachments.filter((url) => url !== uploadFailed));
     return {
       error: CREATE_FAILED,
       exception: "Image attachments and descriptions must have the same length",
+    };
+  }
+
+  if (linkAttachments.length !== linkAttachmentsDescriptions.length) {
+    await deleteS3FilesByPublicUrl(linkAttachments.filter((url) => url !== uploadFailed));
+    return {
+      error: CREATE_FAILED,
+      exception: "Link attachments and descriptions must have the same length",
     };
   }
 
@@ -109,7 +124,10 @@ export const action = async ({
           description: imageAttachmentDescriptions[index],
         }))
         .filter(({ url }) => url !== uploadFailed),
-      linkAttachments: [],
+      linkAttachments: linkAttachments.map((url, index) => ({
+        url,
+        description: linkAttachmentsDescriptions[index],
+      })),
     });
 
     await updateProjectLatestModificationDate(projectId);
