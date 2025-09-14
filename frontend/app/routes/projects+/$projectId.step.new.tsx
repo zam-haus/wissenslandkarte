@@ -4,6 +4,7 @@ import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
+import { ToastDuration, ToastType } from "~/components/toast/toast-context";
 import {
   getProjectDetails,
   getProjectsByUser,
@@ -11,6 +12,7 @@ import {
   updateProjectLatestModificationDate,
 } from "~/database/repositories/projects.server";
 import { createProjectStep } from "~/database/repositories/projectSteps.server";
+import i18next from "~/i18next.server";
 import {
   getLoggedInUser,
   isAnyUserFromListLoggedIn,
@@ -19,6 +21,7 @@ import {
 } from "~/lib/authorization.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { assertExistsOr400 } from "~/lib/dataValidation";
+import { flashToastInSession } from "~/lib/flash-toast.server";
 import { logger } from "~/lib/logging.server";
 import { upsertProjectStepToSearchIndex } from "~/lib/search/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
@@ -132,11 +135,22 @@ export const action = async ({
 
     await updateProjectLatestModificationDate(projectId);
 
+    let headers: Headers | undefined = undefined;
+    if (imageAttachments.some((url) => url === uploadFailed)) {
+      const t = await i18next.getFixedT(request, "projects");
+      headers = await flashToastInSession(
+        request,
+        t("steps-create-edit.image-attachment-upload-failed"),
+        ToastType.ERROR,
+        ToastDuration.LONG,
+      );
+    }
+
     storeAttachmentsS3ObjectPurposes(imageAttachments, result.attachments, logger("step-new"));
 
     await upsertProjectStepToSearchIndex(result);
 
-    return redirect(`/projects/${projectId}`);
+    return redirect(`/projects/${projectId}`, { headers });
   } catch (e: unknown) {
     if (!(e instanceof Error)) {
       return { error: CREATE_FAILED };

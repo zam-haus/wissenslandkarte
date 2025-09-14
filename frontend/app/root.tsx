@@ -1,4 +1,9 @@
-import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import {
+  data,
+  type LinksFunction,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import beercss from "beercss/dist/cdn/beer.min.css?url";
 import { useTranslation } from "react-i18next";
@@ -8,6 +13,8 @@ import { ToastContainer } from "~/components/toast/toast-container";
 import { ToastProvider } from "~/components/toast/toast-context";
 import globalStyles from "~/global.css?url";
 import i18next from "~/i18next.server";
+
+import { loadToastsFromSession } from "./lib/flash-toast.server";
 
 export const links: LinksFunction = () => [
   {
@@ -23,7 +30,12 @@ export const meta: MetaFunction = () => [{ title: "Wissenslandkarte" }];
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const locale = await i18next.getLocale(request);
-  return { locale };
+  const toastsFromSession = await loadToastsFromSession(request);
+  if (toastsFromSession === null) {
+    return { locale };
+  }
+  const { toastData, headers } = toastsFromSession;
+  return data({ locale, ...toastData }, { headers });
 }
 
 export const handle = {

@@ -1,18 +1,24 @@
 import type { CookieParseOptions, Session } from "@remix-run/node";
 import { createCookieSessionStorage } from "@remix-run/node";
 
+import { GlobalToastRequest } from "~/components/toast/toast-context";
+
 import { UserWithRoles } from "./authorization.server";
 import { environment } from "./environment.server";
 
 export const userSessionKey = "user";
 export const tempUserSessionKey = "tempUser";
 export const authErrorSessionKey = "auth:error";
+export const toastSessionKey = "toastMessage";
 
 export type SessionData = {
   [userSessionKey]?: UserWithRoles;
   [tempUserSessionKey]?: UserWithRoles;
 };
-export type FlashData = { [authErrorSessionKey]: DOMException };
+export type FlashData = {
+  [authErrorSessionKey]: DOMException;
+  [toastSessionKey]: GlobalToastRequest[];
+};
 type WlkSession = Session<SessionData, FlashData>;
 
 export const sessionStorage =

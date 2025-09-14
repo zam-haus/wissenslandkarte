@@ -45,6 +45,7 @@
     "existing-images": "Existing images",
     "add-images": "Add new images",
     "link-attachments": "Link-Attachments",
-    "add-image": "Add image"
+    "add-image": "Add image",
+    "image-attachment-upload-failed": "Image upload failed for at least one attachment"
   }
 }

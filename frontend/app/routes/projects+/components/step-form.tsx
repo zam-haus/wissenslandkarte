@@ -47,8 +47,6 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
   const linkAttachments = currentState?.attachments.filter(isLinkAttachment) ?? [];
   const imageAttachments = currentState?.attachments.filter(isImageAttachment) ?? [];
 
-  console.log(linkAttachments, imageAttachments);
-
   return (
     <Form method="post" encType="multipart/form-data" className={style.verticalForm}>
       <fieldset>
