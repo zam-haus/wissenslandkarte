@@ -156,8 +156,9 @@ export default function UserEdit() {
         <ImageSelect
           maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
           multiple={false}
+          allowDescription={false}
           label={t("profile-picture")}
-          name="image"
+          fileInputName="image"
         ></ImageSelect>
         <label>
           {t("username")}

@@ -9,7 +9,7 @@ export async function getTotalProjectSteps() {
 type ProjectStepCreateRequest = {
   projectId: string;
   description: string;
-  imageAttachmentUrls: string[];
+  imageAttachments: { url: string; description: string }[];
   linkAttachments: { url: string; description: string }[];
 };
 export async function createProjectStep(request: ProjectStepCreateRequest) {
@@ -21,10 +21,10 @@ export async function createProjectStep(request: ProjectStepCreateRequest) {
       description: request.description,
       attachments: {
         create: [
-          ...request.imageAttachmentUrls.map((url) => ({
+          ...request.imageAttachments.map(({ url, description }) => ({
             type: "image" as AttachmentType,
             url,
-            text: "",
+            text: description,
             creationDate: new Date(),
           })),
           ...request.linkAttachments.map(({ url, description }) => ({
@@ -96,7 +96,7 @@ export async function deleteProjectStep(projectStepId: ProjectStep["id"]) {
 
 type ProjectStepUpdateRequest = ProjectStepCreateRequest & {
   attachmentsToRemove: string[];
-  attachmentsToUpdate: { id: string; url: string; description: string }[];
+  attachmentsToUpdate: { id: string; url?: string; description: string }[];
 };
 export async function updateProjectStep(
   projectStepId: ProjectStep["id"],
@@ -109,10 +109,10 @@ export async function updateProjectStep(
       projectId: request.projectId,
       attachments: {
         create: [
-          ...request.imageAttachmentUrls.map((url) => ({
+          ...request.imageAttachments.map(({ url, description }) => ({
             type: "image" satisfies AttachmentType,
             url,
-            text: "",
+            text: description,
             creationDate: new Date(),
           })),
           ...request.linkAttachments.map(({ url, description }) => ({
@@ -125,7 +125,7 @@ export async function updateProjectStep(
         deleteMany: request.attachmentsToRemove.map((id) => ({ id })),
         update: request.attachmentsToUpdate.map(({ id, url, description }) => ({
           where: { id },
-          data: { url, text: description },
+          data: url ? { url, text: description } : { text: description },
         })),
       },
     },

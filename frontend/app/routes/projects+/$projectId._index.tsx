@@ -220,7 +220,12 @@ function AttachmentEntry(props: Attachment) {
         </a>
       );
     case "image":
-      return <img className={`small-round ${style.attachmentImage}`} src={url} alt={text} />;
+      return (
+        <div className={style.attachmentImageContainer}>
+          <img className={`small-round ${style.attachmentImage}`} src={url} alt={text} />
+          <p className="tiny">{text}</p>
+        </div>
+      );
   }
 
   // This should be dead code, but just in case someone uses a nonstandard tsc...

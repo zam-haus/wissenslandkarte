@@ -44,6 +44,7 @@
   "form-input": {
     "link-address": "Link address",
     "link-description": "Link description",
-    "add-link": "Add link"
+    "add-link": "Add link",
+    "image-description": "Image description"
   }
 }

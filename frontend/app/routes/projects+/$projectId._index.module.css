@@ -72,6 +72,14 @@
   background-color: red;
 }
 
+.attachmentImageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+
+  width: min-content;
+}
+
 .attachmentImage {
   max-width: 250px;
 }

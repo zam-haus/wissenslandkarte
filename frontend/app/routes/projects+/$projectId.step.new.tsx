@@ -22,6 +22,7 @@ import { assertExistsOr400 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
 import { upsertProjectStepToSearchIndex } from "~/lib/search/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
+import { deleteS3FilesByPublicUrl } from "~/lib/storage/s3Deletion.server";
 import { parseMultipartFormDataUploadFilesToS3 } from "~/lib/upload/pipeline.server";
 
 import { getStringArray, getTrimmedStringsDefaultEmpty } from "../../lib/formDataParser";
@@ -70,20 +71,44 @@ export const action = async ({
 
   await assertAuthorization(request, project);
 
-  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["imageAttachments"]);
+  const uploadFailed = "upload-failed";
+  const formData = await parseMultipartFormDataUploadFilesToS3(
+    request,
+    ["imageAttachments"],
+    uploadFailed,
+  );
   const { description } = getTrimmedStringsDefaultEmpty(formData, "description");
-  const { imageAttachments } = getStringArray(formData, "imageAttachments");
+  const { imageAttachments, imageAttachmentDescriptions } = getStringArray(
+    formData,
+    "imageAttachments",
+    "imageAttachmentDescriptions",
+  );
 
   if (description.length === 0) {
+    await deleteS3FilesByPublicUrl(imageAttachments);
     return {
       error: FIELD_EMPTY,
     };
   }
+
+  if (imageAttachments.length !== imageAttachmentDescriptions.length) {
+    await deleteS3FilesByPublicUrl(imageAttachments);
+    return {
+      error: CREATE_FAILED,
+      exception: "Image attachments and descriptions must have the same length",
+    };
+  }
+
   try {
     const result = await createProjectStep({
       description,
       projectId,
-      imageAttachmentUrls: imageAttachments,
+      imageAttachments: imageAttachments
+        .map((url, index) => ({
+          url,
+          description: imageAttachmentDescriptions[index],
+        }))
+        .filter(({ url }) => url !== uploadFailed),
       linkAttachments: [],
     });
 

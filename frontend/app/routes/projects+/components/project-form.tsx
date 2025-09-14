@@ -67,9 +67,10 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
       )}
 
       <ImageSelect
-        name="mainImage"
+        fileInputName="mainImage"
         label={`${t("select-main-image")} ${t("common", "optional")}`}
         maxImageSize={maxImageSize}
+        allowDescription={false}
       />
 
       <UserSelect

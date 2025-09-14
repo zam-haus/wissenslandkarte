@@ -13,6 +13,7 @@ function useFileUploadHelpers({
   clearInputWhenSizeExceeded?: boolean;
 }) {
   const [fileTooLarge, setFileTooLarge] = useState(false);
+  const [actualInputDisabled, setActualInputDisabled] = useState(true);
   const resetSizeCheckWarning = () => setFileTooLarge(false);
 
   const isHydrated = useHydrated();
@@ -51,6 +52,10 @@ function useFileUploadHelpers({
     }
 
     input.files = newFilesList.files;
+
+    if (input.files.length === 0) {
+      setActualInputDisabled(true);
+    }
   }, []);
 
   const addFilesToInput = useCallback((input: HTMLInputElement, newFiles: FileList) => {
@@ -71,9 +76,11 @@ function useFileUploadHelpers({
     }
 
     input.files = newFilesList.files;
+    setActualInputDisabled(false);
   }, []);
   return {
     fileTooLarge,
+    actualInputDisabled,
     resetSizeCheckWarning,
     hasCamera,
     checkFileSize,
@@ -82,19 +89,23 @@ function useFileUploadHelpers({
   };
 }
 
-export function ImageSelect({
-  label,
-  name,
-  maxImageSize,
-  multiple,
-}: {
+type ImageSelectProps = {
   label: string;
-  name: string;
+  fileInputName: string;
   maxImageSize: number;
   multiple?: boolean;
-}) {
+} & ({ allowDescription: false } | { allowDescription: true; descriptionInputName: string });
+
+export function ImageSelect({
+  label,
+  fileInputName,
+  maxImageSize,
+  multiple,
+  ...props
+}: ImageSelectProps) {
   const {
     fileTooLarge,
+    actualInputDisabled,
     resetSizeCheckWarning,
     hasCamera,
     checkFileSize,
@@ -108,8 +119,18 @@ export function ImageSelect({
   const { t } = useTranslation("common");
 
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [descriptionInputIds, setDescriptionInputIds] = useState<string[]>([]);
 
   const actualFileUploadRef = useRef<HTMLInputElement>(null);
+
+  const addDescriptionInputId = () => {
+    const randomKey = Math.random().toString(36).substring(2, 15);
+    setDescriptionInputIds((prevIds) => [...prevIds, randomKey]);
+  };
+
+  const removeDescriptionInputId = (index: number) => {
+    setDescriptionInputIds((prevIds) => prevIds.filter((_, i) => i !== index));
+  };
 
   const rebuildImagePreviews = (sourceInput: HTMLInputElement) => {
     imagePreviews.forEach((url) => URL.revokeObjectURL(url));
@@ -134,6 +155,7 @@ export function ImageSelect({
     }
 
     addFilesToInput(uploadInput, selectInput.files);
+    addDescriptionInputId();
     rebuildImagePreviews(uploadInput);
 
     selectInput.value = "";
@@ -145,24 +167,44 @@ export function ImageSelect({
       return;
     }
     removeFileFromInput(uploadInput, index);
+    removeDescriptionInputId(index);
     rebuildImagePreviews(uploadInput);
   };
 
   return (
     <>
       <noscript>{t("noscript-warning")}</noscript>
-      <input className={style.actualFileInput} type="file" name={name} ref={actualFileUploadRef} />
+      <input
+        className={style.actualFileInput}
+        type="file"
+        name={fileInputName}
+        ref={actualFileUploadRef}
+        disabled={actualInputDisabled}
+      />
       <div className={style.imagePreviewsContainer}>
         {imagePreviews.map((url, index) => (
-          <div key={url} className={`small-margin ${style.deleteImageButtonContainer}`}>
+          <div key={url} className={`small-margin border small-padding ${style.imagePreview}`}>
             <button
               className={`transparent no-padding ${style.deleteImageButton}`}
               onClick={() => removeImageByIndex(index)}
             >
               <i className="fill primary-text">delete</i>
             </button>
-            <img src={url} alt={t("image-preview")} className={style.imagePreview} />{" "}
-            {/*TODO: Add text input for alt text */}
+            <img src={url} alt={t("image-preview")} className={style.imagePreview} />
+            {props.allowDescription ? (
+              <div className="field border label">
+                <input
+                  type="text"
+                  name={props.descriptionInputName}
+                  placeholder={t("form-input.image-description")}
+                  aria-label={t("form-input.image-description")}
+                  id={descriptionInputIds[index]}
+                />
+                <label htmlFor={descriptionInputIds[index]}>
+                  {t("form-input.image-description")}
+                </label>
+              </div>
+            ) : null}
           </div>
         ))}
       </div>

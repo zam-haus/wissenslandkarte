@@ -91,6 +91,8 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
                 key={attachment.id}
                 attachment={attachment}
                 removeCheckboxName="attachmentsToRemove"
+                idName="existingImageIds"
+                descriptionName="existingImageDescriptions"
               />
             );
           })}
@@ -116,7 +118,9 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
       <fieldset>
         <legend>{t("steps-create-edit.add-images")}</legend>
         <ImageSelect
-          name="imageAttachments"
+          fileInputName="imageAttachments"
+          allowDescription={true}
+          descriptionInputName="imageAttachmentDescriptions"
           label={`${t("steps-create-edit.add-image")} ${tCommon("optional")}`}
           maxImageSize={maxImageSize}
           multiple={true}
@@ -141,12 +145,18 @@ export function StepForm(props: CreateStepFormProps | EditStepFormProps) {
 function EditableAndRemovableImageAttachment({
   attachment,
   removeCheckboxName,
+  idName,
+  descriptionName,
 }: {
   attachment: Pick<ImageAttachment, "id" | "url" | "text">;
   removeCheckboxName: string;
+  idName: string;
+  descriptionName: string;
 }) {
+  const { t } = useTranslation("common");
+
   return (
-    <div key={attachment.id} className={style.existingImage}>
+    <div key={attachment.id} className={`${style.existingImage} small-padding border`}>
       <label className="checkbox icon">
         <input type="checkbox" name={removeCheckboxName} value={attachment.id} />
         <span>
@@ -159,6 +169,16 @@ function EditableAndRemovableImageAttachment({
         alt={attachment.text}
         className={`${style.imagePreview} small-round small-margin  `}
       />
+      <input type="hidden" name={idName} value={attachment.id} />
+      <div className="field border label">
+        <input
+          type="text"
+          name={descriptionName}
+          id={`${attachment.id}-description`}
+          defaultValue={attachment.text}
+        />
+        <label htmlFor={`${attachment.id}-description`}>{t("form-input.image-description")}</label>
+      </div>
     </div>
   );
 }

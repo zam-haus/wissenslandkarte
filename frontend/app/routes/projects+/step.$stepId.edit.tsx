@@ -80,21 +80,27 @@ export const action = async ({
   );
   const {
     imageAttachments,
+    imageAttachmentDescriptions,
     attachmentsToRemove,
     linkAttachments,
     linkAttachmentsDescriptions,
     existingLinkIds,
     existingLinkUrls,
     existingLinkDescriptions,
+    existingImageIds,
+    existingImageDescriptions,
   } = getStringArray(
     formData,
     "imageAttachments",
+    "imageAttachmentDescriptions",
     "attachmentsToRemove",
     "linkAttachments",
     "linkAttachmentsDescriptions",
     "existingLinkIds",
     "existingLinkUrls",
     "existingLinkDescriptions",
+    "existingImageIds",
+    "existingImageDescriptions",
   );
 
   if (linkAttachments.length !== linkAttachmentsDescriptions.length) {
@@ -113,6 +119,22 @@ export const action = async ({
     return {
       error: UPDATE_FAILED,
       exception: "Existing link arrays must have the same length",
+    };
+  }
+
+  if (imageAttachments.length !== imageAttachmentDescriptions.length) {
+    await deleteS3FilesByPublicUrl(imageAttachments);
+    return {
+      error: UPDATE_FAILED,
+      exception: "Image attachments and descriptions must have the same length",
+    };
+  }
+
+  if (existingImageIds.length !== existingImageDescriptions.length) {
+    await deleteS3FilesByPublicUrl(imageAttachments);
+    return {
+      error: UPDATE_FAILED,
+      exception: "Existing image arrays must have the same length",
     };
   }
 
@@ -142,7 +164,7 @@ export const action = async ({
   try {
     await deleteAttachmentFilesByIds(attachmentsToRemove);
 
-    const attachmentsToUpdate = existingLinkIds
+    const linkAttachmentsToUpdate = existingLinkIds
       .map((id, index) => ({
         id,
         url: existingLinkUrls[index],
@@ -150,16 +172,23 @@ export const action = async ({
       }))
       .filter((update) => !attachmentsToRemove.includes(update.id));
 
+    const imageAttachmentsToUpdate = existingImageIds
+      .map((id, index) => ({ id, description: existingImageDescriptions[index] }))
+      .filter((update) => !attachmentsToRemove.includes(update.id));
+
     const result = await updateProjectStep(params.stepId, {
       description,
       projectId: newProjectId,
-      imageAttachmentUrls: imageAttachments,
+      imageAttachments: imageAttachments.map((url, index) => ({
+        url,
+        description: imageAttachmentDescriptions[index],
+      })),
       attachmentsToRemove,
       linkAttachments: linkAttachments.map((url, index) => ({
         url,
         description: linkAttachmentsDescriptions[index],
       })),
-      attachmentsToUpdate,
+      attachmentsToUpdate: [...linkAttachmentsToUpdate, ...imageAttachmentsToUpdate],
     });
 
     storeAttachmentsS3ObjectPurposes(imageAttachments, result.attachments, logger("step-edit"));

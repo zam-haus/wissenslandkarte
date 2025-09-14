@@ -19,7 +19,7 @@
   gap: var(--spacing-small);
 }
 
-.deleteImageButtonContainer {
+.imagePreview {
   position: relative;
   width: fit-content;
   max-width: 120px;

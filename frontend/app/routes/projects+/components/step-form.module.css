@@ -26,11 +26,13 @@
 }
 
 .existingImage:has(input[type="checkbox"]:checked) img,
+.existingImage:has(input[type="checkbox"]:checked) :global(.field),
 .existingLink:has(input[type="checkbox"]:checked) .existingLinkFields {
   opacity: 0.25;
 }
 
-.existingLink:has(input[type="checkbox"]:checked) {
+.existingLink:has(input[type="checkbox"]:checked),
+.existingImage:has(input[type="checkbox"]:checked) {
   border-color: rgb(from var(--outline) r g b / 0.25);
 }
 
