@@ -8,7 +8,7 @@ import { serverOnly$ } from "vite-env-only/macros";
 import type { User } from "prisma/generated";
 import { Prisma } from "prisma/generated";
 import { ImageSelect } from "~/components/form-input/image-select";
-import { UserImage } from "~/components/user-image/user-image";
+import { UserImage } from "~/components/user/user-image";
 import { getUserOverview, updateUser, UserOverview } from "~/database/repositories/user.server";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";

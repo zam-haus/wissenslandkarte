@@ -7,8 +7,7 @@ import { CommonMarkdown } from "~/components/markdown";
 import { conditionalShowGlobalButtons } from "~/components/page/page";
 import { ProjectsList } from "~/components/project-list/projects-list";
 import { PeopleTagList } from "~/components/tags/tags";
-import { UserImage } from "~/components/user-image/user-image";
-import type { UserOverview } from "~/database/repositories/user.server";
+import { UserImage } from "~/components/user/user-image";
 import { getUserOverview } from "~/database/repositories/user.server";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
@@ -30,22 +29,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 };
 
 export default function User() {
-  const { t } = useTranslation("users");
-  const { user } = useLoaderData<typeof loader>();
-
-  return (
-    <>
-      <header>
-        <h1>{t("my-profile")}</h1>
-      </header>
-
-      <UserMain user={user} />
-    </>
-  );
-}
-
-export function UserMain({ user }: { user: UserOverview }) {
   const { t, i18n } = useTranslation("users");
+  const { user } = useLoaderData<typeof loader>();
 
   const allProjects = [...user.memberProjects, ...user.ownedProjects];
   allProjects.sort((a, b) =>
@@ -58,32 +43,34 @@ export function UserMain({ user }: { user: UserOverview }) {
 
   return (
     <main>
-      <header>
-        <UserImage {...user} className={styles.atRight} />
-        <h2>{user.username}</h2>
+      <header className={`primary-container small-round padding ${styles.userHeader}`}>
+        <UserImage {...user} className={styles.userImage} />
+        <h2 className={`no-margin ${styles.username}`}>{user.username}</h2>
 
-        <p>
+        <p className={styles.projectsCounter}>
+          <i>handyman</i>
           {t("projects-counter", {
             count: user.memberProjects.length + user.ownedProjects.length,
           })}
         </p>
 
-        <p>
+        <p className={styles.registrationDate}>
+          <i>person_add</i>
           {t("registered-since", {
             date: renderDate(user.registrationDate, i18n.language),
           })}
         </p>
+
+        <Link to="./contact" className={`button top-margin ${styles.sendMessage}`}>
+          <i>email</i>
+          {t("send-message")}
+        </Link>
       </header>
 
       <section>
         <div className={styles.fullWidth}>
           <CommonMarkdown>{user.description}</CommonMarkdown>
         </div>
-
-        <Link to="./contact" className="send-message">
-          {t("send-message")}
-        </Link>
-
         <PeopleTagList className={styles.tagList} tags={user.tags} />
       </section>
 

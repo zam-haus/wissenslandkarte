@@ -3,7 +3,7 @@ import { redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import { UserImage } from "~/components/user-image/user-image";
+import { UserImage } from "~/components/user/user-image";
 import { getUserContactData } from "~/database/repositories/user.server";
 import { getLoggedInUser, isAnyUserLoggedIn } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";

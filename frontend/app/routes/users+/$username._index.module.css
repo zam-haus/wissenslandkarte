@@ -1,26 +1,37 @@
-.atRight {
-  float: right;
-}
-
-.fullWidth {
-  clear: both;
-}
-
-.tagList {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-top: 15px;
-}
-
-.tagList li {
-  border-radius: 10px;
-  background: white;
-  margin: 5px 10px;
-  padding: 2px 10px;
+.userHeader {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  grid-template-areas: "image username" "image date" "image projects" "contact contact";
+  align-items: flex-start;
+  justify-content: flex-start;
+  white-space: wrap;
+  gap: 0 var(--spacing-medium);
 }
 
 .sendMessage {
-  margin: 30px;
-  align-self: center;
+  grid-area: contact;
+}
+
+.userImage {
+  grid-area: image;
+}
+
+.username {
+  grid-area: username;
+  word-break: break-all;
+}
+
+.projectsCounter {
+  grid-area: projects;
+  margin-top: 0;
+}
+
+.registrationDate {
+  grid-area: date;
+  margin: 0;
+}
+
+.projectsCounter i,
+.registrationDate i {
+  margin-right: var(--spacing-small);
 }
