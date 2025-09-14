@@ -8,6 +8,7 @@ import { createS3UploadHandler } from "./handler-s3.server";
 export async function parseMultipartFormDataUploadFilesToS3(
   request: Request,
   fieldsToUploadToS3: string[],
+  valueToReturnIfUploadFails: string | undefined = undefined,
 ) {
   const uploader = await getLoggedInUser(request);
   if (uploader === null) {
@@ -16,7 +17,7 @@ export async function parseMultipartFormDataUploadFilesToS3(
   return unstable_parseMultipartFormData(
     request,
     unstable_composeUploadHandlers(
-      createS3UploadHandler(fieldsToUploadToS3, uploader),
+      createS3UploadHandler(fieldsToUploadToS3, uploader, valueToReturnIfUploadFails),
       createFieldIgnoringMemoryUploadHandler({ ignoreFields: fieldsToUploadToS3 }),
     ),
   );

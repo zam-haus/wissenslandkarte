@@ -21,6 +21,7 @@ const logger = baseLogger.withTag("upload-s3");
 export function createS3UploadHandler(
   formFieldsToUpload: string[],
   uploader: Pick<User, "id">,
+  valueToReturnIfUploadFails: string | undefined = undefined,
 ): UploadHandler {
   return async ({ name, data, contentType, filename }) => {
     logger.debug("checking name %s", name);
@@ -34,7 +35,7 @@ export function createS3UploadHandler(
       validateFilename(filename) === ValidationResult.Invalid ||
       validateContentType(contentType) === ValidationResult.Invalid
     ) {
-      return undefined;
+      return valueToReturnIfUploadFails;
     }
 
     const stream = ReadableStream.from(data);
@@ -48,7 +49,7 @@ export function createS3UploadHandler(
       validateSuffix(detectedSuffix) === ValidationResult.Invalid ||
       validateContentType(detectedMime) === ValidationResult.Invalid
     ) {
-      return undefined;
+      return valueToReturnIfUploadFails;
     }
 
     const newFilename = createValidFilename(filename);
@@ -64,7 +65,7 @@ export function createS3UploadHandler(
       return uploadResult.publicUrl;
     } catch (error) {
       logger.error("Uploading of a file to S3 as %s has failed!", newFilename, { error });
-      return undefined;
+      return valueToReturnIfUploadFails;
     }
   };
 }
