@@ -69,9 +69,9 @@ baseLogger.withTag = (tag: string) =>
 export const logger = (tag: string) => baseLogger.withTag(tag);
 
 if (process.env.NODE_ENV === "development") {
-  const myFormat = format.printf(({ level, message, timestamp, tag, childTag }) => {
+  const myFormat = format.printf(({ level, message, timestamp, tag, childTag, ...meta }) => {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    return `${timestamp} [${childTag ?? tag}] ${level}: ${message}`;
+    return `${timestamp} [${childTag ?? tag}] ${level}: ${message} (${JSON.stringify(meta)})`;
   });
 
   if (environment.DEBUG) {
