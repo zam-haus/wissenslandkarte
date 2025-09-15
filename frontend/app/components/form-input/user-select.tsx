@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import type { globalUserLoader } from "~/routes/global_loaders+/users";
 
 import { MultiSelect } from "./multi-select/multi-select";
+import { iconWrappedRemovableItem } from "./multi-select/removable-item";
 
 export type User = { id: string; username: string };
 
@@ -55,6 +56,7 @@ export function UserSelect({
         onValueRemoved={(removedUser) =>
           setChosenUsers(chosenUsers.filter((user) => user != removedUser))
         }
+        removableItemComponent={iconWrappedRemovableItem("account_circle")}
       ></MultiSelect>
     </>
   );

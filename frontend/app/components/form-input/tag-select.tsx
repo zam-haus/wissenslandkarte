@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import type { loader as globalTagLoader } from "~/routes/global_loaders+/tags";
 
 import { MultiSelect } from "./multi-select/multi-select";
+import { iconWrappedRemovableItem } from "./multi-select/removable-item";
 
 type Tag = {
   name: string;
@@ -58,6 +59,7 @@ export function TagSelect({
         onValueRemoved={(removedValue) =>
           setChosenTags(chosenTags.filter((value) => value != removedValue))
         }
+        removableItemComponent={iconWrappedRemovableItem("tag")}
       ></MultiSelect>
     </>
   );

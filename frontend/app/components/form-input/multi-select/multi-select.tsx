@@ -9,7 +9,7 @@ import { Fragment, useRef, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
 import style from "./multi-select.module.css";
-import { RemovableItem } from "./removable-item";
+import { RemovableItem, RemovableItemComponent, type RemovableItemProps } from "./removable-item";
 
 type MultiSelectProps = {
   valuesToSuggest: string[];
@@ -20,8 +20,12 @@ type MultiSelectProps = {
   onValueRemoved: (value: string) => void;
   onFilterInput?: (filterInput: string) => void;
   allowAddingNew?: boolean;
+  removableItemComponent?: RemovableItemComponent;
 };
 export function MultiSelect(props: MultiSelectProps) {
+  const renderSelectedItem =
+    props.removableItemComponent ?? ((props: RemovableItemProps) => <RemovableItem {...props} />);
+
   function downshiftStateReducer(
     state: UseComboboxState<string>,
     actionAndChanges: UseComboboxStateChangeOptions<string>,
@@ -98,7 +102,7 @@ export function MultiSelect(props: MultiSelectProps) {
     <div className={style.chosenItemsWrapper} onClick={focusInputElement}>
       {props.chosenValues.map((item) => (
         <Fragment key={item}>
-          <RemovableItem value={item} onRemove={() => props.onValueRemoved(item)} />
+          {renderSelectedItem({ value: item, onRemove: () => props.onValueRemoved(item) })}
           <input type="hidden" name={props.inputName} value={item} />
         </Fragment>
       ))}
