@@ -152,25 +152,33 @@ export default function UserEdit() {
     <main className={styles.main}>
       {actionData?.success === true ? <div>{t("profile-updated")}</div> : null}
       <Form method="POST" encType="multipart/form-data">
-        <UserImage {...user} className={styles.atRight} />
-        <ImageSelect
-          maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
-          multiple={false}
-          allowDescription={false}
-          label={t("profile-picture")}
-          fileInputName="image"
-        ></ImageSelect>
-        <label>
-          {t("username")}
+        <div
+          className={`border small-round small-padding small-margin ${styles.imageSelectContainer}`}
+        >
+          <UserImage {...user} className={styles.currentImage} />
+          <ImageSelect
+            maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
+            multiple={false}
+            allowDescription={false}
+            label={t("profile-picture")}
+            fileInputName="image"
+          ></ImageSelect>
+        </div>
+        <div className="field label border small-margin">
           <input type="text" required name="username" defaultValue={user.username} />
-        </label>
+          <label>{t("username")}</label>
+        </div>
         {actionData?.success === false && actionData.error === USERNAME_TAKEN
           ? t("username-taken")
           : null}
-        <label>
-          {t("description")}
-          <textarea name="description" defaultValue={user.description ?? ""}></textarea>
-        </label>
+        <div className="field textarea label border small-margin">
+          <textarea
+            id="description"
+            name="description"
+            defaultValue={user.description ?? ""}
+          ></textarea>
+          <label htmlFor="description">{t("description")}</label>
+        </div>
 
         <button type="submit">{t("save")}</button>
       </Form>

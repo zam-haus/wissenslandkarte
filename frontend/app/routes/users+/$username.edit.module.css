@@ -1,5 +1,21 @@
-.main,
-.main form {
-  display: flex;
-  flex-direction: column;
+.imageSelectContainer {
+  width: min-content;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.imageSelectContainer :global(.preview) {
+  grid-column: 2;
+}
+
+.imageSelectContainer :global(.button-row) {
+  grid-column: span 2;
+}
+
+.imageSelectContainer :global(.button-row) button {
+  width: 100%;
+}
+
+.currentImage:has(+ * + * + :global(.preview) img) {
+  opacity: 0.25;
 }

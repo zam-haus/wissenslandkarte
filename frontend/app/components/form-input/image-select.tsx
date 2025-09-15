@@ -187,7 +187,7 @@ export function ImageSelect({
         ref={actualFileUploadRef}
         disabled={actualInputDisabled}
       />
-      <div className={style.imagePreviewsContainer}>
+      <div className={`${style.imagePreviewsContainer} preview`}>
         {imagePreviews.map((url, index) => (
           <div key={url} className={`small-margin border small-padding ${style.imagePreview}`}>
             <button
@@ -214,7 +214,7 @@ export function ImageSelect({
           </div>
         ))}
       </div>
-      <div className={style.buttonRow}>
+      <div className={`${style.buttonRow} button-row`}>
         <button className="transparent">
           <i>add_photo_alternate</i>
           <span>
