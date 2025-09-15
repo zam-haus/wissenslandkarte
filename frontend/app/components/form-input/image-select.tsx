@@ -3,6 +3,8 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHydrated } from "remix-utils/use-hydrated";
 
+import { useToast, ToastDuration } from "../toast/toast-context";
+
 import style from "./image-select.module.css";
 
 function useFileUploadHelpers({
@@ -12,6 +14,8 @@ function useFileUploadHelpers({
   maxFileSize: number;
   clearInputWhenSizeExceeded?: boolean;
 }) {
+  const { t } = useTranslation("common");
+  const { showToast } = useToast();
   const [fileTooLarge, setFileTooLarge] = useState(false);
   const [actualInputDisabled, setActualInputDisabled] = useState(true);
   const resetSizeCheckWarning = () => setFileTooLarge(false);
@@ -30,6 +34,9 @@ function useFileUploadHelpers({
       input.files !== null && [...input.files].some((file) => file.size > maxFileSize);
 
     setFileTooLarge(sizeExceeded);
+    if (sizeExceeded) {
+      showToast(t("image-too-large"), { type: "error", duration: ToastDuration.LONG });
+    }
     if (sizeExceeded && clearInputWhenSizeExceeded) {
       input.value = "";
     }
@@ -104,7 +111,6 @@ export function ImageSelect({
   ...props
 }: ImageSelectProps) {
   const {
-    fileTooLarge,
     actualInputDisabled,
     resetSizeCheckWarning,
     hasCamera,
@@ -238,7 +244,6 @@ export function ImageSelect({
           </button>
         ) : null}
       </div>
-      {fileTooLarge ? t("image-too-large") : ""}
     </>
   );
 }
