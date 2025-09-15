@@ -6,6 +6,7 @@ import {
 } from "@remix-run/node";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import beercss from "beercss/dist/cdn/beer.min.css?url";
+import "beercss/dist/cdn/beer.min.js";
 import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
 
