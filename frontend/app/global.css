@@ -27,4 +27,14 @@
   --spacing-small: 8px;
   --spacing-medium: 16px;
   --spacing-large: 24px;
+
+  /**
+   * Z-indices
+   */
+  --z-index-tooltip: 200;
+  --z-index-badge: 2;
+  --z-index-dialog: 100;
+  --z-index-menu: 50;
+  --z-index-menu-max: 100;
+  --z-index-nav-positioned: 100;
 }

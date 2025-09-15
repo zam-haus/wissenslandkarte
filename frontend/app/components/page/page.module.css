@@ -10,7 +10,7 @@
   position: sticky;
   top: 4rem;
   height: fit-content;
-  z-index: 150;
+  z-index: calc(var(--z-index-nav-positioned) + 1);
 }
 
 .drawerNav a,
@@ -31,18 +31,18 @@
 }
 
 .drawer {
-  z-index: 250;
+  z-index: calc(var(--z-index-nav-positioned) + 3);
 }
 
 .globalHeader {
   position: sticky;
   top: 0;
-  z-index: 200;
+  z-index: calc(var(--z-index-nav-positioned) + 2);
   margin-top: 0px;
 }
 
 .globalFooter {
   position: sticky;
   bottom: 0;
-  z-index: 200;
+  z-index: calc(var(--z-index-nav-positioned) + 2);
 }
