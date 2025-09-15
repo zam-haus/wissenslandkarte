@@ -47,15 +47,22 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
       encType="multipart/form-data"
       className={style.verticalForm}
     >
-      <label>
-        {t("project-name")} {t("required")}
-        <input name="title" type="text" defaultValue={currentState?.title} required />
-      </label>
+      <fieldset>
+        <legend>{t("project-create-edit.basic-information")}</legend>
+        <div className="field label border small-margin">
+          <input name="title" type="text" defaultValue={currentState?.title} required />
+          <label>
+            {t("project-name")} {t("required")}
+          </label>
+        </div>
 
-      <label>
-        {t("project-description")} {t("required")}
-        <textarea name="description" required defaultValue={currentState?.description}></textarea>
-      </label>
+        <div className="field textarea label border small-margin">
+          <textarea name="description" required defaultValue={currentState?.description}></textarea>
+          <label>
+            {t("project-description")} {t("required")}
+          </label>
+        </div>
+      </fieldset>
 
       {currentState === null || currentState.mainImage === null ? null : (
         <>
@@ -66,37 +73,54 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
         </>
       )}
 
-      <ImageSelect
-        fileInputName="mainImage"
-        label={`${t("select-main-image")} ${t("common", "optional")}`}
-        maxImageSize={maxImageSize}
-        allowDescription={false}
-      />
+      <fieldset>
+        <legend>{t("project-create-edit.additional-information")}</legend>
+        <ImageSelect
+          fileInputName="mainImage"
+          label={`${t("select-main-image")} ${t("common", "optional")}`}
+          maxImageSize={maxImageSize}
+          allowDescription={false}
+        />
+        <span className="helper">{t("project-create-edit.main-image-helper")}</span>
+        <div className="space"></div>
 
-      <UserSelect
-        initiallyAvailableUsers={[...(currentState?.members ?? []), ...users]}
-        defaultValue={currentState?.members}
-      />
+        <UserSelect
+          initiallyAvailableUsers={[...(currentState?.members ?? []), ...users]}
+          defaultValue={currentState?.members}
+        />
+        <span className="helper">{t("project-create-edit.select-user-helper")}</span>
+        <div className="space"></div>
 
-      <TagSelect
-        initiallyAvailableTags={[
-          ...(currentState?.tags.map(({ id, name }) => ({ id, name, priority: Infinity })) ?? []),
-          ...tags,
-        ]}
-        defaultValue={currentState?.tags}
-        allowAddingNew={true}
-      />
+        <TagSelect
+          initiallyAvailableTags={[
+            ...(currentState?.tags.map(({ id, name }) => ({ id, name, priority: Infinity })) ?? []),
+            ...tags,
+          ]}
+          defaultValue={currentState?.tags}
+          allowAddingNew={true}
+        />
+        <span className="helper">{t("project-create-edit.select-tag-helper")}</span>
+        <div className="space"></div>
+      </fieldset>
 
-      <label>
-        {t("select-need-space")} <input type="checkbox" name="needProjectSpace" />
-      </label>
+      <fieldset className={style.metadataSection}>
+        <legend>{t("metadata")}</legend>
 
-      <MetadataForm
-        availableMetadataTypes={[...availableMetadataTypes]}
-        currentMetadata={currentMetadata}
-      />
+        <div className="field border small-margin">
+          <label className="checkbox">
+            <input type="checkbox" name="needProjectSpace" /> <span>{t("select-need-space")} </span>
+          </label>
+        </div>
 
-      <button type="submit">{t("save")}</button>
+        <MetadataForm
+          availableMetadataTypes={[...availableMetadataTypes]}
+          currentMetadata={currentMetadata}
+        />
+      </fieldset>
+
+      <button className="top-margin" type="submit">
+        {t("save")}
+      </button>
     </Form>
   );
 }

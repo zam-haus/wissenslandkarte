@@ -26,9 +26,14 @@
   "no": "Nein",
   "select-value": "Wert auswählen",
   "project-create-edit": {
+    "basic-information": "Basisinformationen",
     "creation-failed": "Erstellung fehlgeschlagen: ",
     "missing-name-or-description": "Name und Beschreibung müssen ausgefüllt werden!",
-    "missing-description": "Beschreibung muss ausgefüllt werden!"
+    "missing-description": "Beschreibung muss ausgefüllt werden!",
+    "select-user-helper": "Nutzer, die du hier auswählst, können das Projekt bearbeiten.",
+    "select-tag-helper": "Tags, die du hier auswählst, helfen anderen Nutzer:innen, das Projekt zu finden.",
+    "main-image-helper": "Das Hauptbild des Projekts. Es wird in der Projektübersicht angezeigt.",
+    "additional-information": "Zusätzliche Informationen"
   },
   "delete": {
     "confirmation-prompt": "Willst du das Projekt \"{{title}}\" wirklich löschen?",

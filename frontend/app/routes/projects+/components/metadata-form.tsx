@@ -3,15 +3,13 @@ import { useTranslation } from "react-i18next";
 
 import type { MetadataType, MetadataValue } from "~/database/repositories/projectMetadata.server";
 
-import style from "./metadata-form.module.css";
-
 type MetadataFormProps = {
   availableMetadataTypes: MetadataType[];
   currentMetadata: MetadataValue[];
 };
 
 export function MetadataForm({ availableMetadataTypes, currentMetadata }: MetadataFormProps) {
-  const { t, i18n } = useTranslation("projects");
+  const { i18n } = useTranslation("projects");
   const { language } = i18n;
 
   type MetadataState = {
@@ -53,9 +51,7 @@ export function MetadataForm({ availableMetadataTypes, currentMetadata }: Metada
   }
 
   return (
-    <fieldset className={style.metadataSection}>
-      <legend>{t("metadata")}</legend>
-
+    <>
       {availableMetadataTypes.map((metadataType) => {
         const translation =
           metadataType.translations.find((t) => t.language === language) ||
@@ -63,19 +59,27 @@ export function MetadataForm({ availableMetadataTypes, currentMetadata }: Metada
         const { active, value } = metadataValues[metadataType.id];
 
         return (
-          <div key={metadataType.id} className={style.metadataField}>
-            <label className={style.metadataLabel}>
+          <div key={metadataType.id} className="border small-round tiny-padding">
+            <label className="checkbox icon ">
               <input
                 type="checkbox"
                 checked={active}
                 onChange={() => handleActiveChange(metadataType.id)}
               />
-
-              <span title={translation.description}>{translation.displayName}</span>
-              {translation.unit ? <span className={style.unit}> ({translation.unit})</span> : null}
+              <span>
+                <i className="fill small-round">add</i>
+                <i className="fill small-round">remove</i>
+                <span title={translation.description}>
+                  {translation.displayName}
+                  <div className="tooltip right">{translation.description}</div>
+                </span>
+                {translation.unit ? (
+                  <span className="tertiary-text"> ({translation.unit})</span>
+                ) : null}
+              </span>
             </label>
             {active ? (
-              <div className={style.inputContainer}>
+              <div className="field border no-margin">
                 <MetadataInput
                   metadataType={metadataType}
                   value={value}
@@ -86,7 +90,7 @@ export function MetadataForm({ availableMetadataTypes, currentMetadata }: Metada
           </div>
         );
       })}
-    </fieldset>
+    </>
   );
 }
 
@@ -119,7 +123,7 @@ function IntegerInput({ metadataType, value, onChange }: MetadataInputProps) {
       name={`metadata[${metadataType.id}]`}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className={!isValid ? style.invalid : ""}
+      className={!isValid ? "invalid" : ""}
       step="1"
       min="0"
       required={true}
@@ -136,7 +140,7 @@ function FloatInput({ metadataType, value, onChange }: MetadataInputProps) {
       name={`metadata[${metadataType.id}]`}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className={!isValid ? style.invalid : ""}
+      className={!isValid ? "invalid" : ""}
       step="0.1"
       min="0"
       required={true}

@@ -26,9 +26,14 @@
   "no": "No",
   "select-value": "Select a value",
   "project-create-edit": {
+    "basic-information": "Basic Information",
     "creation-failed": "Creation failed: ",
     "missing-name-or-description": "Name and description must be provided!",
-    "missing-description": "Description must be provided!"
+    "missing-description": "Description must be provided!",
+    "select-user-helper": "Users you select here can edit the project.",
+    "select-tag-helper": "Tags you select here help other users find the project.",
+    "main-image-helper": "The main image of the project. It is displayed in the project overview.",
+    "additional-information": "Additional Information"
   },
   "delete": {
     "confirmation-prompt": "Do you really want to delete the project \"{{title}}\"?",
