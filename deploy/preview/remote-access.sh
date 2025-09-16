@@ -25,6 +25,7 @@ Available services:
   wlk           Forward local port 8080 for the main web application.
   minio         Forward local port 9001 for the MinIO object storage.
   prisma        Forward local port 5555 for Prisma Studio.
+  sql           Interactive SQLite access to the database.
 EOF
     exit 1
 }
@@ -121,6 +122,15 @@ forward_prisma() {
     wait "${SSH_TUNNEL_PID}"
 }
 
+sql() {
+    printf "🗄️  Connecting to SQLite database via host '%s'...\n" "${SSH_HOST}"
+    printf "🔌 Establishing interactive SQLite session.\n"
+    printf "🛑 Press Ctrl+D to exit.\n\n"
+    
+    # Execute the docker compose command with interactive terminal
+    ssh -t "${SSH_HOST}" "cd wlk-preview && docker compose exec -it wlk sqlite3 /database/data.db"
+}
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --host)
@@ -160,6 +170,9 @@ case "${SERVICE}" in
         ;;
     prisma)
         forward_prisma
+        ;;
+    sql)
+        sql
         ;;
     *)
         printf "Error: Unknown service '%s'\n\n" "$1" >&2
