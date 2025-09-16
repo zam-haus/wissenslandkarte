@@ -8,6 +8,7 @@ export function getPublicUrl(s3Url: string) {
 
   if (environment.s3.OVERRIDE_HOST !== undefined) {
     uploadedFileUrl.host = environment.s3.OVERRIDE_HOST;
+    uploadedFileUrl.port = "";
   }
 
   return uploadedFileUrl.toString().replace(/https?:/, "");
