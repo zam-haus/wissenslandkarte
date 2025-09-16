@@ -70,7 +70,7 @@ export const environment = {
       return getFromEnv("S3_STORAGE_IS_MINIO", Boolean);
     },
     get OVERRIDE_HOST() {
-      return getFromEnv("OVERRIDE_HOST");
+      return getFromEnv("S3_STORAGE_OVERRIDE_HOST");
     },
   },
   search: {

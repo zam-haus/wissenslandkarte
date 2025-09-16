@@ -23,7 +23,7 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
       - "com.centurylinklabs.watchtower.scope=watchtowerwlkscope"
       - "traefik.enable=true"
-      - "traefik.http.routers.s3.rule=Host(`storage.${DOMAIN:?error}`)"
+      - "traefik.http.routers.s3.rule=Host(`${S3_STORAGE_PUBLIC_HOST:?error}`)"
 
   minio-init:
     image: quay.io/minio/minio
@@ -78,7 +78,7 @@ services:
       - S3_STORAGE_ENDPOINT=http://minio:9000
       - S3_STORAGE_ACCESS_KEY=${S3_STORAGE_ACCESS_KEY:?error}
       - S3_STORAGE_SECRET_KEY=${S3_STORAGE_SECRET_KEY:?error}
-      - S3_STORAGE_OVERRIDE_DOWNLOAD_HOST_AND_PATH=storage.${DOMAIN:?error}
+      - S3_STORAGE_OVERRIDE_HOST=${S3_STORAGE_PUBLIC_HOST:?error}
       - MEILISEARCH_HOST=http://meilisearch:7700
       - MEILISEARCH_MASTER_KEY=${MEILISEARCH_MASTER_KEY:?error}
       - EMAIL_SMTP_HOST=${EMAIL_SMTP_HOST:?error}
