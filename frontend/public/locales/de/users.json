@@ -11,16 +11,18 @@
   "username-taken": "Dieser Nutzername ist schon vergeben.",
   "description": "Beschreibung",
   "save": "Speichern",
-  "contact-needs-login": "Um Nachrichten zu senden musst du eingeloggt sein!",
-  "contact-impossible-no-email": "Dieser Nutzer kann nicht per e-mail kontaktiert werden.",
-  "contact-message": "Nachricht:",
-  "contact-include-my-email": "Meine E-Mail-Adresse mitgeben:",
-  "contact-email-hint": "(Wenn nicht, teile bitte Kontaktinformationen selbst mit)",
-  "contact-field-empty": "Nicht abgeschickt: Du musst eine Nachricht angeben",
-  "contact-no-receiving-contact-address": "Nicht abgeschickt: Dieser Nutzer kann nicht per E-Mail kontaktiert werden.",
-  "contact-no-sending-contact-address": "Nicht abgeschickt: Du wolltest dass deine E-Mail-Adresse mitgeteilt wird, aber hast keine im Profil hinterlegt.",
-  "contact-sending-failed": "Nicht abgeschickt: Ein unbekannter Fehler ist aufgetreten.",
-  "contact-confirmation": "Nachricht abgeschickt.",
-  "contact-send": "Abschicken",
-  "profile-updated": "Profil erfolgreich aktualisiert."
+  "profile-updated": "Profil erfolgreich aktualisiert.",
+  "contact": {
+    "needs-login": "Um Nachrichten zu senden musst du eingeloggt sein!",
+    "impossible-no-email": "Dieser Nutzer kann nicht per e-mail kontaktiert werden.",
+    "message": "Nachricht",
+    "include-my-email": "Meine E-Mail-Adresse mitgeben.",
+    "email-hint": "Bitte teile selbst Kontaktinformationen mit, damit der Empfänger dich kontaktieren kann.",
+    "field-empty": "Nicht abgeschickt: Du musst eine Nachricht angeben",
+    "no-receiving-contact-address": "Nicht abgeschickt: Dieser Nutzer kann nicht per E-Mail kontaktiert werden.",
+    "no-sending-contact-address": "Nicht abgeschickt: Du wolltest dass deine E-Mail-Adresse mitgeteilt wird, aber hast keine im Profil hinterlegt.",
+    "sending-failed": "Nicht abgeschickt: Ein unbekannter Fehler ist aufgetreten.",
+    "confirmation": "Nachricht abgeschickt.",
+    "send": "Abschicken"
+  }
 }
