@@ -23,37 +23,34 @@ export default function Admin() {
   const { t } = useTranslation("admin");
   const { isLoggedIn, showInfrastructureRoutes, showUserRoles } = useLoaderData<typeof loader>();
 
-  const adminSpecialNav = (className?: string) =>
-    (
-      <>
-        <div className="space"></div>
-        {showInfrastructureRoutes ? (
-          <>
-            <NavLink to="/admin/applicationInfo" className={className}>
-              <i>info</i>
-              Admin: Application Info
-            </NavLink>
-            <NavLink to="/admin/s3Objects" className={className}>
-              <i>cloud_upload</i>
-              Admin: S3 Objects
-            </NavLink>
-            <NavLink to="/admin/searchIndex" className={className}>
-              <i>search</i>
-              Admin: Search Index
-            </NavLink>
-          </>
-        ) : null}
-        {showUserRoles ? (
-          <NavLink to="/admin/user-roles" className={className}>
-            <i>admin_panel_settings</i>
-            Admin: User Roles
-          </NavLink>
-        ) : null}
-      </>
-    ) as React.ReactElement;
-
   return (
-    <Page isLoggedIn={isLoggedIn} additionalNavItems={adminSpecialNav} title={t("main-headline")}>
+    <Page isLoggedIn={isLoggedIn} title={t("main-headline")}>
+      <header className="secondary-container">
+        <nav>
+          {showInfrastructureRoutes ? (
+            <>
+              <NavLink to="/admin/applicationInfo" className="button secondary">
+                <i>info</i>
+                Admin: Application Info
+              </NavLink>
+              <NavLink to="/admin/s3Objects" className="button secondary">
+                <i>cloud_upload</i>
+                Admin: S3 Objects
+              </NavLink>
+              <NavLink to="/admin/searchIndex" className="button secondary">
+                <i>search</i>
+                Admin: Search Index
+              </NavLink>
+            </>
+          ) : null}
+          {showUserRoles ? (
+            <NavLink to="/admin/user-roles" className="button secondary">
+              <i>admin_panel_settings</i>
+              Admin: User Roles
+            </NavLink>
+          ) : null}
+        </nav>
+      </header>
       <Outlet />
     </Page>
   );

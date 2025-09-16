@@ -65,6 +65,15 @@ export const Roles = {
   RoleManager: "role-manager",
 } as const satisfies { [key in PascalCase<Role>]: Role };
 
+export const adminRoles = [Roles.InfrastructureAdmin, Roles.RoleManager] as const;
+
 export async function loggedInUserHasRole(request: Request, role: Role) {
   return (await getLoggedInUser(request))?.roles.map(({ title }) => title).includes(role) ?? false;
+}
+
+export async function loggedInUserHasAdminRole(request: Request) {
+  const adminRoleChecks = await Promise.all(
+    adminRoles.map((role) => loggedInUserHasRole(request, role)),
+  );
+  return adminRoleChecks.some((isTrue) => isTrue);
 }
