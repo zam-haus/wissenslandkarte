@@ -26,6 +26,7 @@ Available services:
   minio         Forward local port 9001 for the MinIO object storage.
   prisma        Forward local port 5555 for Prisma Studio.
   sql           Interactive SQLite access to the database.
+  restart-wlk   Restart the Wlk service.
 EOF
     exit 1
 }
@@ -131,6 +132,13 @@ sql() {
     ssh -t "${SSH_HOST}" "cd wlk-preview && docker compose exec -it wlk sqlite3 /database/data.db"
 }
 
+restart_wlk() {
+    printf "➡️ Restarting Wlk via host '%s'...\n" "${SSH_HOST}"
+    printf "If this operation fails, get ready to \`ssh ${SSH_HOST}\` to fix it.\n\n"
+    
+    ssh -t "${SSH_HOST}" "cd wlk-preview && docker compose down wlk && docker compose up -d wlk --pull=always"
+}
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --host)
@@ -173,6 +181,9 @@ case "${SERVICE}" in
         ;;
     sql)
         sql
+        ;;
+    restart-wlk)
+        restart_wlk
         ;;
     *)
         printf "Error: Unknown service '%s'\n\n" "$1" >&2
