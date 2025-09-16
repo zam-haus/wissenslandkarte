@@ -6,8 +6,8 @@ services:
       - 9000
       - 9001
     ports:
-      - "127.0.0.1:9000:9000"
-      - "127.0.0.1:9001:9001"
+      - "127.0.0.1:9000:9000" # API
+      - "127.0.0.1:9001:9001" # Admin frontend
     volumes:
       - "./minio-data:/data"
     environment:
@@ -58,8 +58,11 @@ services:
     image: ghcr.io/zam-haus/wissenslandkarte/wlk:edge
     expose:
       - 8080
+    ports:
+      - "127.0.0.1:5555:5555" # prisma studio
     volumes: 
       - "./wlk-database:/database"
+      - "./wlk-logs:/app/logs"
     environment:
       - DATABASE_URL=file:/database/data.db
       - SESSION_SECRET=${SESSION_SECRET:?error}
@@ -83,13 +86,15 @@ services:
       - EMAIL_SMTP_USER=${EMAIL_SMTP_USER:?error}
       - EMAIL_SMTP_PASSWORD=${EMAIL_SMTP_PASSWORD:?error}
       - EMAIL_USE_STARTTLS=${EMAIL_USE_STARTTLS:?error}
+      - EMAIL_ACCEPT_SELFSIGNED_TSL_CERT=${EMAIL_ACCEPT_SELFSIGNED_TSL_CERT:?error}
       - EMAIL_FROM_ADDRESS=${EMAIL_FROM_ADDRESS:-wissenslandkarte@zam.haus}
       - DOCKER_IMAGE=ghcr.io/zam-haus/wissenslandkarte/wlk:edge
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
       - "com.centurylinklabs.watchtower.scope=watchtowerwlkscope"
       - "traefik.enable=true"
-      - "traefik.http.routers.wlk.rule=Host(`${DOMAIN:?error}`)"
+      - "traefik.http.routers.wlk.rule=Host(`${DOMAIN:?error}`) || Host(`wlk.sams.haus`)"
+      - "traefik.http.services.wlk.loadbalancer.server.port=8080"
 
   watchtower:
     image: containrrr/watchtower
