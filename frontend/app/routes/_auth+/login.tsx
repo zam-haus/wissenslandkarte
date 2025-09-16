@@ -13,6 +13,9 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (await isAnyUserLoggedIn(request)) {
     return redirect("/");
   }
+  if (process.env.NODE_ENV === "production") {
+    return redirect("/auth/zam-keycloak");
+  }
   return null;
 };
 
