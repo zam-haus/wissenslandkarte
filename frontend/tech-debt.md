@@ -9,7 +9,6 @@
 
 ## S
 
-- upload warn messages should include rejected filename and user
 - healtchecks in docker compose
 
 ## M

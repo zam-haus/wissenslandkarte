@@ -35,6 +35,7 @@ export function createS3UploadHandler(
       validateFilename(filename) === ValidationResult.Invalid ||
       validateContentType(contentType) === ValidationResult.Invalid
     ) {
+      logger.warn("user-provided data is invalid", { filename, contentType, uploader });
       return valueToReturnIfUploadFails;
     }
 
@@ -49,6 +50,7 @@ export function createS3UploadHandler(
       validateSuffix(detectedSuffix) === ValidationResult.Invalid ||
       validateContentType(detectedMime) === ValidationResult.Invalid
     ) {
+      logger.warn("detected data is invalid", { detectedSuffix, detectedMime, uploader });
       return valueToReturnIfUploadFails;
     }
 
