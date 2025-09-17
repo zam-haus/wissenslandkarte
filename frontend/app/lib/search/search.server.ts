@@ -79,3 +79,7 @@ export async function searchProjectInSearchIndex(query: string) {
 export async function removeAllSearchIndexes() {
   await removeAllSearchIndexesRaw(client);
 }
+
+export async function getMeilisearchVersion() {
+  return await client.getVersion();
+}
