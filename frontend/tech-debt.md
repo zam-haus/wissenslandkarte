@@ -13,8 +13,6 @@
 
 ## M
 
-- show toast if image upload failed
-
 - image file needs to be released to prevent memory leak in step image upload
 - image file (by name) can be added twice in image upload
 
@@ -37,4 +35,3 @@ Create Issues:
 - health check include db connection, s3 und meili
 - add a "add step" button to global button bar
 - global button bar should be a split button (if applicable)
-- nicht alle image-uploads verwenden schon das "failed"-setting. das muss vereinheitlicht werden

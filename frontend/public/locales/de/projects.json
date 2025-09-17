@@ -33,7 +33,8 @@
     "select-user-helper": "Nutzer, die du hier auswählst, können das Projekt bearbeiten.",
     "select-tag-helper": "Tags, die du hier auswählst, helfen anderen Nutzer:innen, das Projekt zu finden.",
     "main-image-helper": "Das Hauptbild des Projekts. Es wird in der Projektübersicht angezeigt.",
-    "additional-information": "Zusätzliche Informationen"
+    "additional-information": "Zusätzliche Informationen",
+    "main-image-upload-failed": "Upload des Hauptbildes fehlgeschlagen"
   },
   "delete": {
     "confirmation-prompt": "Willst du das Projekt \"{{title}}\" wirklich löschen?",

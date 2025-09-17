@@ -4,11 +4,13 @@ import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
+import { ToastDuration, ToastType } from "~/components/toast/toast-context";
 import { getProjectDetails, getProjectsByUser } from "~/database/repositories/projects.server";
 import {
   getEditableProjectStepDetails,
   updateProjectStep,
 } from "~/database/repositories/projectSteps.server";
+import i18next from "~/i18next.server";
 import {
   getLoggedInUser,
   isAnyUserFromListLoggedIn,
@@ -17,6 +19,7 @@ import {
 } from "~/lib/authorization.server";
 import { descendingByDatePropertyComparator } from "~/lib/compare";
 import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/dataValidation";
+import { flashToastInSession } from "~/lib/flash-toast.server";
 import { logger } from "~/lib/logging.server";
 import { upsertProjectStepToSearchIndex } from "~/lib/search/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
@@ -71,7 +74,12 @@ export const action = async ({
     `Someone tried editing step ${params.stepId} but was not authorized to do so!`,
   );
 
-  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["imageAttachments"]);
+  const uploadFailed = "upload-failed";
+  const formData = await parseMultipartFormDataUploadFilesToS3(
+    request,
+    ["imageAttachments"],
+    uploadFailed,
+  );
 
   const { newProjectId, description } = getTrimmedStringsDefaultEmpty(
     formData,
@@ -102,6 +110,17 @@ export const action = async ({
     "existingImageIds",
     "existingImageDescriptions",
   );
+
+  let headers: Headers | undefined = undefined;
+  if (imageAttachments.includes(uploadFailed)) {
+    const t = await i18next.getFixedT(request, "projects");
+    headers = await flashToastInSession(
+      request,
+      t("steps-create-edit.image-attachment-upload-failed"),
+      ToastType.ERROR,
+      ToastDuration.LONG,
+    );
+  }
 
   if (linkAttachments.length !== linkAttachmentsDescriptions.length) {
     await deleteS3FilesByPublicUrl(imageAttachments);
@@ -179,10 +198,12 @@ export const action = async ({
     const result = await updateProjectStep(params.stepId, {
       description,
       projectId: newProjectId,
-      imageAttachments: imageAttachments.map((url, index) => ({
-        url,
-        description: imageAttachmentDescriptions[index],
-      })),
+      imageAttachments: imageAttachments
+        .map((url, index) => ({
+          url,
+          description: imageAttachmentDescriptions[index],
+        }))
+        .filter(({ url }) => url !== uploadFailed),
       attachmentsToRemove,
       linkAttachments: linkAttachments.map((url, index) => ({
         url,
@@ -194,7 +215,7 @@ export const action = async ({
     storeAttachmentsS3ObjectPurposes(imageAttachments, result.attachments, logger("step-edit"));
     await upsertProjectStepToSearchIndex(result);
 
-    return redirect(`/projects/${result.projectId}`);
+    return redirect(`/projects/${result.projectId}`, { headers });
   } catch (e: unknown) {
     if (!(e instanceof Error)) {
       return { error: UPDATE_FAILED };

@@ -4,8 +4,10 @@ import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
+import { ToastDuration, ToastType } from "~/components/toast/toast-context";
 import { getAllMetadataTypes } from "~/database/repositories/projectMetadata.server";
 import { getProjectDetails, updateProject } from "~/database/repositories/projects.server";
+import i18next from "~/i18next.server";
 import {
   getLoggedInUser,
   isAnyUserFromListLoggedIn,
@@ -13,6 +15,7 @@ import {
   Roles,
 } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
+import { flashToastInSession } from "~/lib/flash-toast.server";
 import { logger } from "~/lib/logging.server";
 import { upsertProjectToSearchIndex } from "~/lib/search/search.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
@@ -70,10 +73,26 @@ export const action = async ({
 
   await assertAuthorization(request, project);
 
-  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["mainImage"]);
+  const uploadFailed = "upload-failed";
+  const formData = await parseMultipartFormDataUploadFilesToS3(
+    request,
+    ["mainImage"],
+    uploadFailed,
+  );
 
   const { title, description } = getTrimmedStringsDefaultEmpty(formData, "title", "description");
-  const { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
+  let { mainImage } = getStringsDefaultUndefined(formData, "mainImage");
+  let headers: Headers | undefined = undefined;
+  if (mainImage === uploadFailed) {
+    mainImage = undefined;
+    const t = await i18next.getFixedT(request, "projects");
+    headers = await flashToastInSession(
+      request,
+      t("project-create-edit.main-image-upload-failed"),
+      ToastType.ERROR,
+      ToastDuration.LONG,
+    );
+  }
   if (title.length === 0 || description.length === 0) {
     if (mainImage !== undefined) {
       await deleteS3FilesByPublicUrl([mainImage]);
@@ -122,7 +141,7 @@ export const action = async ({
 
     await upsertProjectToSearchIndex(result);
 
-    return redirect(`/projects/${result.id}`);
+    return redirect(`/projects/${result.id}`, { headers });
   } catch (e: unknown) {
     if (!(e instanceof Error)) {
       return { error: UPDATE_FAILED };

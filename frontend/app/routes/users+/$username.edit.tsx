@@ -10,6 +10,7 @@ import { Prisma } from "prisma/generated";
 import { ImageSelect } from "~/components/form-input/image-select";
 import { UserImage } from "~/components/user/user-image";
 import { getUserOverview, updateUser, UserOverview } from "~/database/repositories/user.server";
+import i18next from "~/i18next.server";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
@@ -58,14 +59,19 @@ export const action = async ({
 
   await assertAuthorization(request, user);
 
-  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["image"]);
+  const uploadFailed = "upload-failed";
+  const formData = await parseMultipartFormDataUploadFilesToS3(request, ["image"], uploadFailed);
 
   const { username, description } = getTrimmedStringsDefaultEmpty(
     formData,
     "username",
     "description",
   );
-  const { image } = getStringsDefaultUndefined(formData, "image");
+  let { image } = getStringsDefaultUndefined(formData, "image");
+  if (image === uploadFailed) {
+    image = undefined;
+    // TODO: add toast, but that conflicts with the session update below
+  }
 
   if (username.length === 0) {
     if (image !== undefined) {

@@ -33,7 +33,8 @@
     "select-user-helper": "Users you select here can edit the project.",
     "select-tag-helper": "Tags you select here help other users find the project.",
     "main-image-helper": "The main image of the project. It is displayed in the project overview.",
-    "additional-information": "Additional Information"
+    "additional-information": "Additional Information",
+    "main-image-upload-failed": "Main image upload failed"
   },
   "delete": {
     "confirmation-prompt": "Do you really want to delete the project \"{{title}}\"?",
