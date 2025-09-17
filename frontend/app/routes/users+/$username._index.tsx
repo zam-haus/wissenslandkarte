@@ -2,6 +2,7 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
+import { Handle } from "types/handle";
 import { renderDate } from "~/components/date-rendering";
 import { CommonMarkdown } from "~/components/markdown";
 import { conditionalShowGlobalButtons } from "~/components/page/page";
@@ -9,6 +10,7 @@ import { ProjectsList } from "~/components/project-list/projects-list";
 import { PeopleTagList } from "~/components/tags/tags";
 import { UserImage } from "~/components/user/user-image";
 import { getUserOverview } from "~/database/repositories/user.server";
+import i18next from "~/i18next.server";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 
@@ -22,10 +24,20 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const ownerLoggedIn = await isThisUserLoggedIn(request, user);
   const adminLoggedIn = await loggedInUserHasRole(request, Roles.UserEditor);
+  let pageTitleOverride: { pageTitleOverride?: string } = {};
+  if (ownerLoggedIn) {
+    const t = await i18next.getFixedT(request, "users");
+    pageTitleOverride = { pageTitleOverride: t("titles.my-profile") };
+  }
   return {
     user,
     ...conditionalShowGlobalButtons({ editButton: ownerLoggedIn || adminLoggedIn }),
+    ...pageTitleOverride,
   };
+};
+
+export const handle: Handle<"users"> = {
+  pageTitleOverride: { ns: "users", key: "titles.single-user" },
 };
 
 export default function User() {

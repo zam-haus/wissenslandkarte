@@ -23,7 +23,7 @@ export default function Login() {
   const { t } = useTranslation("login");
   if (process.env.NODE_ENV === "development") {
     return (
-      <Page isLoggedIn={false} title={t("main-headline")}>
+      <Page isLoggedIn={false} fallbackTitle={t("main-headline")}>
         <Form action="/auth/fake-dev-login" method="post">
           <input type="password" name="password" />
           <button type="submit">Do the fake login (if enabled)</button>
@@ -39,7 +39,7 @@ export default function Login() {
   }
 
   return (
-    <Page isLoggedIn={false} title={t("main-headline")}>
+    <Page isLoggedIn={false} fallbackTitle={t("main-headline")}>
       <Link to="/auth/zam-keycloak">{t("use-zam-sso")}</Link>
       <Outlet></Outlet>
     </Page>

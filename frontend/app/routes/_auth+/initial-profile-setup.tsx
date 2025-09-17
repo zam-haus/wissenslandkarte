@@ -77,7 +77,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const handle = {
-  i18n: ["login", "users"],
+  i18n: ["login"],
 };
 
 export default function SetupProfile() {
@@ -86,20 +86,20 @@ export default function SetupProfile() {
   const { t } = useTranslation("login");
 
   return (
-    <Page title="Setup Profile" isLoggedIn={true}>
-      <h2>{t("welcome", { firstname: user.firstName })}</h2>
+    <Page fallbackTitle={t("registration.title")} isLoggedIn={true}>
+      <h2>{t("registration.welcome", { firstname: user.firstName })}</h2>
 
       <Form method="POST" className={style.form}>
         <label>
-          {t("username-prompt")}
+          {t("registration.username-prompt")}
           <input type="text" required name="username" defaultValue={user.username} />
         </label>
 
         {actionData?.success === false && actionData.error === USERNAME_TAKEN ? (
-          <p>{t("username-taken", { ns: "users" })}</p>
+          <p>{t("registration.username-taken")}</p>
         ) : null}
-        {t("next-step")}
-        <button type="submit">{t("create")}</button>
+        {t("registration.next-step")}
+        <button type="submit">{t("registration.create")}</button>
       </Form>
     </Page>
   );

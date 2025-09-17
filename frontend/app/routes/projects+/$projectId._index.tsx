@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import type { Attachment } from "prisma/generated";
 import { isAttachmentType } from "prisma/initialization/data/fake-data-generators";
+import { Handle } from "types/handle";
 import { renderDate } from "~/components/date-rendering";
 import { CommonMarkdown } from "~/components/markdown";
 import { ModalDialog } from "~/components/modal";
@@ -40,6 +41,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     }),
     isLoggedInUserAuthorizedToEdit,
   };
+};
+
+export const handle: Handle<"projects"> = {
+  pageTitleOverride: { ns: "projects", key: "titles.single-project" },
 };
 
 export default function Project() {

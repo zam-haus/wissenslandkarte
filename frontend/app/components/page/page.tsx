@@ -3,6 +3,7 @@ import { ParseKeys } from "i18next";
 import React, { type PropsWithChildren, PropsWithRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { OverrideHandle } from "types/handle";
 import { ToastDuration, useToast } from "~/components/toast/toast-context";
 
 import { ActionBar } from "./action-bar";
@@ -52,13 +53,51 @@ function getGlobalButtonRequests(routes: UIMatch[]): GlobalButton[] {
   });
 }
 
+function useGetRouteTitle(routes: UIMatch[]): string | null {
+  const { t } = useTranslation();
+
+  // Look for title in route data first (most specific)
+  for (const route of routes) {
+    if (
+      typeof route.data === "object" &&
+      route.data !== null &&
+      "pageTitleOverride" in route.data &&
+      typeof route.data.pageTitleOverride === "string"
+    ) {
+      return route.data.pageTitleOverride;
+    }
+  }
+
+  const isOverrideHandle = (handle: unknown): handle is OverrideHandle =>
+    typeof handle === "object" &&
+    handle !== null &&
+    "pageTitleOverride" in handle &&
+    handle.pageTitleOverride !== null &&
+    typeof handle.pageTitleOverride === "object" &&
+    "key" in handle.pageTitleOverride &&
+    typeof handle.pageTitleOverride.key === "string" &&
+    "ns" in handle.pageTitleOverride &&
+    typeof handle.pageTitleOverride.ns === "string";
+
+  // Then look for pageTitleOverride in route handle (less specific)
+  for (const route of routes) {
+    if (isOverrideHandle(route.handle)) {
+      const { key, ns } = route.handle.pageTitleOverride;
+
+      return t(key, { ns });
+    }
+  }
+
+  return null;
+}
+
 export function Page({
-  title,
+  fallbackTitle,
   isLoggedIn,
   children,
   additionalNavItems,
 }: PropsWithChildren<{
-  title: string;
+  fallbackTitle: string;
   isLoggedIn: boolean;
   additionalNavItems?: (className?: string) => React.ReactElement | null;
 }>) {
@@ -66,6 +105,8 @@ export function Page({
 
   const matches = useMatches();
   const globalButtonRequests = getGlobalButtonRequests(matches);
+  const routeTitle = useGetRouteTitle(matches);
+  const title = routeTitle ?? fallbackTitle;
 
   if (
     !matches.some(

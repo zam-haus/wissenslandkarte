@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroll-component";
 
+import { Handle } from "types/handle";
 import { Pager, usePagedInfinitScroll } from "~/components/infinite-scroll-pager";
 import { ProjectsList } from "~/components/project-list/projects-list";
 import type { ProjectListEntry } from "~/database/repositories/projects.server";
@@ -17,6 +18,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const projects = await getProjectList({ limit: 30, page });
 
   return { pageData: projects, page };
+};
+
+export const handle: Handle<"projects"> = {
+  pageTitleOverride: { ns: "projects", key: "titles.all-projects" },
 };
 
 export default function Projects() {

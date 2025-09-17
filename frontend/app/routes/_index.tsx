@@ -37,7 +37,11 @@ export default function Index() {
     ) : null;
 
   return (
-    <Page isLoggedIn={isLoggedIn} title={t("main-headline")} additionalNavItems={adminNavItems}>
+    <Page
+      isLoggedIn={isLoggedIn}
+      fallbackTitle={t("main-headline")}
+      additionalNavItems={adminNavItems}
+    >
       <p>{t("browse-prompt")}</p>
 
       <Link className="chip small" to="search/projects">

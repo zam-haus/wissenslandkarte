@@ -1,5 +1,13 @@
 {
-  "main-headline": "Projects",
+  "titles": {
+    "fallback": "Projects",
+    "single-project": "Project Diary",
+    "single-project-edit": "Edit Project Diary",
+    "single-project-delete": "Delete Project Diary",
+    "single-project-step-new": "Create Update",
+    "single-project-step-edit": "Edit Update",
+    "all-projects": "All Projects"
+  },
   "by": "By",
   "tags": "Tags",
   "main-image": "The main image of this project as uploaded by the user",

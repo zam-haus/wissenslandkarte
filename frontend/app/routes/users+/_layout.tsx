@@ -17,7 +17,7 @@ export default function Search() {
   const { isLoggedIn } = useLoaderData<typeof loader>();
 
   return (
-    <Page isLoggedIn={isLoggedIn} title={t("main-headline")}>
+    <Page isLoggedIn={isLoggedIn} fallbackTitle={t("titles.fallback")}>
       <Outlet />
     </Page>
   );

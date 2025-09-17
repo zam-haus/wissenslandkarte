@@ -3,8 +3,12 @@
   "use-zam-sso": "Log in using ZAM single sign on",
   "login-failed": "Log in failed",
   "unexpected-error": "An unexpected error occurred during login. Here's all we know: ",
-  "welcome": "Welcome, {{firstname}}",
-  "username-prompt": "Please choose your publicly visible username: ",
-  "next-step": "In the next step we'll ask you to set up your profile",
-  "create": "Create account"
+  "registration": {
+    "title": "Setup Profile",
+    "welcome": "Welcome, {{firstname}}",
+    "username-prompt": "Please choose your publicly visible username: ",
+    "next-step": "In the next step we'll ask you to set up your profile",
+    "create": "Create account",
+    "username-taken": "This username is already taken"
+  }
 }

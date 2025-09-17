@@ -3,6 +3,7 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
+import { Handle } from "types/handle";
 import { deleteProject, getProjectDetails } from "~/database/repositories/projects.server";
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
@@ -64,6 +65,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   await assertAuthorization(request, project);
 
   return { title: project.title };
+};
+
+export const handle: Handle<"projects"> = {
+  pageTitleOverride: { ns: "projects", key: "titles.single-project-delete" },
 };
 
 export default function ProjectDelete() {

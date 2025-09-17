@@ -24,7 +24,7 @@ export default function Admin() {
   const { isLoggedIn, showInfrastructureRoutes, showUserRoles } = useLoaderData<typeof loader>();
 
   return (
-    <Page isLoggedIn={isLoggedIn} title={t("main-headline")}>
+    <Page isLoggedIn={isLoggedIn} fallbackTitle={t("main-headline")}>
       <header className="secondary-container">
         <nav>
           {showInfrastructureRoutes ? (

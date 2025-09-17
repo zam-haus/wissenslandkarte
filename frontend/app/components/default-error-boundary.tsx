@@ -9,14 +9,14 @@ export function DefaultErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     return (
-      <Page isLoggedIn={false} title={t("error-header")}>
+      <Page isLoggedIn={false} fallbackTitle={t("error-header")}>
         <h2>{error.status}</h2>
         <p>{error.statusText}</p>
       </Page>
     );
   } else if (error instanceof Error) {
     return (
-      <Page isLoggedIn={false} title={t("exception-header")}>
+      <Page isLoggedIn={false} fallbackTitle={t("exception-header")}>
         <h2>{error.message}</h2>
         <p>{t("exception-explanation")}</p>
         <pre>{error.stack}</pre>
@@ -24,7 +24,7 @@ export function DefaultErrorBoundary() {
     );
   } else {
     return (
-      <Page isLoggedIn={false} title={t("unknown-error-header")}>
+      <Page isLoggedIn={false} fallbackTitle={t("unknown-error-header")}>
         <p>{t("unknown-error-explanation")}</p>
       </Page>
     );

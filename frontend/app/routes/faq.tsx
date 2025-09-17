@@ -17,7 +17,7 @@ export default function FaqPage() {
   const items = t("items", { returnObjects: true }) as { question: string; answer: string }[];
 
   return (
-    <Page isLoggedIn={isLoggedIn} title={t("title")}>
+    <Page isLoggedIn={isLoggedIn} fallbackTitle={t("title")}>
       <section>
         {items.map((item, index) => (
           <details key={index} open className="small-round surface-variant margin">

@@ -4,6 +4,7 @@ import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+import { Handle } from "types/handle";
 import { ToastDuration, ToastType, useToast } from "~/components/toast/toast-context";
 import { UserImage } from "~/components/user/user-image";
 import { getUserContactData } from "~/database/repositories/user.server";
@@ -100,6 +101,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     receivingUserHasEmail: receivingUser.contactEmailAddress !== null,
     receivingUser: { ...receivingUser, contactEmailAddress: undefined },
   };
+};
+
+export const handle: Handle<"users"> = {
+  pageTitleOverride: { ns: "users", key: "titles.contact-user" },
 };
 
 export default function UserEdit() {

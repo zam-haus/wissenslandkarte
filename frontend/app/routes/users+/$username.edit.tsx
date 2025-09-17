@@ -7,10 +7,10 @@ import { serverOnly$ } from "vite-env-only/macros";
 
 import type { User } from "prisma/generated";
 import { Prisma } from "prisma/generated";
+import { Handle } from "types/handle";
 import { ImageSelect } from "~/components/form-input/image-select";
 import { UserImage } from "~/components/user/user-image";
 import { getUserOverview, updateUser, UserOverview } from "~/database/repositories/user.server";
-import i18next from "~/i18next.server";
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
@@ -145,8 +145,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return { user };
 };
 
-export const handle = {
-  i18n: ["users"],
+export const handle: Handle<"users"> = {
+  pageTitleOverride: { ns: "users", key: "titles.edit-profile" },
 };
 
 export default function UserEdit() {

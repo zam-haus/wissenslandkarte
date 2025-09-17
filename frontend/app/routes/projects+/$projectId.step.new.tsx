@@ -4,6 +4,7 @@ import { useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { serverOnly$ } from "vite-env-only/macros";
 
+import { Handle } from "types/handle";
 import { ToastDuration, ToastType } from "~/components/toast/toast-context";
 import {
   getProjectDetails,
@@ -187,6 +188,10 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   }
 
   return { projects, projectId: params.projectId };
+};
+
+export const handle: Handle<"projects"> = {
+  pageTitleOverride: { ns: "projects", key: "titles.single-project-step-new" },
 };
 
 export default function CreateStep() {

@@ -1,5 +1,13 @@
 {
-  "main-headline": "Projekte",
+  "titles": {
+    "fallback": "Projekte",
+    "single-project": "Projekttagebuch",
+    "single-project-edit": "Projekttagebuch bearbeiten",
+    "single-project-delete": "Projekttagebuch löschen",
+    "single-project-step-new": "Eintrag erstellen",
+    "single-project-step-edit": "Eintrag bearbeiten",
+    "all-projects": "Alle Projekte"
+  },
   "by": "Von",
   "tags": "Tags",
   "main-image": "Das Hauptbild dieses Projekts wie von dem oder der Nutzer:in hochgeladen.",

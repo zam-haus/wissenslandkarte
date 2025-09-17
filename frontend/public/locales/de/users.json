@@ -1,6 +1,11 @@
 {
-  "main-headline": "Personen",
-  "my-profile": "Mein Profil",
+  "titles": {
+    "fallback": "Personen",
+    "single-user": "Profil",
+    "edit-profile": "Profil bearbeiten",
+    "my-profile": "Mein Profil",
+    "contact-user": "Nutzer:in kontaktieren"
+  },
   "registered-since": "Registriert seit {{date}}",
   "send-message": "Eine Nachricht senden",
   "projects-counter_one": "{{count}} Projekt",
