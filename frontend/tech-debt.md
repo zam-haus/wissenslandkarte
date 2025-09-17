@@ -32,5 +32,3 @@ Create Issues:
 - look into proper transfer of complex objects ({existingLinkId: "123", "existingLinkUrl": ...}[])
 - allow setting global title from subpage
 - knip installieren
-- add a "add step" button to global button bar
-- global button bar should be a split button (if applicable)

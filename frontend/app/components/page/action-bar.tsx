@@ -20,7 +20,7 @@ export function ActionBar() {
           <span className="s tooltip">{t("action-bar-projects")}</span>
         </Link>
         <Link className={`button large no-round ${style["no-round-fix"]}`} to="/projects/step/new">
-          <i>add</i>
+          <i>add_notes</i>
           <span className="m l">{t("action-bar-add")}</span>
           <span className="s tooltip">{t("action-bar-add")}</span>
         </Link>

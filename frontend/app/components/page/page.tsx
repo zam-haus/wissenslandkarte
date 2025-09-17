@@ -4,39 +4,45 @@ import React, { type PropsWithChildren, PropsWithRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { OverrideHandle } from "types/handle";
+import { Namespaces } from "types/i18n-namespaces";
 import { ToastDuration, useToast } from "~/components/toast/toast-context";
 
 import { ActionBar } from "./action-bar";
 import styles from "./page.module.css";
 
-type GlobalButtonConfig = {
+type GlobalButtonConfig<NS extends Namespaces = Namespaces> = {
   relativeRoute: string;
   icon: string;
-  i18nLabelKey: ParseKeys<"common">;
+  i18nLabelKey: ParseKeys<NS>;
+  i18nLabelNamespace: NS;
 };
 
-type GlobalButton = GlobalButtonConfig & {
+type GlobalButton = GlobalButtonConfig<Namespaces> & {
   route: string;
 };
 
 export function conditionalShowGlobalButtons(buttons: {
   editButton?: boolean;
   deleteButton?: boolean;
-}): { globalButtons: GlobalButtonConfig[] } {
+  moreButtons?: GlobalButtonConfig<Namespaces>[];
+}): { globalButtons: GlobalButtonConfig<Namespaces>[] } {
   const editButton = {
     relativeRoute: "edit",
     i18nLabelKey: "toplevel-edit" as const,
+    i18nLabelNamespace: "common" as const,
     icon: "edit",
   };
   const deleteButton = {
     relativeRoute: "delete",
     i18nLabelKey: "toplevel-delete" as const,
+    i18nLabelNamespace: "common" as const,
     icon: "delete",
   };
   return {
     globalButtons: [
       ...(buttons.editButton ? [editButton] : []),
       ...(buttons.deleteButton ? [deleteButton] : []),
+      ...(buttons.moreButtons ?? []),
     ],
   };
 }
@@ -44,7 +50,7 @@ export function conditionalShowGlobalButtons(buttons: {
 function getGlobalButtonRequests(routes: UIMatch[]): GlobalButton[] {
   return routes.flatMap((route) => {
     if (typeof route.data === "object" && route.data !== null && "globalButtons" in route.data) {
-      return (route.data.globalButtons as GlobalButtonConfig[]).map((button) => ({
+      return (route.data.globalButtons as GlobalButtonConfig<Namespaces>[]).map((button) => ({
         ...button,
         route: route.pathname + "/" + button.relativeRoute,
       }));
@@ -236,34 +242,56 @@ function NavItems({
 
 function GlobalButtons({ globalButtonRequests }: { globalButtonRequests: GlobalButton[] }) {
   const { t } = useTranslation("common");
+  const buttonCount = globalButtonRequests.length;
 
-  if (globalButtonRequests.length === 0) {
+  if (buttonCount === 0) {
     return null;
   }
 
+  const firstButton = globalButtonRequests[0];
   return (
     <>
-      <button className="s m transparent square">
+      <button className="s transparent square">
         <i>more_vert</i>
         <menu className="border no-wrap left">
           {globalButtonRequests.map((button) => (
             <li key={button.route}>
               <Link to={button.route}>
                 <i>{button.icon}</i>
-                <span>{t(button.i18nLabelKey)}</span>
+                <span>{t(button.i18nLabelKey, { ns: button.i18nLabelNamespace })}</span>
               </Link>
             </li>
           ))}
         </menu>
       </button>
-      {globalButtonRequests.map((button) => (
-        <Link className="l" key={button.route + button.i18nLabelKey} to={button.route}>
-          <button className="border small-round">
-            <i>{button.icon}</i>
-            <span>{t(button.i18nLabelKey)}</span>
-          </button>
+      <div className={`group split m l ${styles.globalButtonContainer}`}>
+        <Link
+          className={`button  secondary border ${buttonCount > 1 ? "left-round no-margin" : ""}`}
+          to={firstButton.route}
+        >
+          <i>{firstButton.icon}</i>
+          <span>{t(firstButton.i18nLabelKey, { ns: firstButton.i18nLabelNamespace })}</span>
         </Link>
-      ))}
+
+        {buttonCount > 1 ? (
+          <div className={`min ${styles.globalButtonMenu}`}>
+            <button className="right-round square secondary no-margin">
+              <i>keyboard_arrow_down</i>
+            </button>
+
+            <menu className="bottom transparent no-wrap left right-align">
+              {globalButtonRequests.slice(1).map((button) => (
+                <Link key={button.route} to={button.route}>
+                  <button className="secondary border small-round">
+                    <i>{button.icon}</i>
+                    <span>{t(button.i18nLabelKey, { ns: button.i18nLabelNamespace })}</span>
+                  </button>
+                </Link>
+              ))}
+            </menu>
+          </div>
+        ) : null}
+      </div>
     </>
   );
 }

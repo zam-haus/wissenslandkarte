@@ -38,6 +38,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     ...conditionalShowGlobalButtons({
       editButton: isLoggedInUserAuthorizedToEdit,
       deleteButton: isLoggedInUserAuthorizedToDelete,
+      moreButtons: [
+        {
+          relativeRoute: "step/new",
+          i18nLabelKey: "add-step",
+          i18nLabelNamespace: "projects",
+          icon: "add_notes",
+        },
+      ],
     }),
     isLoggedInUserAuthorizedToEdit,
   };

@@ -46,3 +46,20 @@
   bottom: 0;
   z-index: calc(var(--z-index-nav-positioned) + 2);
 }
+
+.globalButtonContainer {
+  display: inline-flex;
+  align-items: center;
+}
+
+.globalButtonMenu {
+  display: inline-block;
+}
+
+.globalButtonMenu menu {
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  align-items: flex-end;
+}

@@ -22,6 +22,7 @@
   "step-text": "Description",
   "save": "Save",
   "required": "(required)",
+  "add-step": "Create Update",
   "step": {
     "delete": "Delete",
     "edit": "Edit",
