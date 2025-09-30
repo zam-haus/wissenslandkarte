@@ -44,6 +44,7 @@ export function OwnerSelect({
       inputPlaceholder={t("project-create-edit.owner-label")}
       inputName="owner"
       minRequired={1}
+      maxAllowed={1}
       chosenValues={chosenValues}
       valuesToSuggest={availableUsers
         .map(({ username }) => username)

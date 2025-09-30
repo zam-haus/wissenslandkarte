@@ -17,6 +17,7 @@ type MultiSelectProps = {
   inputPlaceholder: string;
   inputName: string;
   minRequired?: number;
+  maxAllowed?: number;
   onValueChosen: (value: string) => void;
   onValueRemoved: (value: string) => void;
   onFilterInput?: (filterInput: string) => void;
@@ -99,6 +100,9 @@ export function MultiSelect(props: MultiSelectProps) {
     },
   });
 
+  const invalidIfTooFewValues = props.chosenValues.length < (props.minRequired ?? 0);
+  const renderSelection = props.chosenValues.length < (props.maxAllowed ?? Infinity);
+
   return (
     <div className={style.chosenItemsWrapper} onClick={focusInputElement}>
       {props.chosenValues.map((item) => (
@@ -109,30 +113,32 @@ export function MultiSelect(props: MultiSelectProps) {
       ))}
 
       <div className={`field small small-round border no-margin`}>
-        <input
-          placeholder={props.inputPlaceholder}
-          required={props.chosenValues.length < (props.minRequired ?? 0)}
-        />
-        <menu {...getMenuProps()} className="min">
-          <li>
-            <div className="field large prefix">
-              <i className="front">arrow_back</i>
-              <input {...getInputProps({ ref: inputElementRef, onKeyDown: onInputKeyDown })} />
-            </div>
-          </li>
-          {filteredInput.map((item, index) => (
-            <li
-              key={item}
-              className={index === highlightedIndex ? "active" : ""}
-              {...getItemProps({
-                item,
-              })}
-            >
-              <i>add</i>
-              {item}
-            </li>
-          ))}
-        </menu>
+        {renderSelection ? (
+          <>
+            <input placeholder={props.inputPlaceholder} required={invalidIfTooFewValues} />
+
+            <menu {...getMenuProps()} className="min">
+              <li>
+                <div className="field large prefix">
+                  <i className="front">arrow_back</i>
+                  <input {...getInputProps({ ref: inputElementRef, onKeyDown: onInputKeyDown })} />
+                </div>
+              </li>
+              {filteredInput.map((item, index) => (
+                <li
+                  key={item}
+                  className={index === highlightedIndex ? "active" : ""}
+                  {...getItemProps({
+                    item,
+                  })}
+                >
+                  <i>add</i>
+                  {item}
+                </li>
+              ))}
+            </menu>
+          </>
+        ) : null}
       </div>
     </div>
   );
