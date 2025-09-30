@@ -62,9 +62,9 @@ The Wissenslandkarte (WLK) or knowledge map offers an easy way of documenting pr
 ### MVP
 
 - [x] The WLK shall allow admins to remove project diaries
-- [ ] The WLK shall allow admins to remove users, removing or resign all projects to someone else
+- [x] The WLK shall allow admins to remove users, removing or resign all projects to someone else
 - [x] The WLK shall allow admins to edit project diaries and their metadata
-- [ ] The WLK shall allow admins to create project diaries and their metadata for other people
+- [x] The WLK shall allow admins to create project diaries and their metadata for other people
 
 ### Extended functionality
 
