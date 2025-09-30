@@ -42,15 +42,12 @@ export default function Users() {
 
   return (
     <InfiniteScroll
-      scrollableTarget="globalScrollContainer"
       next={loadMore}
       loader={t("loading-more")}
       dataLength={users.length}
       hasMore={hasMore}
     >
-      <main>
-        <UserList users={users} />
-      </main>
+      <UserList users={users} />
       <Pager page={page} hasMore={hasMore}></Pager>
     </InfiniteScroll>
   );

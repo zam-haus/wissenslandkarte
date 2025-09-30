@@ -52,7 +52,6 @@ export default function Projects() {
 
   return (
     <InfiniteScroll
-      scrollableTarget="globalScrollContainer"
       next={loadMore}
       loader={t("loading-more")}
       dataLength={projects.length}

@@ -164,14 +164,14 @@ export function Page({
         </nav>
       </header>
 
-      <div id="globalScrollContainer" className={styles.scrollContainer}>
+      <div>
         <nav className={`m l left ${styles.stickyNav}`}>
           <NavItems isLoggedIn={isLoggedIn} additionalNavItems={additionalNavItems} />
 
           <div className="space"></div>
           <LanguageChooser className="vertical" />
         </nav>
-        <main className="no-padding">{children}</main>
+        <main className={`no-padding ${styles.scrollContainer}`}>{children}</main>
       </div>
       <footer className={"no-padding " + styles.globalFooter}>
         {isLoggedIn ? <ActionBar /> : <></>}
