@@ -176,6 +176,14 @@ export function Page({
       <footer className={"no-padding " + styles.globalFooter}>
         {isLoggedIn ? <ActionBar /> : <></>}
       </footer>
+      <footer className={styles.attributionFooter}>
+        <p className="small-text">
+          Made by <a href="https://t-animal.de">t.animal</a> for{" "}
+          <a href="https://zam-haus.de">ZAM-Haus</a> | Fork me on{" "}
+          <a href="https://github.com/ZAM-haus/wissenslandkarte">GitHub</a> |{" "}
+          <a href="https://www.zam.haus/impressum/">Impressum</a>
+        </p>
+      </footer>
     </>
   );
 }

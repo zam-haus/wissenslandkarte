@@ -12,6 +12,10 @@
     {
       "question": "Wie funktioniert das, wenn nach Hilfe suche?",
       "answer": "Nutze die Suchfunktion um ein Projekt zu finden, das deinem ähnelt. Dann kannst du entweder nachsehen, wie andere es bisher gemacht haben, oder diese kontaktieren und um Rat fragen."
+    },
+    {
+      "question": "Kann ich mit Entwicklung helfen?",
+      "answer": "Ja, du kannst bei der Entwicklung helfen. Du kannst den Quellcode auf GitHub finden unter [https://github.com/ZAM-haus/wissenslandkarte](https://github.com/ZAM-haus/wissenslandkarte) und dort mitwirken. Wenn du Ideen für Verbesserungen hast, lass es uns bitte wissen."
     }
   ]
 }

@@ -1,5 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import Markdown from "react-markdown";
 
 import { Page } from "~/components/page/page";
 import { isLoggedInLoader } from "~/lib/authorization.server";
@@ -25,7 +26,7 @@ export default function FaqPage() {
               <h3 className="small">{item.question}</h3>
             </summary>
             <div className="padding">
-              <p>{item.answer}</p>
+              <Markdown>{item.answer}</Markdown>
             </div>
           </details>
         ))}

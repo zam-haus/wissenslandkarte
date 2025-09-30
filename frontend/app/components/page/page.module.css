@@ -47,6 +47,14 @@
   z-index: calc(var(--z-index-nav-positioned) + 2);
 }
 
+.attributionFooter {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  height: min-content;
+  min-block-size: 0;
+}
+
 .globalButtonContainer {
   display: inline-flex;
   align-items: center;

@@ -12,6 +12,10 @@
     {
       "question": "How does it work if I am looking for help?",
       "answer": "Use the search function to find a project similar to yours. Then you can either see how others have done it so far or contact them to ask for advice."
+    },
+    {
+      "question": "Can I help with development?",
+      "answer": "Yes, you can help with development. You can find the source code on GitHub at [https://github.com/ZAM-haus/wissenslandkarte](https://github.com/ZAM-haus/wissenslandkarte) and contribute to it. If you have any ideas for improvements, please let us know."
     }
   ]
 }
