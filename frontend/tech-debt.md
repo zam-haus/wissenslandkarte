@@ -30,5 +30,4 @@ Create Issues:
 - decide on favicon, trace it as svg https://favicon.im/de/blog/favicon-formats-sizes-best-practices
 - personensuche noch nicht implementiert
 - look into proper transfer of complex objects ({existingLinkId: "123", "existingLinkUrl": ...}[])
-- allow setting global title from subpage
 - knip installieren
