@@ -9,12 +9,7 @@ import { ToastDuration, ToastType } from "~/components/toast/toast-context";
 import { getAllMetadataTypes } from "~/database/repositories/projectMetadata.server";
 import { getProjectDetails, updateProject } from "~/database/repositories/projects.server";
 import i18next from "~/i18next.server";
-import {
-  getLoggedInUser,
-  isAnyUserFromListLoggedIn,
-  loggedInUserHasRole,
-  Roles,
-} from "~/lib/authorization.server";
+import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { flashToastInSession } from "~/lib/flash-toast.server";
 import { logger } from "~/lib/logging.server";
@@ -66,8 +61,6 @@ export const action = async ({
   request,
 }: ActionFunctionArgs): Promise<TypedResponse<never> | { error: string; exception?: string }> => {
   assertExistsOr400(params.projectId, `Missing project id`);
-
-  const user = await getLoggedInUser(request, { ifNotLoggedInRedirectTo: "/" });
 
   const project = await getProjectDetails(params.projectId);
   assertExistsOr404(project, `Project not found: ${params.projectId}`);
@@ -126,12 +119,16 @@ export const action = async ({
       await deleteS3FilesByPublicUrl([project.mainImage]);
     }
 
+    const { owner } = getStringsDefaultUndefined(formData, "owner");
+    const canEditOwner = await loggedInUserHasRole(request, Roles.ProjectEditor);
+    const owners = canEditOwner && owner ? [owner] : project.owners.map((u) => u.username);
+
     const result = await updateProject(
       {
         id: params.projectId,
         title,
         description,
-        owners: [user.username],
+        owners,
         ...getStringArray(formData, "coworkers", "tags"),
         mainImage,
         ...getBooleanDefaultFalse(formData, "needProjectSpace"),
@@ -163,13 +160,21 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   await assertAuthorization(request, project);
 
   const searchParams = new URL(request.url).searchParams;
-  const [{ tags }, { users }, availableMetadataTypes] = await Promise.all([
+  const [canEditOwner, { tags }, { users }, availableMetadataTypes] = await Promise.all([
+    loggedInUserHasRole(request, Roles.ProjectEditor),
     lowLevelTagLoader(searchParams.get("tagFilter")),
     lowLevelUserLoader(searchParams.get("userFilter")),
     getAllMetadataTypes(),
   ]);
 
-  return { tags, users, project, availableMetadataTypes };
+  return {
+    tags,
+    users,
+    project,
+    availableMetadataTypes,
+    canEditOwner,
+    defaultOwner: project.owners[0],
+  };
 };
 
 export const handle: Handle<"projects"> = {
@@ -177,7 +182,8 @@ export const handle: Handle<"projects"> = {
 };
 
 export default function EditProject() {
-  const { project, tags, users, availableMetadataTypes } = useLoaderData<typeof loader>();
+  const { project, tags, users, availableMetadataTypes, canEditOwner, defaultOwner } =
+    useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
   const actionData = useActionData<typeof action>();
@@ -201,6 +207,8 @@ export default function EditProject() {
         currentState={project}
         availableMetadataTypes={availableMetadataTypes}
         currentMetadata={project.metadata}
+        canEditOwner={canEditOwner}
+        defaultOwner={defaultOwner}
       />
     </main>
   );

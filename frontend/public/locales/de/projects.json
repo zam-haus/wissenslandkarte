@@ -39,6 +39,8 @@
     "creation-failed": "Erstellung fehlgeschlagen: ",
     "missing-name-or-description": "Name und Beschreibung müssen ausgefüllt werden!",
     "missing-description": "Beschreibung muss ausgefüllt werden!",
+    "owner-label": "Projektbesitzer:in",
+    "owner-helper": "Die ausgewählte Person wird Besitzer:in des Projekts.",
     "select-user-helper": "Nutzer, die du hier auswählst, können das Projekt bearbeiten.",
     "select-tag-helper": "Tags, die du hier auswählst, helfen anderen Nutzer:innen, das Projekt zu finden.",
     "main-image-helper": "Das Hauptbild des Projekts. Es wird in der Projektübersicht angezeigt.",

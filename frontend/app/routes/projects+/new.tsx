@@ -7,7 +7,7 @@ import { ToastDuration, ToastType } from "~/components/toast/toast-context";
 import { getAllMetadataTypes } from "~/database/repositories/projectMetadata.server";
 import { createProject } from "~/database/repositories/projects.server";
 import i18next from "~/i18next.server";
-import { getLoggedInUser, isAnyUserLoggedIn } from "~/lib/authorization.server";
+import { getLoggedInUser, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { flashToastInSession } from "~/lib/flash-toast.server";
 import { logger } from "~/lib/logging.server";
 import { upsertProjectToSearchIndex } from "~/lib/search/search.server";
@@ -78,10 +78,14 @@ export const action = async ({
       };
     }
 
+    const { owner } = getStringsDefaultUndefined(formData, "owner");
+    const canSelectOtherUserAsOwner = await loggedInUserHasRole(request, Roles.ProjectEditor);
+    const owners = canSelectOtherUserAsOwner && owner ? [owner] : [user.username];
+
     const result = await createProject({
       title,
       description,
-      owners: [user.username],
+      owners,
       ...getStringArray(formData, "coworkers", "tags"),
       mainImage: mainImage,
       ...getBooleanDefaultFalse(formData, "needProjectSpace"),
@@ -106,22 +110,32 @@ export const action = async ({
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  if (!(await isAnyUserLoggedIn(request))) {
+  const loggedInUser = await getLoggedInUser(request);
+  const isAnyUserLoggedIn = loggedInUser !== null;
+  if (!isAnyUserLoggedIn) {
     return redirect("/");
   }
 
   const searchParams = new URL(request.url).searchParams;
-  const [{ tags }, { users }, availableMetadataTypes] = await Promise.all([
+  const [canEditOwner, { tags }, { users }, availableMetadataTypes] = await Promise.all([
+    loggedInUserHasRole(request, Roles.ProjectEditor),
     lowLevelTagLoader(searchParams.get("tagFilter")),
     lowLevelUserLoader(searchParams.get("userFilter")),
     getAllMetadataTypes(),
   ]);
 
-  return { tags, users, availableMetadataTypes };
+  return {
+    tags,
+    users,
+    availableMetadataTypes,
+    canEditOwner,
+    defaultOwner: { id: loggedInUser.id, username: loggedInUser.username },
+  };
 };
 
 export default function NewProject() {
-  const { tags, users, availableMetadataTypes } = useLoaderData<typeof loader>();
+  const { tags, users, availableMetadataTypes, canEditOwner, defaultOwner } =
+    useLoaderData<typeof loader>();
   const { t } = useTranslation("projects");
 
   const actionData = useActionData<typeof action>();
@@ -145,6 +159,8 @@ export default function NewProject() {
         maxImageSize={MAX_UPLOAD_SIZE_IN_BYTE}
         availableMetadataTypes={availableMetadataTypes}
         currentMetadata={[]}
+        canEditOwner={canEditOwner}
+        defaultOwner={defaultOwner}
       />
     </main>
   );

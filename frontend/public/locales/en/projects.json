@@ -39,6 +39,8 @@
     "creation-failed": "Creation failed: ",
     "missing-name-or-description": "Name and description must be provided!",
     "missing-description": "Description must be provided!",
+    "owner-label": "Project owner",
+    "owner-helper": "The selected owner will be the primary owner of the project.",
     "select-user-helper": "Users you select here can edit the project.",
     "select-tag-helper": "Tags you select here help other users find the project.",
     "main-image-helper": "The main image of the project. It is displayed in the project overview.",

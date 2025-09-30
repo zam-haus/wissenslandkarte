@@ -12,6 +12,7 @@ import type { getProjectDetails } from "~/database/repositories/projects.server"
 import style from "../new.module.css";
 
 import { MetadataForm } from "./metadata-form";
+import { OwnerSelect } from "./owner-select";
 
 type ProjectFormProps = {
   action: string | undefined;
@@ -21,6 +22,8 @@ type ProjectFormProps = {
   mode: "create" | "edit";
   availableMetadataTypes: MetadataType[];
   currentMetadata: MetadataValue[];
+  canEditOwner?: boolean;
+  defaultOwner?: { id: string; username: string };
 };
 
 export type CreateProjectFormProps = ProjectFormProps & {
@@ -83,6 +86,21 @@ export function ProjectForm(props: CreateProjectFormProps | EditProjectFormProps
         />
         <span className="helper">{t("project-create-edit.main-image-helper")}</span>
         <div className="space"></div>
+
+        {props.canEditOwner ? (
+          <>
+            <OwnerSelect
+              initiallyAvailableUsers={[
+                ...(currentState?.owners ?? []),
+                ...(props.defaultOwner ? [props.defaultOwner] : []),
+                ...users,
+              ]}
+              defaultValue={props.defaultOwner}
+            />
+            <span className="helper">{t("project-create-edit.owner-helper")}</span>
+            <div className="space"></div>
+          </>
+        ) : null}
 
         <UserSelect
           initiallyAvailableUsers={[...(currentState?.members ?? []), ...users]}
