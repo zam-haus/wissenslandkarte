@@ -39,6 +39,7 @@ export function makeRandomFakeProject(faker: Faker): Omit<Project, "id"> {
     creationDate: faker.date.recent({ days: 5, refDate: latestModificationDate }),
     needsProjectArea: faker.datatype.boolean(),
     latestModificationDate,
+    finishedAt: faker.number.int({ min: 0, max: 100 }) > 85 ? latestModificationDate : null,
   };
 }
 

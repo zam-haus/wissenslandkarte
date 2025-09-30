@@ -38,14 +38,26 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     ...conditionalShowGlobalButtons({
       editButton: isLoggedInUserAuthorizedToEdit,
       deleteButton: isLoggedInUserAuthorizedToDelete,
-      moreButtons: [
-        {
-          relativeRoute: "step/new",
-          i18nLabelKey: "add-step",
-          i18nLabelNamespace: "projects",
-          icon: "add_notes",
-        },
-      ],
+      moreButtons: isLoggedInUserAuthorizedToEdit
+        ? [
+            {
+              relativeRoute: "step/new",
+              i18nLabelKey: "add-step",
+              i18nLabelNamespace: "projects",
+              icon: "add_notes",
+            },
+            ...(project.finishedAt === null
+              ? ([
+                  {
+                    relativeRoute: "finalize",
+                    i18nLabelKey: "finalize.finalize",
+                    i18nLabelNamespace: "projects",
+                    icon: "check_circle",
+                  },
+                ] as const)
+              : []),
+          ]
+        : [],
     }),
     isLoggedInUserAuthorizedToEdit,
   };
@@ -65,7 +77,20 @@ export default function Project() {
     <>
       <header className={`${style.projectHeader} secondary padding`}>
         <div className="main-info">
-          <h2>{project.title}</h2>
+          <h2>
+            {project.title}
+            {project.finishedAt !== null ? (
+              <span
+                className={`${style.projectDoneMarker} border tertiary medium-text small-padding small-round`}
+              >
+                <i>check_circle</i>
+                {t("done")}
+                <span className="tooltip bottom">
+                  {t("done-tooltip", { date: renderDate(project.finishedAt, i18n.language) })}
+                </span>
+              </span>
+            ) : null}
+          </h2>
           <span className={`left ${style.memberList} tiny-margin`}>
             {t("by")}:
             <nav className={style.memberListNav}>

@@ -132,6 +132,7 @@ export async function getProjectDetails(projectId: Project["id"]) {
       title: true,
       creationDate: true,
       latestModificationDate: true,
+      finishedAt: true,
       mainImage: true,
       owners: { select: { id: true, username: true } },
       members: { select: { id: true, username: true } },
@@ -261,6 +262,17 @@ export async function updateProjectLatestModificationDate(projectId: Project["id
   });
 }
 
+export async function finalizeProject(projectId: Project["id"]) {
+  const now = new Date();
+  if ((await prisma.project.findUnique({ where: { id: projectId } }))?.finishedAt !== null) {
+    throw new Error("Project already finished");
+  }
+  return prisma.project.update({
+    where: { id: projectId },
+    data: { finishedAt: now, latestModificationDate: now },
+  });
+}
+
 export async function* getAllProjectsWithCursor(batchSize: number) {
   let cursor: string | undefined;
 
@@ -284,4 +296,40 @@ export async function* getAllProjectsWithCursor(batchSize: number) {
 
     if (batch.length < batchSize) break;
   }
+}
+
+export async function getFinishedProjects(
+  afterEpochInSeconds: Date,
+  beforeEpochInSeconds: Date,
+  page: number,
+) {
+  return prisma.project.findMany({
+    include: {
+      owners: {
+        select: {
+          id: true,
+          username: true,
+          image: true,
+        },
+      },
+      members: {
+        select: {
+          id: true,
+          username: true,
+          image: true,
+        },
+      },
+      tags: true,
+      attachments: true,
+      steps: true,
+    },
+    where: {
+      finishedAt: {
+        gte: afterEpochInSeconds,
+        lte: beforeEpochInSeconds,
+      },
+    },
+    skip: page * 10,
+    take: 10,
+  });
 }

@@ -38,3 +38,7 @@
   --z-index-menu-max: 100;
   --z-index-nav-positioned: 100;
 }
+
+.tooltip {
+  z-index: var(--z-index-tooltip);
+}

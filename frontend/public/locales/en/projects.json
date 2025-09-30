@@ -6,11 +6,14 @@
     "single-project-delete": "Delete Project Diary",
     "single-project-step-new": "Create Update",
     "single-project-step-edit": "Edit Update",
-    "all-projects": "All Projects"
+    "all-projects": "All Projects",
+    "single-project-finalize": "Mark Project as Finished"
   },
   "by": "By",
   "tags": "Tags",
   "main-image": "The main image of this project as uploaded by the user",
+  "done": "Finished",
+  "done-tooltip": "This project was marked as done on {{date}}.",
   "project-step-headline": "Update from {{date}}",
   "project-name": "Project name",
   "project-description": "Description",
@@ -64,5 +67,13 @@
     "link-attachments": "Link-Attachments",
     "add-image": "Add image",
     "image-attachment-upload-failed": "Image upload failed for at least one attachment"
+  },
+  "finalize": {
+    "finalize": "Mark as finished",
+    "confirmation-prompt": "Do you want to mark the project \"{{title}}\" as done? This means it may be exported to other systems like a wiki. This action cannot be undone, but you can still modify the project afterwards. These later changes may not be reflected in other systems, though.",
+    "confirmation-response-yes": "Yes, mark as finished",
+    "project-finalized": "Project finished",
+    "project-finalized-message": "Project \"{{title}}\" has been marked as finished.",
+    "back-to-projects": "Back to Projects"
   }
 }

@@ -3,6 +3,11 @@
   gap: var(--spacing-medium);
 }
 
+.projectDoneMarker {
+  position: relative;
+  bottom: var(--_padding);
+}
+
 .metadata {
   align-self: flex-start;
 }

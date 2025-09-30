@@ -6,11 +6,14 @@
     "single-project-delete": "Projekttagebuch löschen",
     "single-project-step-new": "Eintrag erstellen",
     "single-project-step-edit": "Eintrag bearbeiten",
-    "all-projects": "Alle Projekte"
+    "all-projects": "Alle Projekte",
+    "single-project-finalize": "Projekt abschließen"
   },
   "by": "Von",
   "tags": "Tags",
   "main-image": "Das Hauptbild dieses Projekts wie von dem oder der Nutzer:in hochgeladen.",
+  "done": "Fertig",
+  "done-tooltip": "Dieses Projekt wurde am {{date}} als erledigt markiert.",
   "project-step-headline": "Update vom {{date}}",
   "project-name": "Projektname",
   "project-description": "Beschreibung",
@@ -64,5 +67,13 @@
     "link-attachments": "Link-Anhänge",
     "add-image": "Bild hinzufügen",
     "image-attachment-upload-failed": "Bildupload für mindestens einen Anhang fehlgeschlagen"
+  },
+  "finalize": {
+    "finalize": "Als abgeschlossen markieren",
+    "confirmation-prompt": "Willst du das Projekt \"{{title}}\" als abgeschlossen markieren? Das bedeutet, es kann in andere Systeme wie ein Wiki exportiert werden. Diese Aktion kann nicht rückgängig gemacht werden, aber du kannst das Projekt weiterhin bearbeiten. Spätere Änderungen werden möglicherweise nicht in anderen Systemen übernommen.",
+    "confirmation-response-yes": "Ja, als abgeschlossen markieren",
+    "project-finalized": "Projekt abgeschlossen",
+    "project-finalized-message": "Projekt \"{{title}}\" wurde als abgeschlossen markiert.",
+    "back-to-projects": "Zurück zu Projekten"
   }
 }

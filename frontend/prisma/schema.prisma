@@ -79,6 +79,7 @@ model Project {
 
   creationDate           DateTime
   latestModificationDate DateTime
+  finishedAt             DateTime?
 
   needsProjectArea Boolean
   s3Object         S3Object?

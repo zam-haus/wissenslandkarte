@@ -27,7 +27,7 @@ The Wissenslandkarte (WLK) or knowledge map offers an easy way of documenting pr
 - [ ] The WLK shall allow users to add entries to existing project diaries with files.
 - [x] The WLK shall allow users to add entries to existing project diaries with links.
 - [?] The WLK shall allow users to add entries to existing project diaries with tags.
-- [ ] The WLK shall allow users to finalize a project declaring it finished (so that it can be exported to other systems)
+- [x] The WLK shall allow users to finalize a project declaring it finished (so that it can be exported to other systems)
 - [x] The WLK shall allow users to annotate existing projects with metadata (e.g., cost, time invested,...)
 - [?] The WLK shall allow users to reference external documentation of a project (e.g. project lives in github. possibly pin an entry or put it in description)
 - [x] The WLK shall allow users to search for existing project diaries by tags
