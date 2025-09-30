@@ -4,7 +4,8 @@
     "single-user": "Profile",
     "edit-profile": "Edit Profile",
     "my-profile": "My Profile",
-    "contact-user": "Contact User"
+    "contact-user": "Contact User",
+    "delete-user": "Delete User"
   },
   "registered-since": "Registered since {{date}}",
   "send-message": "Send a message",
@@ -29,5 +30,15 @@
     "confirmation": "Message sent.",
     "send": "Send"
   },
-  "profile-updated": "Profile updated successfully."
+  "profile-updated": "Profile updated successfully.",
+  "delete": {
+    "user-deleted": "User deleted",
+    "user-deleted-message": "User {{username}} has been deleted",
+    "back-to-users": "Back to users list",
+    "cannot-delete-title": "User {{username}} cannot be deleted",
+    "cannot-delete-message": "They are still listed as owner of the following projects",
+    "confirmation-prompt": "Should this user really be permanently deleted?",
+    "confirmation-response-yes": "Yes, delete permanently",
+    "cannot-delete-self": "You cannot delete yourself"
+  }
 }

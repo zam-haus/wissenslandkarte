@@ -221,3 +221,7 @@ export async function* getAllUsersWithCursor(batchSize: number) {
     if (batch.length < batchSize) break;
   }
 }
+
+export async function deleteUserById(userId: User["id"]) {
+  return prisma.user.delete({ where: { id: userId } });
+}

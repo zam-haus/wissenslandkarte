@@ -29,9 +29,20 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     const t = await i18next.getFixedT(request, "users");
     pageTitleOverride = { pageTitleOverride: t("titles.my-profile") };
   }
+
+  const deleteButton = {
+    i18nLabelKey: "toplevel-delete",
+    i18nLabelNamespace: "common",
+    relativeRoute: "delete",
+    icon: "delete",
+  } as const;
+
   return {
     user,
-    ...conditionalShowGlobalButtons({ editButton: ownerLoggedIn || adminLoggedIn }),
+    ...conditionalShowGlobalButtons({
+      editButton: ownerLoggedIn || adminLoggedIn,
+      moreButtons: adminLoggedIn ? [deleteButton] : [],
+    }),
     ...pageTitleOverride,
   };
 };

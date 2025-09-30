@@ -4,7 +4,8 @@
     "single-user": "Profil",
     "edit-profile": "Profil bearbeiten",
     "my-profile": "Mein Profil",
-    "contact-user": "Nutzer:in kontaktieren"
+    "contact-user": "Nutzer:in kontaktieren",
+    "delete-user": "Nutzer:in löschen"
   },
   "registered-since": "Registriert seit {{date}}",
   "send-message": "Eine Nachricht senden",
@@ -29,5 +30,15 @@
     "sending-failed": "Nicht abgeschickt: Ein unbekannter Fehler ist aufgetreten.",
     "confirmation": "Nachricht abgeschickt.",
     "send": "Abschicken"
+  },
+  "delete": {
+    "user-deleted": "Nutzer:in gelöscht",
+    "user-deleted-message": "Nutzer:in {{username}} wurde gelöscht",
+    "back-to-users": "Zurück zur Nutzer:innen-Liste",
+    "cannot-delete-title": "Nutzer:in {{username}} kann nicht gelöscht werden",
+    "cannot-delete-message": "Er oder sie ist noch bei folgenden Projekten als Besitzer:in eingetragen",
+    "confirmation-prompt": "Soll diese:r Nutzer:in wirklich unwiderbringlich gelöscht werden?",
+    "confirmation-response-yes": "Ja, lösche unwiderbringlich",
+    "cannot-delete-self": "Du kannst dich nicht selbst löschen"
   }
 }
