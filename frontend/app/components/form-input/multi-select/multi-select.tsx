@@ -16,6 +16,7 @@ type MultiSelectProps = {
   chosenValues: string[];
   inputPlaceholder: string;
   inputName: string;
+  minRequired?: number;
   onValueChosen: (value: string) => void;
   onValueRemoved: (value: string) => void;
   onFilterInput?: (filterInput: string) => void;
@@ -108,7 +109,10 @@ export function MultiSelect(props: MultiSelectProps) {
       ))}
 
       <div className={`field small small-round border no-margin`}>
-        <input placeholder={props.inputPlaceholder} />
+        <input
+          placeholder={props.inputPlaceholder}
+          required={props.chosenValues.length < (props.minRequired ?? 0)}
+        />
         <menu {...getMenuProps()} className="min">
           <li>
             <div className="field large prefix">
