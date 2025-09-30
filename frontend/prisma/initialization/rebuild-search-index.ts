@@ -5,12 +5,15 @@ import {
   removeAllSearchIndexesRaw,
   upsertProjectStepsToSearchIndexRaw,
   upsertProjectsToSearchIndexRaw,
+  upsertUsersToSearchIndexRaw,
 } from "~/lib/search/rawCommands.server";
 import {
   projectIndexId,
   projectStepsIndexId,
   SearchableProjectProperties,
   SearchableProjectStepProperties,
+  SearchableUserProperties,
+  userIndexId,
 } from "~/lib/search/search.server";
 
 import { environment } from "../../app/lib/environment.server";
@@ -38,9 +41,11 @@ export async function rebuildSearchIndex(prisma: PrismaClient) {
   await removeAllSearchIndexesRaw(client);
   const projects = await prisma.project.findMany();
   const stepsInDb = await prisma.projectStep.findMany();
+  const usersInDb = await prisma.user.findMany();
 
   const projectIndex = client.index<SearchableProjectProperties>(projectIndexId);
   const projectStepsIndex = client.index<SearchableProjectStepProperties>(projectStepsIndexId);
+  const userIndex = client.index<SearchableUserProperties>(userIndexId);
 
   console.log("🏗 Building project search index");
   await upsertProjectsToSearchIndexRaw(projectIndex, projects);
@@ -48,5 +53,8 @@ export async function rebuildSearchIndex(prisma: PrismaClient) {
   console.log("🏗 🏗 Building project steps search index");
   await upsertProjectStepsToSearchIndexRaw(projectStepsIndex, stepsInDb);
 
-  console.log("🏗 🏗 🏗 Search index built");
+  console.log("🏗 🏗 🏗 Building user search index");
+  await upsertUsersToSearchIndexRaw(userIndex, usersInDb);
+
+  console.log("🏗 🏗 🏗 🏗 Search index built");
 }

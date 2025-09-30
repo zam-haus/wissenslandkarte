@@ -1,6 +1,10 @@
 import { Index, MeiliSearch } from "meilisearch";
 
-import type { SearchableProjectProperties, SearchableProjectStepProperties } from "./search.server";
+import type {
+  SearchableProjectProperties,
+  SearchableProjectStepProperties,
+  SearchableUserProperties,
+} from "./search.server";
 
 export async function removeAllSearchIndexesRaw(client: MeiliSearch) {
   const indexes = await client.getIndexes();
@@ -33,4 +37,11 @@ export async function upsertProjectStepsToSearchIndexRaw(
   }));
 
   await projectStepsIndex.addDocuments(filteredSteps, { primaryKey: "id" });
+}
+
+export async function upsertUsersToSearchIndexRaw(
+  userIndex: Index<SearchableUserProperties>,
+  users: SearchableUserProperties[],
+) {
+  await userIndex.addDocuments(users, { primaryKey: "id" });
 }

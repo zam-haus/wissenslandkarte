@@ -5,6 +5,10 @@ import { UserWithRoles } from "~/lib/authorization.server";
 
 import type { ProjectListEntry } from "./projects.server";
 
+export async function getTotalUsers() {
+  return prisma.user.count();
+}
+
 export type UserListEntry = UserGetPayload<{
   select: {
     id: true;
@@ -175,4 +179,29 @@ export async function getUsersWithSpecialRoles(): Promise<UserWithRoles[]> {
     include: { roles: { select: { title: true } } },
     orderBy: { username: "asc" },
   });
+}
+
+export async function* getAllUsersWithCursor(batchSize: number) {
+  let cursor: string | undefined;
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  while (true) {
+    const batch = await prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        description: true,
+      },
+      take: batchSize,
+      ...(cursor && { cursor: { id: cursor } }),
+      orderBy: { id: "asc" },
+    });
+
+    if (batch.length === 0) break;
+
+    yield batch;
+    cursor = batch[batch.length - 1]?.id;
+
+    if (batch.length < batchSize) break;
+  }
 }

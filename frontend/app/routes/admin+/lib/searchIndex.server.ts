@@ -13,10 +13,13 @@ import {
   getAllProjectStepsWithCursor,
   getTotalProjectSteps,
 } from "~/database/repositories/projectSteps.server";
+import { getAllUsersWithCursor, getTotalUsers } from "~/database/repositories/user.server";
 import {
   removeAllSearchIndexes,
+  SearchIndexUpsertResult,
   upsertMultipleProjectStepsToSearchIndex,
   upsertMultipleProjectsToSearchIndex,
+  upsertMultipleUsersToSearchIndex,
 } from "~/lib/search/search.server";
 
 export async function startSearchIndexRebuildJob() {
@@ -27,7 +30,8 @@ export async function startSearchIndexRebuildJob() {
 
   const totalProjects = await getTotalProjects();
   const totalProjectSteps = await getTotalProjectSteps();
-  await setTotalEntriesToRebuild(totalProjects + totalProjectSteps);
+  const totalUsers = await getTotalUsers();
+  await setTotalEntriesToRebuild(totalProjects + totalProjectSteps + totalUsers);
 
   await Promise.race([
     rebuildSearchIndex(),
@@ -44,31 +48,45 @@ async function rebuildSearchIndex() {
     const batchSize = 100;
     let processedEntries = 0;
 
-    for await (const projectBatch of getAllProjectsWithCursor(batchSize)) {
-      const result = await upsertMultipleProjectsToSearchIndex(projectBatch);
-
+    const processBatch = async <T>(
+      batch: T[],
+      upsertFunction: (batch: T[]) => Promise<SearchIndexUpsertResult>,
+      errorMessage: string,
+    ) => {
+      const result = await upsertFunction(batch);
       if (result === "error") {
-        throw new Error("Failed to upsert projects to search index");
+        throw new Error(errorMessage);
       }
+      processedEntries += batch.length;
 
-      processedEntries += projectBatch.length;
       await setSearchIndexRebuildProgress(processedEntries);
 
       // give meilisearch a chance to process the batch and the server to serve other requests
       await delay(100);
+    };
+
+    for await (const projectBatch of getAllProjectsWithCursor(batchSize)) {
+      await processBatch(
+        projectBatch,
+        upsertMultipleProjectsToSearchIndex,
+        "Failed to upsert projects to search index",
+      );
     }
 
     for await (const stepBatch of getAllProjectStepsWithCursor(batchSize)) {
-      const result = await upsertMultipleProjectStepsToSearchIndex(stepBatch);
-      if (result === "error") {
-        throw new Error("Failed to upsert project steps to search index");
-      }
+      await processBatch(
+        stepBatch,
+        upsertMultipleProjectStepsToSearchIndex,
+        "Failed to upsert project steps to search index",
+      );
+    }
 
-      processedEntries += stepBatch.length;
-      await setSearchIndexRebuildProgress(processedEntries);
-
-      // give meilisearch a chance to process the batch and the server to serve other requests
-      await delay(100);
+    for await (const userBatch of getAllUsersWithCursor(batchSize)) {
+      await processBatch(
+        userBatch,
+        upsertMultipleUsersToSearchIndex,
+        "Failed to upsert users to search index",
+      );
     }
 
     await setSearchIndexRebuildProgress(REBUILD_HAS_COMPLETED);

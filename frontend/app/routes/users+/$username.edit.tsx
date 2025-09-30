@@ -14,6 +14,7 @@ import { getUserOverview, updateUser, UserOverview } from "~/database/repositori
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
+import { upsertUserToSearchIndex } from "~/lib/search/search.server";
 import { getSession } from "~/lib/session.server";
 import { MAX_UPLOAD_SIZE_IN_BYTE } from "~/lib/storage/constants";
 import { deleteS3FilesByPublicUrl } from "~/lib/storage/s3Deletion.server";
@@ -97,6 +98,8 @@ export const action = async ({
       description,
       image: image ?? user.image,
     });
+
+    await upsertUserToSearchIndex(updatedUser);
 
     let headers: Headers | undefined;
     const wasEditedByAdmin = !(await isThisUserLoggedIn(request, updatedUser));
