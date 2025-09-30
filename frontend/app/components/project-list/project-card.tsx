@@ -1,3 +1,4 @@
+import { Link } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import type { ProjectListEntry } from "~/database/repositories/projects.server";
@@ -23,7 +24,7 @@ export function ProjectCard({
       className={`no-padding primary-container no-elevate ${styles.projectCard} ${className}`}
     >
       <div className="grid no-space">
-        <div className="s4">
+        <Link to={`/projects/${encodeURIComponent(project.id)}`} className="s4">
           {project.mainImage === null ? (
             <div className={styles.projectMainImagePlaceholder + " surface-variant "}></div>
           ) : (
@@ -34,13 +35,15 @@ export function ProjectCard({
               src={project.mainImage}
             />
           )}
-        </div>
+        </Link>
         <div className="s8">
-          <h3
-            className={`secondary ${styles.projectTitle} no-round top-right-round no-margin small-padding`}
-          >
-            {project.title}
-          </h3>
+          <Link to={`/projects/${encodeURIComponent(project.id)}`} className={styles.projectLink}>
+            <h3
+              className={`secondary ${styles.projectTitle} no-round top-right-round no-margin small-padding`}
+            >
+              {project.title}
+            </h3>
+          </Link>
           <span className="padding">
             <LocalDate date={project.latestModificationDate}></LocalDate>
             <ProjectTagList tags={project.tags} className="" />

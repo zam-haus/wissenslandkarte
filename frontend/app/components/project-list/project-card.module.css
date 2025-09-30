@@ -1,5 +1,6 @@
 .projectCard {
   max-width: 500px;
+  cursor: pointer;
 }
 
 .projectMainImagePlaceholder {
@@ -19,4 +20,8 @@
 .projectMainImagePlaceholder {
   border-end-end-radius: 0 !important;
   border-start-end-radius: 0 !important;
+}
+
+.projectLink {
+  display: block;
 }

@@ -1,3 +1,5 @@
+import { Link } from "@remix-run/react";
+
 import { UserGetPayload } from "prisma/generated/models";
 
 import { LocalDate } from "../date-rendering";
@@ -18,13 +20,15 @@ export type UserCardProps = UserGetPayload<{
 export function UserCard({ user, className }: { user: UserCardProps; className?: string }) {
   return (
     <article className={`${styles.userCard} no-padding no-elevate primary-container ${className}`}>
-      <header className={`secondary small-padding small-round ${styles.userHeader}`}>
-        <h3>{user.username}</h3>
-        <p className={`no-margin ${styles.userRegistrationDate}`}>
-          <LocalDate date={user.registrationDate} />
-        </p>
-        {user.image ? <UserImage className={styles.userImage} {...user} /> : null}
-      </header>
+      <Link className={styles.userCardLink} to={`/users/${encodeURIComponent(user.username)}`}>
+        <header className={`secondary small-padding small-round ${styles.userHeader}`}>
+          <h3>{user.username}</h3>
+          <p className={`no-margin ${styles.userRegistrationDate}`}>
+            <LocalDate date={user.registrationDate} />
+          </p>
+          {user.image ? <UserImage className={styles.userImage} {...user} /> : null}
+        </header>
+      </Link>
       <p className="small-padding">{user.description}</p>
       <PeopleTagList className="no-margin" tags={user.tags} />
     </article>
