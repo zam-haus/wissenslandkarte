@@ -99,6 +99,10 @@ export async function searchProjectInSearchIndex(query: string) {
   return { projectResults, projectStepResults };
 }
 
+export async function searchUserInSearchIndex(query: string) {
+  return await userIndex.search(query);
+}
+
 export async function removeAllSearchIndexes() {
   await removeAllSearchIndexesRaw(client);
 }

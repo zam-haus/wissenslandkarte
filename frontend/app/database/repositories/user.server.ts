@@ -38,6 +38,22 @@ export async function getUserList(options?: {
   });
 }
 
+export async function getUsersByIds(userIds: string[]): Promise<UserListEntry[]> {
+  if (userIds.length === 0) return [];
+
+  return await prisma.user.findMany({
+    select: {
+      id: true,
+      username: true,
+      description: true,
+      image: true,
+      registrationDate: true,
+      tags: true,
+    },
+    where: { id: { in: userIds } },
+  });
+}
+
 export async function getUserListFiltered(filter: string) {
   return prisma.user.findMany({
     select: {
