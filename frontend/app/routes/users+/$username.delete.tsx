@@ -8,6 +8,7 @@ import { deleteUserById, getUserOverview } from "~/database/repositories/user.se
 import { isThisUserLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
+import { deleteUsersFromSearchIndex } from "~/lib/search/search.server";
 import { deleteS3FilesByPublicUrl } from "~/lib/storage/s3Deletion.server";
 
 // Only use in server functions!
@@ -40,6 +41,7 @@ export const action = async ({ params, request }: LoaderFunctionArgs) => {
   }
 
   await deleteS3FilesByPublicUrl(user.image ? [user.image] : []);
+  await deleteUsersFromSearchIndex([user.id]);
   await deleteUserById(user.id);
 
   return redirect(`?success=true&username=${encodeURIComponent(user.username)}`);

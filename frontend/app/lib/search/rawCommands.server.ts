@@ -45,3 +45,24 @@ export async function upsertUsersToSearchIndexRaw(
 ) {
   await userIndex.addDocuments(users, { primaryKey: "id" });
 }
+
+export async function deleteProjectsFromSearchIndexRaw(
+  projectIndex: Index<SearchableProjectProperties>,
+  ids: string[],
+) {
+  await projectIndex.deleteDocuments(ids);
+}
+
+export async function deleteProjectStepsFromSearchIndexRaw(
+  projectStepsIndex: Index<SearchableProjectStepProperties>,
+  ids: string[],
+) {
+  await projectStepsIndex.deleteDocuments(ids);
+}
+
+export async function deleteUsersFromSearchIndexRaw(
+  userIndex: Index<SearchableUserProperties>,
+  ids: string[],
+) {
+  await userIndex.deleteDocuments(ids);
+}

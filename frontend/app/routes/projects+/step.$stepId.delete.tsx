@@ -8,6 +8,7 @@ import {
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404, assertExistsOr500 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
+import { deleteProjectStepsFromSearchIndex } from "~/lib/search/search.server";
 
 import { deleteAttachmentFiles } from "./lib/deleteAttachments.server";
 
@@ -41,6 +42,7 @@ export const action = async ({ params, request }: LoaderFunctionArgs) => {
   await assertAuthorization(request, step.project);
 
   await deleteAttachmentFiles(step.attachments);
+  await deleteProjectStepsFromSearchIndex([step.id]);
   await deleteProjectStep(params.stepId);
 
   return redirect("/projects/" + step.project.id);

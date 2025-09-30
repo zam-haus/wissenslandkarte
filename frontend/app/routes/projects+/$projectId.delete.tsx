@@ -8,6 +8,10 @@ import { deleteProject, getProjectDetails } from "~/database/repositories/projec
 import { isAnyUserFromListLoggedIn, loggedInUserHasRole, Roles } from "~/lib/authorization.server";
 import { assertExistsOr400, assertExistsOr404 } from "~/lib/dataValidation";
 import { logger } from "~/lib/logging.server";
+import {
+  deleteProjectsFromSearchIndex,
+  deleteProjectStepsFromSearchIndex,
+} from "~/lib/search/search.server";
 import { deleteS3FilesByPublicUrl } from "~/lib/storage/s3Deletion.server";
 
 import { deleteAttachmentFiles } from "./lib/deleteAttachments.server";
@@ -46,6 +50,11 @@ export const action = async ({ params, request }: LoaderFunctionArgs) => {
 
   await deleteAttachmentFiles(allAttachments);
   await deleteS3FilesByPublicUrl(project.mainImage ? [project.mainImage] : []);
+  const stepIds = project.steps.map((s) => s.id);
+  if (stepIds.length > 0) {
+    await deleteProjectStepsFromSearchIndex(stepIds);
+  }
+  await deleteProjectsFromSearchIndex([project.id]);
   await deleteProject(params.projectId);
 
   return redirect("?success=true&title=" + project.title);

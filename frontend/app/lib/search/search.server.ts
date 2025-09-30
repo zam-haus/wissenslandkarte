@@ -7,6 +7,9 @@ import { environment } from "../environment.server";
 import { baseLogger } from "../logging.server";
 
 import {
+  deleteProjectsFromSearchIndexRaw,
+  deleteProjectStepsFromSearchIndexRaw,
+  deleteUsersFromSearchIndexRaw,
   removeAllSearchIndexesRaw,
   upsertProjectStepsToSearchIndexRaw,
   upsertProjectsToSearchIndexRaw,
@@ -33,6 +36,7 @@ const projectStepsIndex = client.index<SearchableProjectStepProperties>(projectS
 const userIndex = client.index<SearchableUserProperties>(userIndexId);
 
 export type SearchIndexUpsertResult = "success" | "error";
+export type SearchIndexDeleteResult = "success" | "error";
 
 export async function upsertProjectToSearchIndex(
   project: SearchableProjectProperties,
@@ -86,6 +90,43 @@ export async function upsertMultipleUsersToSearchIndex(
     return "success";
   } catch (e) {
     logger.error("Could not upsert user into search index. Index is out of date", e);
+    await setSearchIndexOutdated(true);
+    return "error";
+  }
+}
+
+export async function deleteProjectsFromSearchIndex(
+  ids: string[],
+): Promise<SearchIndexDeleteResult> {
+  try {
+    await deleteProjectsFromSearchIndexRaw(projectIndex, ids);
+    return "success";
+  } catch (e) {
+    logger.error("Could not delete project(s) from search index. Index is out of date", e);
+    await setSearchIndexOutdated(true);
+    return "error";
+  }
+}
+
+export async function deleteProjectStepsFromSearchIndex(
+  ids: string[],
+): Promise<SearchIndexDeleteResult> {
+  try {
+    await deleteProjectStepsFromSearchIndexRaw(projectStepsIndex, ids);
+    return "success";
+  } catch (e) {
+    logger.error("Could not delete project step(s) from search index. Index is out of date", e);
+    await setSearchIndexOutdated(true);
+    return "error";
+  }
+}
+
+export async function deleteUsersFromSearchIndex(ids: string[]): Promise<SearchIndexDeleteResult> {
+  try {
+    await deleteUsersFromSearchIndexRaw(userIndex, ids);
+    return "success";
+  } catch (e) {
+    logger.error("Could not delete user(s) from search index. Index is out of date", e);
     await setSearchIndexOutdated(true);
     return "error";
   }
