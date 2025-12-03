@@ -1,0 +1,39 @@
+---
+alwaysApply: true
+---
+
+Take this general information into accout when creating your answer or creating code:
+
+# Project Overview
+
+Wissenslandkarte is a web application built with Remix that serves as a knowledge mapping and project management platform.
+It is created for a makerspace. Uses should be able to add projects and project steps quickly.
+
+It allows users to:
+* Create and manage projects with detailed descriptions, images, and metadata
+* Organize knowledge through structured project steps and attachments
+* Collaborate with team members through ownership and membership roles
+* Tag and categorize content for better organization
+* Search through projects and people using Meilisearch
+* Support multiple languages (German and English) with i18next
+* Authenticate users through Keycloak integration
+
+# Key Features
+* Project Management: Users can create projects with titles, descriptions, main images, and structured steps
+* Knowledge Organization: Projects can have multiple steps with attachments and descriptions
+* User Collaboration: Support for project owners and members with different permission levels
+* Tagging System: Flexible tagging for both users and projects
+* Metadata System: Extensible metadata types (cost, materials, time, etc.) with translations
+* File Management: Attachment support for projects and project steps
+* Search Functionality: Full-text search across projects and users
+* Internationalization: Multi-language support (DE/EN)
+* Admin Panel: Administrative functions for user roles and system management
+
+# Technical Stack
+* Frontend: Remix (React-based full-stack framework)
+* Database: SQLite with Prisma ORM
+* Search: Meilisearch
+* Authentication: Keycloak
+* File Storage: S3-compatible storage (MinIO)
+* Styling: CSS Modules
+* Internationalization: i18next

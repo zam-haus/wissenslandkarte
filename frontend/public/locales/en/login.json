@@ -9,6 +9,7 @@
     "username-prompt": "Please choose your publicly visible username: ",
     "next-step": "In the next step we'll ask you to set up your profile",
     "create": "Create account",
-    "username-taken": "This username is already taken"
+    "username-taken": "This username is already taken",
+    "update-failed": "The profile setup failed."
   }
 }

@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, TypedResponse, LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs, redirect, TypedResponse } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
@@ -7,6 +7,7 @@ import { Page } from "~/components/page/page";
 import { prisma } from "~/database/db.server";
 import { assertExistsOr500 } from "~/lib/dataValidation";
 import { getStringsDefaultUndefined } from "~/lib/formDataParser";
+import { baseLogger } from "~/lib/logging.server";
 import { getSession, tempUserSessionKey, userSessionKey } from "~/lib/session.server";
 
 import style from "./initial-profile-setup.module.css";
@@ -19,7 +20,9 @@ export const action = async ({
   request,
 }: ActionFunctionArgs): Promise<TypedResponse<never> | { success: false; error: string }> => {
   const session = await getSession(request);
+  const logger = baseLogger.withTag("initial-profile-setup");
   if (!session.has(tempUserSessionKey)) {
+    logger.debug("No temp user session found, redirecting to login");
     return redirect("/");
   }
   const user = session.get(tempUserSessionKey);
@@ -27,11 +30,14 @@ export const action = async ({
 
   const { username } = getStringsDefaultUndefined(await request.formData(), "username");
   if (username === undefined) {
+    logger.debug("Username is undefined, returning error");
     return {
       success: false,
       error: FIELD_EMPTY,
     };
   }
+
+  logger.debug("Creating new user", { username });
 
   try {
     const newUser = await prisma.user.create({
@@ -39,13 +45,18 @@ export const action = async ({
       include: { roles: true },
     });
 
+    logger.debug("New user created", { newUser });
+
     session.unset(tempUserSessionKey);
     session.set(userSessionKey, newUser);
+
+    logger.debug("Committing session", { newUser });
 
     const headers = await session.commit();
 
     return redirect(`/users/${newUser.username}/edit`, { headers });
   } catch (e) {
+    logger.error("Error creating new user", { error: e });
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (
         e.code === "P2002" &&
@@ -96,7 +107,11 @@ export default function SetupProfile() {
         </label>
 
         {actionData?.success === false && actionData.error === USERNAME_TAKEN ? (
-          <p>{t("registration.username-taken")}</p>
+          <p className="error">{t("registration.username-taken")}</p>
+        ) : null}
+
+        {actionData?.success === false && actionData.error === UPDATE_FAILED ? (
+          <p className="error">{t("registration.update-failed")}</p>
         ) : null}
         {t("registration.next-step")}
         <button type="submit">{t("registration.create")}</button>

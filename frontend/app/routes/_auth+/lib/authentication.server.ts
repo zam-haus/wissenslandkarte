@@ -1,17 +1,41 @@
-import type { TypedResponse } from "@remix-run/node";
+import type { LoaderFunction, LoaderFunctionArgs, TypedResponse } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
 import type { User } from "prisma/generated";
 import { UserWithRoles } from "~/lib/authorization.server";
+import { logger } from "~/lib/logging.server";
 import type { SessionData } from "~/lib/session.server";
-import { getSession } from "~/lib/session.server";
-import { authenticator } from "~/routes/_auth+/lib/strategiesSetup.server";
+import { getSession, tempUserSessionKey, userSessionKey } from "~/lib/session.server";
+import {
+  authenticator,
+  devKeycloakStrategyName,
+  fakeLoginOnDevStrategyName,
+  zamKeycloakStrategyName,
+} from "~/routes/_auth+/lib/strategiesSetup.server";
 
 export type DynamicAuthenticateOptions<T> = {
   successRedirect?: string | ((data: T) => string);
   failureRedirect?: string;
   sessionKey: keyof SessionData | ((data: T) => keyof SessionData);
 };
+
+export const authenticationLoaderFactory =
+  (
+    strategyName:
+      | typeof zamKeycloakStrategyName
+      | typeof devKeycloakStrategyName
+      | typeof fakeLoginOnDevStrategyName,
+  ): LoaderFunction =>
+  ({ request }: LoaderFunctionArgs) => {
+    return authenticate(strategyName, request, {
+      successRedirect: (user: User) => {
+        console.log("user.setupCompleted", user.setupCompleted);
+        return user.setupCompleted ? "/" : "/initial-profile-setup";
+      },
+      failureRedirect: "/login/failed",
+      sessionKey: (user: User) => (user.setupCompleted ? userSessionKey : tempUserSessionKey),
+    });
+  };
 
 export async function authenticate(
   strategy: string,
@@ -25,6 +49,13 @@ export async function authenticate(
     if (e instanceof Response) {
       throw e;
     }
+
+    if (e instanceof Error) {
+      logger("authentication").error("Error authenticating", { error: e.toString() });
+    } else {
+      logger("authentication").error("Error authenticating", { error: e });
+    }
+
     if (options.failureRedirect === undefined) {
       return null;
     } else {

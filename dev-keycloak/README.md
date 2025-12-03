@@ -4,6 +4,8 @@ This `docker-compose.yml` file configures a local Keycloak instance for developm
 
 This setup is intended for development and should not be used for production without modifications. It sets up an admin user, a test realm, two clients, and predefined users. 
 
+Data is persisted in a Docker named volume (`keycloak_data`) managed by Compose.
+
 ## Setup
 
 Copy .env.example to .env and populate the secrets (denoted by `...`). Then copy the relevant values to the .env of the remix-frontend.
@@ -16,16 +18,16 @@ The `keycloak-init` service ensures that the following configurations are applie
 
 ## Resetting Data
 
-If you need to reset the Keycloak data, remove the volume:
+If you need to reset the Keycloak data, remove the named volume created by Compose:
 
 ```sh
-rm -rf keycloak-data
+docker compose down -v
 ```
 
 Then restart the service:
 
 ```sh
-docker-compose up -d
+docker compose up -d
 ```
 
 ## Keycloak Admin Console

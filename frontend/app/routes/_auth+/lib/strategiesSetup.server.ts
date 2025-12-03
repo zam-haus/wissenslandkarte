@@ -29,26 +29,46 @@ function setupFakeLoginStrategy() {
         "WARNING: DANGER_ENABLE_FAKE_LOGIN_ON_DEV should not be set in non-dev mode. Ignoring.",
       );
     } else {
+      let created = 0;
       const requiredPassword = environment.auth.DANGER_FAKE_LOGIN_PASSWORD;
       const fakeLoginStrategy = new FormStrategy(async ({ form }) => {
         const password = form.get("password");
 
-        if (!password || typeof password !== "string" || !password.startsWith(requiredPassword)) {
-          throw Error("Could not login and/or register");
+        if (!password || typeof password !== "string") {
+          throw Error("Could not login and/or register, password is not a string");
         }
 
-        const skip = parseInt(password.split("-skip")[1] ?? "0", 10);
+        if (password === "create-temp-user") {
+          logger.info("Creating random temporary user");
+          const profile = {
+            provider: "fakeData",
+            id: created.toString(),
+            firstName: "John",
+            lastName: "Doe",
+            email: `john.doe-${created}@example.com`,
+            displayName: "John Doe",
+          };
+          created++;
+          return await createTemporaryUser(profile, "fakeData");
+        } else {
+          if (!password.startsWith(requiredPassword)) {
+            throw Error(
+              "Could not login and/or register, password does not start with development password",
+            );
+          }
+          const skip = parseInt(password.split("-skip")[1] ?? "0", 10);
 
-        const user = await prisma.user.findFirst({
-          include: { roles: { select: { title: true } } },
-          skip,
-        });
-        if (user === null) {
-          logger.error("No user found in database. Fake login failed");
-          throw Error("No user found.");
+          const user = await prisma.user.findFirst({
+            include: { roles: { select: { title: true } } },
+            skip,
+          });
+          if (user === null) {
+            logger.error("No user found in database. Fake login failed");
+            throw Error("No user found.");
+          }
+          logger.info("Fake logging in: %s ", user.username, { user });
+          return user;
         }
-        logger.info("Fake logging in: %s ", user.username, { user });
-        return user;
       });
       authenticator.use(fakeLoginStrategy, fakeLoginOnDevStrategyName);
     }

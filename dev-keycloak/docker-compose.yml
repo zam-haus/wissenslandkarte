@@ -13,7 +13,7 @@ services:
       - KC_LOG_LEVEL=INFO
     command: ["start-dev"]
     volumes:
-      - ./keycloak-data:/opt/keycloak/data
+      - keycloak_data:/opt/keycloak/data
     healthcheck:
       test: ["CMD", "/opt/keycloak/bin/kcadm.sh", "get", "serverinfo", "--server", "http://localhost:8080", "--realm", "master", "--user", "admin", "--password", "${ADMIN_PASSWORD}"]
       interval: 10s
@@ -41,3 +41,5 @@ services:
         /opt/keycloak/bin/kcadm.sh set-password -r ${REALM} --username dev-user --new-password ${USER_PASSWORD} &&
         /opt/keycloak/bin/kcadm.sh set-password -r ${REALM} --username dev-user-no-data --new-password ${USER_PASSWORD}
         
+volumes:
+  keycloak_data:

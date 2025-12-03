@@ -63,6 +63,10 @@ export class KeycloakStrategy<T> extends OAuth2Strategy<T> {
     // Set Keycloak-specific URLs and scope.
     this.userInfoURL = `${host}/realms/${realm}/protocol/openid-connect/userinfo`;
     this.scope = scope;
+
+    logger("keycloakStrategy").debug("KeycloakStrategy initialized", { oauthOptions });
+    logger("keycloakStrategy").debug("UserInfoURL", { userInfoURL: this.userInfoURL });
+    logger("keycloakStrategy").debug("Scope", { scope: this.scope });
   }
 
   /**

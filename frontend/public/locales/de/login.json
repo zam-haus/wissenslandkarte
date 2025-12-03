@@ -10,6 +10,7 @@
     "username-prompt": "Bitte wähle deinen öffentlichen Nutzernamen: ",
     "next-step": "Im nächsten Schritt bitten wir dich, dein Profil aufzusetzen",
     "create": "Account erstellen",
-    "username-taken": "Dieser Nutzername ist schon vergeben."
+    "username-taken": "Dieser Nutzername ist schon vergeben.",
+    "update-failed": "Das Aufsetzen des Profils ist fehlgeschlagen."
   }
 }

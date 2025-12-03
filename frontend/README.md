@@ -50,6 +50,9 @@ types/                      # TypeScript type definitions
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 
+To get all debug output set the environment variable DEBUG
+`export DEBUG=1; npm run dev`
+
 ### Code Quality
 
 **Formatting:**

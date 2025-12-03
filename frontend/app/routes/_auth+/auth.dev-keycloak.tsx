@@ -1,18 +1,4 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-
-import { User } from "prisma/generated";
-import { tempUserSessionKey, userSessionKey } from "~/lib/session.server";
-
-import { authenticate } from "./lib/authentication.server";
+import { authenticationLoaderFactory } from "./lib/authentication.server";
 import { devKeycloakStrategyName } from "./lib/strategiesSetup.server";
 
-export const loader = ({ request }: LoaderFunctionArgs) => {
-  return authenticate(devKeycloakStrategyName, request, {
-    successRedirect: (user: User) => {
-      console.log("user.setupCompleted", user.setupCompleted);
-      return user.setupCompleted ? "/" : "/initial-profile-setup";
-    },
-    failureRedirect: "/login/failed",
-    sessionKey: (user: User) => (user.setupCompleted ? userSessionKey : tempUserSessionKey),
-  });
-};
+export const loader = authenticationLoaderFactory(devKeycloakStrategyName);
