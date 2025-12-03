@@ -8,3 +8,5 @@ logs/
 /prisma/data.db
 /prisma/data.db-journal
 /prisma/generated
+
+/playwright-report/

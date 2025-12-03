@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  # Minio for S3-compatible storage
+  minio:
+    image: minio/minio:latest
+    container_name: wissenslandkarte-e2e-minio
+    ports:
+      - "9000:9000" # API port
+      - "9001:9001" # Console port
+    environment:
+      MINIO_ROOT_USER: test-access-key
+      MINIO_ROOT_PASSWORD: test-secret-key
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # Meilisearch for search functionality
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: wissenslandkarte-e2e-meilisearch
+    ports:
+      - "7700:7700"
+    environment:
+      MEILI_MASTER_KEY: test-master-key
+      MEILI_ENV: development
+    volumes:
+      - meilisearch_data:/meili_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # Optional: Keycloak for authentication testing
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: wissenslandkarte-e2e-keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: h2
+      KC_DB_URL: jdbc:h2:mem:keycloak
+    command: start-dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+volumes:
+  minio_data:
+  meilisearch_data:

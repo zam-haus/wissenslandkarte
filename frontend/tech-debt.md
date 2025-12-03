@@ -32,3 +32,4 @@ Create Issues:
 - look into proper transfer of complex objects ({existingLinkId: "123", "existingLinkUrl": ...}[])
 - allow setting global title from subpage
 - knip installieren
+- edit project main image viel zu gross

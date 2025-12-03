@@ -24,7 +24,7 @@ export default function LoginFailed() {
   return (
     <>
       <h2>{t("login-failed")}</h2>
-      <p>
+      <p className="error">
         {t("unexpected-error")} {error?.message}
       </p>
     </>

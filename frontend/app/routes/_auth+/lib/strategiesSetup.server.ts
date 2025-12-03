@@ -32,11 +32,16 @@ function setupFakeLoginStrategy() {
       const requiredPassword = environment.auth.DANGER_FAKE_LOGIN_PASSWORD;
       const fakeLoginStrategy = new FormStrategy(async ({ form }) => {
         const password = form.get("password");
-        if (password !== requiredPassword) {
+
+        if (!password || typeof password !== "string" || !password.startsWith(requiredPassword)) {
           throw Error("Could not login and/or register");
         }
+
+        const skip = parseInt(password.split("-skip")[1] ?? "0", 10);
+
         const user = await prisma.user.findFirst({
           include: { roles: { select: { title: true } } },
+          skip,
         });
         if (user === null) {
           logger.error("No user found in database. Fake login failed");
